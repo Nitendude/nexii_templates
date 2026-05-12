@@ -1,5 +1,20 @@
 const demos = [
   {
+    title: "Enterprise ERP Business Management System",
+    client: "Enterprise operations teams",
+    industry: "Operations",
+    status: "Template",
+    audience: "client",
+    type: "ERP System",
+    url: "",
+    pageUrl: "pages/erp-business-management.html",
+    summary: "Full business management system demo for finance, procurement, inventory, HR, CRM, projects, approvals, and executive reporting.",
+    tags: ["ERP", "Finance", "Inventory", "HR", "Reports"],
+    color: "#1d4ed8",
+    image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80",
+    icon: "ERP"
+  },
+  {
     title: "Beemo's Hidden Patch Booking",
     client: "Beemo's Hidden Patch",
     industry: "Hospitality",
@@ -67,7 +82,7 @@ const demos = [
     audience: "internal",
     type: "Sales Automation",
     url: "",
-    pageUrl: "pages/nexii-ai-proposal.html",
+    pageUrl: "pages/nexii-ai-proposal-app/index.html",
     summary: "Proposal and outreach portal for generating client proposals, categorizing leads, storing client data, and connecting automation endpoints.",
     tags: ["AI proposal", "CRM", "n8n", "Lead intake"],
     color: "#7c3aed",
