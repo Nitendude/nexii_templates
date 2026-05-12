@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Startup Service Website</title>
+    <link rel="stylesheet" href="demo-pages.css">
+  </head>
+  <body data-demo="startup">
+    <main class="page-shell">
+      <nav class="demo-nav" aria-label="Demo navigation">
+        <a class="brand" href="../index.html"><span class="brand-mark">NX</span><span>Demo Hub</span></a>
+        <div class="demo-links" aria-label="Page sections">
+          <a href="#services">Services</a>
+          <a href="#packages">Packages</a>
+          <a href="#work">Work</a>
+          <a href="#contact">Contact</a>
+        </div>
+        <a class="back-link" href="../index.html#catalog">Back to dashboard</a>
+      </nav>
+
+      <section class="website-frame full-demo">
+        <header class="site-header">
+          <strong>LaunchPoint Studio</strong>
+          <nav class="site-links" aria-label="Sample site links">
+            <a href="#services">Services</a>
+            <a href="#packages">Packages</a>
+            <a href="#work">Work</a>
+            <a href="#contact">Contact</a>
+          </nav>
+          <a class="primary-btn" href="#contact">Request quote</a>
+        </header>
+
+        <section class="site-hero">
+          <div>
+            <span class="eyebrow">Service business website</span>
+            <h1>Build a clear online home for your offers, proof, and client inquiries.</h1>
+            <p>Clients can switch packages, submit inquiries, filter portfolio samples, and see a realistic quote preview.</p>
+          </div>
+        </section>
+
+        <section class="service-row" id="services">
+          <article class="mini-card"><h3>Website Setup</h3><p>Homepage, service pages, contact forms, and mobile-ready layouts.</p></article>
+          <article class="mini-card"><h3>Automation</h3><p>Inquiry routing, CRM capture, reminders, and operations workflows.</p></article>
+          <article class="mini-card"><h3>Launch Support</h3><p>Content loading, domain setup, analytics, and client handoff.</p></article>
+        </section>
+
+        <section class="panel inset-panel" id="packages">
+          <div class="panel-top">
+            <div>
+              <span class="panel-label">Package builder</span>
+              <h2>Choose a website package</h2>
+            </div>
+            <strong id="startupPrice">PHP 45,000</strong>
+          </div>
+          <div class="package-grid">
+            <button class="package-card active" type="button" data-package="Starter"><strong>Starter</strong><span>5 pages, contact form, basic SEO</span></button>
+            <button class="package-card" type="button" data-package="Growth"><strong>Growth</strong><span>10 pages, CRM capture, analytics</span></button>
+            <button class="package-card" type="button" data-package="Automation"><strong>Automation</strong><span>Website, booking, CRM, follow-ups</span></button>
+          </div>
+          <label class="toggle-line"><input type="checkbox" id="startupRush"> Add rush launch support</label>
+          <label class="toggle-line"><input type="checkbox" id="startupContent"> Add content writing</label>
+        </section>
+
+        <section class="layout-grid inset-grid">
+          <article class="panel" id="work">
+            <div class="panel-top">
+              <div>
+                <span class="panel-label">Portfolio filter</span>
+                <h2>Recent sample work</h2>
+              </div>
+              <select id="startupFilter" class="compact-input">
+                <option>All</option>
+                <option>Website</option>
+                <option>Booking</option>
+                <option>Automation</option>
+              </select>
+            </div>
+            <div class="workspace-grid" id="startupWork"></div>
+          </article>
+
+          <aside>
+            <article class="panel" id="contact">
+              <span class="panel-label">Inquiry form</span>
+              <h2>Send a project request</h2>
+              <form class="form-grid" id="startupForm">
+                <input name="name" placeholder="Your name" value="Maria Santos">
+                <input name="company" placeholder="Company" value="Santos Food Group">
+                <select name="timeline">
+                  <option>Launch in 30 days</option>
+                  <option>Launch in 60 days</option>
+                  <option>Planning stage</option>
+                </select>
+                <textarea name="message">We need a service website with packages, lead forms, and a simple quote flow.</textarea>
+                <button class="primary-btn" type="submit">Submit inquiry</button>
+              </form>
+            </article>
+            <article class="panel">
+              <span class="panel-label">CRM preview</span>
+              <h2>Latest inquiry</h2>
+              <p id="startupInquiry">No new inquiry submitted yet.</p>
+            </article>
+          </aside>
+        </section>
+      </section>
+    </main>
+    <script src="demo-pages.js"></script>
+  </body>
+</html>

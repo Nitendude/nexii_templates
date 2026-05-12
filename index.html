@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      name="description"
+      content="Client demo dashboard for browsing reusable website, booking, CRM, property, and operations templates."
+    >
+    <title>Demo Templates Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <aside class="sidebar" aria-label="Dashboard navigation">
+      <a class="brand" href="#top" aria-label="Demo Templates Dashboard">
+        <span class="brand-mark">NX</span>
+        <span>
+          <strong>Demo Hub</strong>
+          <small>Client templates</small>
+        </span>
+      </a>
+
+      <nav class="side-nav" aria-label="Sections">
+        <a href="#catalog" class="active">Catalog</a>
+        <a href="#live">Live demos</a>
+        <a href="#projects">Created projects</a>
+        <a href="#pipeline">Pipeline</a>
+      </nav>
+
+      <div class="side-panel">
+        <span class="panel-label">Presentation Set</span>
+        <strong id="visibleCount">0</strong>
+        <small>items ready to review</small>
+      </div>
+    </aside>
+
+    <main id="top" class="shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Nexii Tech Automations</p>
+          <h1>Demo Templates Dashboard</h1>
+        </div>
+        <a class="top-action" href="https://apmcb.com" target="_blank" rel="noreferrer">Open APMCB</a>
+      </header>
+
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">Client-ready catalog</p>
+          <h2 id="hero-title">Show every demo, template, and finished project from one clean screen.</h2>
+          <p>
+            Use this dashboard during sales calls to filter by industry, open live demos, and show projects already built for booking, real estate, operations, sales, and CRM workflows.
+          </p>
+        </div>
+        <div class="hero-preview" aria-label="Dashboard summary preview">
+          <div class="preview-row">
+            <span>Booking demos</span>
+            <strong>2</strong>
+          </div>
+          <div class="preview-row">
+            <span>Business systems</span>
+            <strong>4</strong>
+          </div>
+          <div class="preview-row">
+            <span>Website templates</span>
+            <strong>3</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="stats-grid" aria-label="Catalog metrics">
+        <article>
+          <span>Total demos</span>
+          <strong id="totalCount">0</strong>
+        </article>
+        <article>
+          <span>Client templates</span>
+          <strong id="liveCount">0</strong>
+        </article>
+        <article>
+          <span>Working demos</span>
+          <strong id="localCount">0</strong>
+        </article>
+        <article>
+          <span>Industries</span>
+          <strong id="industryCount">0</strong>
+        </article>
+      </section>
+
+      <section id="catalog" class="toolbar" aria-label="Catalog filters">
+        <label class="search-field">
+          <span>Search demos</span>
+          <input id="searchInput" type="search" placeholder="Search by name, client, industry, or feature">
+        </label>
+
+        <label>
+          <span>Industry</span>
+          <select id="industryFilter">
+            <option value="all">All industries</option>
+          </select>
+        </label>
+
+        <label>
+          <span>Status</span>
+          <select id="statusFilter">
+            <option value="all">All statuses</option>
+            <option value="Live">Live</option>
+            <option value="Demo Page">Demo Page</option>
+            <option value="Template">Template</option>
+          </select>
+        </label>
+      </section>
+
+      <section class="section-heading" id="live">
+        <div>
+          <p class="eyebrow">Catalog</p>
+          <h2>Templates and Created Projects</h2>
+        </div>
+        <div class="view-tabs" role="tablist" aria-label="Catalog view">
+          <button class="tab-button active" type="button" data-view="all">All</button>
+          <button class="tab-button" type="button" data-view="client">Client demos</button>
+          <button class="tab-button" type="button" data-view="internal">Internal projects</button>
+        </div>
+      </section>
+
+      <section class="catalog-grid" id="templateGrid" aria-live="polite"></section>
+
+      <section class="empty-state" id="emptyState" hidden>
+        <h2>No demos match that filter.</h2>
+        <p>Clear the search or choose another industry to bring the catalog back.</p>
+      </section>
+
+      <section id="projects" class="project-band" aria-labelledby="projects-title">
+        <div>
+          <p class="eyebrow">Already created</p>
+          <h2 id="projects-title">Project coverage to mention in client calls</h2>
+        </div>
+        <div class="coverage-list">
+          <span>Booking engine</span>
+          <span>Corporate website</span>
+          <span>Real estate website</span>
+          <span>Employee portal</span>
+          <span>AI sales proposal portal</span>
+          <span>Mobile dashboard</span>
+        </div>
+      </section>
+
+      <section id="pipeline" class="pipeline" aria-labelledby="pipeline-title">
+        <div class="section-heading compact">
+          <div>
+            <p class="eyebrow">Demo flow</p>
+            <h2 id="pipeline-title">Suggested order for presentations</h2>
+          </div>
+        </div>
+
+        <div class="pipeline-grid">
+          <article>
+            <span>01</span>
+            <h3>Start with the client’s industry</h3>
+            <p>Filter the catalog to a matching business category before opening a demo.</p>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>Show one live project</h3>
+            <p>Use Beemo or APMCB to prove the work exists outside a mockup.</p>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>Open a related template</h3>
+            <p>Switch to real estate, sales, or operations templates when the client asks for options.</p>
+          </article>
+          <article>
+            <span>04</span>
+            <h3>Close with custom scope</h3>
+            <p>Explain which parts are reusable and which parts will be branded for the client.</p>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>

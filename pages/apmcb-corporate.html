@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Corporate Website Template</title>
+    <link rel="stylesheet" href="demo-pages.css">
+  </head>
+  <body data-demo="corporate">
+    <main class="page-shell">
+      <nav class="demo-nav" aria-label="Demo navigation">
+        <a class="brand" href="../index.html"><span class="brand-mark">NX</span><span>Demo Hub</span></a>
+        <div class="demo-links" aria-label="Page sections">
+          <a href="#services">Services</a>
+          <a href="#projects">Projects</a>
+          <a href="#request">Request</a>
+          <a href="#profile">Profile</a>
+        </div>
+        <a class="back-link" href="../index.html#catalog">Back to dashboard</a>
+      </nav>
+
+      <section class="template-hero corporate-hero">
+        <div>
+          <span class="eyebrow">Corporate company website</span>
+          <h1>APMCB Company Profile</h1>
+          <p>Professional static website template for company profile, services, project highlights, credentials, and client inquiry capture.</p>
+          <a class="primary-btn" href="#request">Request consultation</a>
+        </div>
+      </section>
+
+      <section class="metrics" id="profile">
+        <article class="metric"><span>Years active</span><strong>12+</strong></article>
+        <article class="metric"><span>Projects</span><strong>180</strong></article>
+        <article class="metric"><span>Partners</span><strong>24</strong></article>
+        <article class="metric"><span>Coverage</span><strong>PH</strong></article>
+      </section>
+
+      <section class="panel" id="services">
+        <span class="panel-label">Services</span>
+        <h2>Company capabilities</h2>
+        <div class="workspace-grid">
+          <article class="workspace-card"><strong>Construction Management</strong><span>Project coordination, documentation, site updates, and reporting.</span></article>
+          <article class="workspace-card"><strong>Procurement Support</strong><span>Supplier records, canvassing files, approvals, and purchase monitoring.</span></article>
+          <article class="workspace-card"><strong>Operations Support</strong><span>Job orders, billing documents, client files, and service tracking.</span></article>
+          <article class="workspace-card"><strong>Client Reporting</strong><span>Static pages for credentials, progress snapshots, and inquiry routing.</span></article>
+        </div>
+      </section>
+
+      <section class="layout-grid">
+        <article class="panel" id="projects">
+          <div class="panel-top">
+            <div>
+              <span class="panel-label">Project portfolio</span>
+              <h2>Filter completed work</h2>
+            </div>
+            <select class="compact-input" id="corporateFilter">
+              <option>All</option>
+              <option>Commercial</option>
+              <option>Residential</option>
+              <option>Operations</option>
+            </select>
+          </div>
+          <div class="workspace-grid" id="corporateProjects"></div>
+        </article>
+
+        <aside>
+          <article class="panel" id="request">
+            <span class="panel-label">Inquiry form</span>
+            <h2>Request a project call</h2>
+            <form class="form-grid" id="corporateForm">
+              <input name="name" placeholder="Contact person" value="Jose Ramirez">
+              <input name="company" placeholder="Company" value="Ramirez Trading">
+              <select name="service">
+                <option>Construction Management</option>
+                <option>Procurement Support</option>
+                <option>Operations Support</option>
+              </select>
+              <textarea name="details">We need a company profile website and a project inquiry form for new clients.</textarea>
+              <button class="primary-btn" type="submit">Submit request</button>
+            </form>
+          </article>
+          <article class="panel output-panel">
+            <span class="panel-label">CRM preview</span>
+            <h2>Latest request</h2>
+            <div class="proposal-output" id="corporateOutput">No request submitted yet.</div>
+          </article>
+        </aside>
+      </section>
+    </main>
+    <script src="demo-pages.js"></script>
+  </body>
+</html>

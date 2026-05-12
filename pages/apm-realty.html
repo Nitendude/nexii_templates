@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Real Estate Website Template</title>
+    <link rel="stylesheet" href="demo-pages.css">
+  </head>
+  <body data-demo="realty">
+    <main class="page-shell">
+      <nav class="demo-nav" aria-label="Demo navigation">
+        <a class="brand" href="../index.html"><span class="brand-mark">NX</span><span>Demo Hub</span></a>
+        <div class="demo-links" aria-label="Page sections">
+          <a href="#search">Search</a>
+          <a href="#listings">Listings</a>
+          <a href="#calculator">Calculator</a>
+          <a href="#tour">Tour</a>
+        </div>
+        <a class="back-link" href="../index.html#catalog">Back to dashboard</a>
+      </nav>
+
+      <section class="template-hero realty-hero">
+        <div>
+          <span class="eyebrow">Real estate website</span>
+          <h1>APM Realty Property Finder</h1>
+          <p>Static real estate template with property filtering, featured listings, payment estimate, and tour request form.</p>
+          <a class="primary-btn" href="#search">Find a property</a>
+        </div>
+      </section>
+
+      <section class="panel" id="search">
+        <div class="panel-top">
+          <div>
+            <span class="panel-label">Property search</span>
+            <h2>Filter available listings</h2>
+          </div>
+          <div class="segmented">
+            <button class="active" type="button" data-realty-type="All">All</button>
+            <button type="button" data-realty-type="Condo">Condo</button>
+            <button type="button" data-realty-type="House">House</button>
+            <button type="button" data-realty-type="Lot">Lot</button>
+          </div>
+        </div>
+        <div class="form-grid">
+          <input id="realtySearch" placeholder="Search location or project" value="">
+        </div>
+      </section>
+
+      <section class="layout-grid">
+        <article class="panel" id="listings">
+          <span class="panel-label">Listings</span>
+          <h2>Featured properties</h2>
+          <div class="workspace-grid" id="realtyListings"></div>
+        </article>
+
+        <aside>
+          <article class="panel" id="calculator">
+            <span class="panel-label">Payment calculator</span>
+            <h2>Estimate monthly payment</h2>
+            <form class="form-grid" id="realtyCalc">
+              <input name="price" type="number" value="6500000">
+              <input name="down" type="number" value="1300000">
+              <input name="years" type="number" value="15">
+              <button class="primary-btn" type="submit">Calculate</button>
+            </form>
+            <p id="realtyPayment">Estimated monthly payment: PHP 41,111</p>
+          </article>
+          <article class="panel" id="tour">
+            <span class="panel-label">Tour request</span>
+            <h2>Schedule a viewing</h2>
+            <form class="form-grid" id="realtyTour">
+              <input name="name" placeholder="Buyer name" value="Angela Cruz">
+              <input name="phone" placeholder="Phone" value="+63 917 555 1234">
+              <select name="property" id="realtyTourProperty"></select>
+              <button class="primary-btn" type="submit">Request tour</button>
+            </form>
+          </article>
+          <article class="panel output-panel">
+            <span class="panel-label">Lead preview</span>
+            <h2>Latest inquiry</h2>
+            <div class="proposal-output" id="realtyOutput">No tour request yet.</div>
+          </article>
+        </aside>
+      </section>
+    </main>
+    <script src="demo-pages.js"></script>
+  </body>
+</html>

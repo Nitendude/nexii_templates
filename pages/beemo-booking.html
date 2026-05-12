@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Resort Booking Template</title>
+    <link rel="stylesheet" href="demo-pages.css">
+  </head>
+  <body data-demo="booking">
+    <main class="page-shell">
+      <nav class="demo-nav" aria-label="Demo navigation">
+        <a class="brand" href="../index.html"><span class="brand-mark">NX</span><span>Demo Hub</span></a>
+        <div class="demo-links" aria-label="Page sections">
+          <a href="#rooms">Rooms</a>
+          <a href="#booking">Booking</a>
+          <a href="#amenities">Amenities</a>
+          <a href="#policies">Policies</a>
+        </div>
+        <a class="back-link" href="../index.html#catalog">Back to dashboard</a>
+      </nav>
+
+      <section class="template-hero resort-hero">
+        <div>
+          <span class="eyebrow">Resort booking website</span>
+          <h1>Beemo's Hidden Patch</h1>
+          <p>Guest-ready booking template with room selection, date picker, add-ons, payment instructions, and booking summary.</p>
+          <a class="primary-btn" href="#booking">Start booking</a>
+        </div>
+      </section>
+
+      <section class="service-row" id="rooms">
+        <article class="mini-card"><h3>Garden Cabin</h3><p>Good for 2 guests with private patio and breakfast.</p><strong>PHP 3,200 / night</strong></article>
+        <article class="mini-card"><h3>Family Villa</h3><p>Good for 6 guests with kitchen, lounge, and pool access.</p><strong>PHP 8,500 / night</strong></article>
+        <article class="mini-card"><h3>Event Cottage</h3><p>Day-use cottage for celebrations and group gatherings.</p><strong>PHP 5,000 / day</strong></article>
+      </section>
+
+      <section class="layout-grid">
+        <article class="panel" id="booking">
+          <span class="panel-label">Booking form</span>
+          <h2>Reserve your stay</h2>
+          <form class="form-grid" id="bookingForm">
+            <select name="room">
+              <option value="Garden Cabin" data-rate="3200">Garden Cabin - PHP 3,200 / night</option>
+              <option value="Family Villa" data-rate="8500">Family Villa - PHP 8,500 / night</option>
+              <option value="Event Cottage" data-rate="5000">Event Cottage - PHP 5,000 / day</option>
+            </select>
+            <input name="checkin" type="date" value="2026-06-05">
+            <input name="checkout" type="date" value="2026-06-07">
+            <input name="guests" type="number" min="1" value="2">
+            <label class="toggle-line"><input type="checkbox" name="breakfast" checked> Add breakfast package</label>
+            <label class="toggle-line"><input type="checkbox" name="bonfire"> Add bonfire setup</label>
+            <button class="primary-btn" type="submit">Check availability</button>
+          </form>
+        </article>
+
+        <aside>
+          <article class="panel output-panel">
+            <span class="panel-label">Booking summary</span>
+            <h2>Your reservation</h2>
+            <div class="proposal-output" id="bookingSummary"></div>
+          </article>
+          <article class="panel" id="policies">
+            <span class="panel-label">Guest policies</span>
+            <h2>Before arrival</h2>
+            <p>Upload proof of payment, present valid ID, observe quiet hours after 10 PM, and confirm guest count before check-in.</p>
+          </article>
+        </aside>
+      </section>
+
+      <section class="panel" id="amenities">
+        <span class="panel-label">Amenities</span>
+        <h2>Everything guests need to decide</h2>
+        <div class="workspace-grid">
+          <article class="workspace-card"><strong>Pool access</strong><span>Clear availability and rules for day and overnight guests.</span></article>
+          <article class="workspace-card"><strong>Event add-ons</strong><span>Catering, bonfire, sound system, and cottage rental options.</span></article>
+          <article class="workspace-card"><strong>Payment guide</strong><span>GCash, bank transfer, upload proof, and balance instructions.</span></article>
+          <article class="workspace-card"><strong>Guest messages</strong><span>Confirmation copy and booking reference generated on submit.</span></article>
+        </div>
+      </section>
+    </main>
+    <script src="demo-pages.js"></script>
+  </body>
+</html>

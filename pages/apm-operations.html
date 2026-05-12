@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>APM Employee and Operations System</title>
+    <link rel="stylesheet" href="demo-pages.css">
+  </head>
+  <body data-demo="operations">
+    <main class="page-shell">
+      <nav class="demo-nav" aria-label="Demo navigation">
+        <a class="brand" href="../index.html"><span class="brand-mark">NX</span><span>Demo Hub</span></a>
+        <div class="demo-links" aria-label="Page sections">
+          <a href="#dashboard">Dashboard</a>
+          <a href="#workspace">Modules</a>
+          <a href="#approvals">Approvals</a>
+          <a href="#tickets">Tickets</a>
+        </div>
+        <a class="back-link" href="../index.html#catalog">Back to dashboard</a>
+      </nav>
+
+      <section class="demo-hero" style="--accent: #334155">
+        <div>
+          <span class="eyebrow">Laravel business system</span>
+          <h1>APM Employee and Operations System</h1>
+          <p>Interactive internal portal demo for HR records, approvals, cash advances, billing documents, job orders, support tickets, and audit controls.</p>
+          <div class="split-actions">
+            <button class="light-btn" type="button" data-fill-ops-demo>Load sample workday</button>
+            <button class="light-btn" type="button" data-reset-ops>Reset demo</button>
+          </div>
+        </div>
+        <div class="hero-panel">
+          <div><span>Pending approvals</span><strong id="opsPendingHero">4</strong></div>
+          <div><span>Open tickets</span><strong id="opsTicketsHero">3</strong></div>
+          <div><span>Active module</span><strong id="opsActiveHero">HR</strong></div>
+        </div>
+      </section>
+
+      <section class="metrics" id="dashboard">
+        <article class="metric"><span>Employees</span><strong id="opsEmployees">48</strong></article>
+        <article class="metric"><span>Pending</span><strong id="opsPending">4</strong></article>
+        <article class="metric"><span>Billing docs</span><strong id="opsBilling">12</strong></article>
+        <article class="metric"><span>Tickets</span><strong id="opsTickets">3</strong></article>
+      </section>
+
+      <section class="layout-grid">
+        <div>
+          <article class="panel" id="workspace">
+            <div class="panel-top">
+              <div>
+                <span class="panel-label">Module workspace</span>
+                <h2 id="opsModuleTitle">HR and Employee Hub</h2>
+              </div>
+              <div class="segmented" role="tablist" aria-label="Operations modules">
+                <button class="active" type="button" data-ops-module="hr">HR</button>
+                <button type="button" data-ops-module="accounting">Accounting</button>
+                <button type="button" data-ops-module="billing">Billing</button>
+                <button type="button" data-ops-module="jobs">Jobs</button>
+              </div>
+            </div>
+            <div class="workspace-grid" id="opsModuleCards"></div>
+          </article>
+
+          <article class="panel" id="approvals">
+            <div class="panel-top">
+              <div>
+                <span class="panel-label">Approval queue</span>
+                <h2>Process requests during the demo</h2>
+              </div>
+              <button class="ghost-btn" type="button" data-add-approval>Add sample request</button>
+            </div>
+            <div class="table-wrap">
+              <table class="table">
+                <thead><tr><th>Request</th><th>Owner</th><th>Module</th><th>Status</th><th>Action</th></tr></thead>
+                <tbody id="opsApprovalRows"></tbody>
+              </table>
+            </div>
+          </article>
+        </div>
+
+        <aside>
+          <article class="panel" id="tickets">
+            <span class="panel-label">Create support ticket</span>
+            <h2>Live form</h2>
+            <form class="form-grid" id="opsTicketForm">
+              <input name="subject" placeholder="Ticket subject" value="Employee cannot access payslip">
+              <select name="priority">
+                <option>Normal</option>
+                <option>Urgent</option>
+                <option>Low</option>
+              </select>
+              <textarea name="notes" placeholder="Ticket notes">Payslip page opens but PDF download is missing for April payroll.</textarea>
+              <button class="primary-btn" type="submit">Create ticket</button>
+            </form>
+          </article>
+          <article class="panel">
+            <span class="panel-label">Activity log</span>
+            <h2>Recent actions</h2>
+            <div class="activity-list" id="opsActivity"></div>
+          </article>
+        </aside>
+      </section>
+    </main>
+    <script src="demo-pages.js"></script>
+  </body>
+</html>

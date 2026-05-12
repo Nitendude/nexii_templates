@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Nexii Tech AI Proposal Portal</title>
+    <link rel="stylesheet" href="demo-pages.css">
+  </head>
+  <body data-demo="proposal">
+    <main class="page-shell">
+      <nav class="demo-nav" aria-label="Demo navigation">
+        <a class="brand" href="../index.html"><span class="brand-mark">NX</span><span>Demo Hub</span></a>
+        <div class="demo-links" aria-label="Page sections">
+          <a href="#builder">Builder</a>
+          <a href="#workflow">Workflow</a>
+          <a href="#crm">CRM</a>
+        </div>
+        <a class="back-link" href="../index.html#catalog">Back to dashboard</a>
+      </nav>
+
+      <section class="demo-hero" style="--accent: #7c3aed">
+        <div>
+          <span class="eyebrow">Sales automation</span>
+          <h1>Nexii Tech AI Proposal Portal</h1>
+          <p>Working proposal demo for lead intake, industry selection, email generation, CRM saving, and automation handoff.</p>
+        </div>
+        <div class="hero-panel">
+          <div><span>Leads saved</span><strong id="proposalLeadCount">2</strong></div>
+          <div><span>Last category</span><strong id="proposalLastCategory">Clinic</strong></div>
+          <div><span>Automation</span><strong id="proposalAutomation">Ready</strong></div>
+        </div>
+      </section>
+
+      <section class="layout-grid">
+        <article class="panel" id="builder">
+          <span class="panel-label">Proposal builder</span>
+          <h2>Generate client outreach</h2>
+          <form class="form-grid" id="proposalForm">
+            <input name="company" placeholder="Company name" value="Sample Dental Clinic">
+            <input name="email" type="email" placeholder="Client email" value="owner@sampleclinic.example">
+            <select name="category">
+              <option>Clinic</option>
+              <option>Restaurant</option>
+              <option>Real Estate</option>
+              <option>Hotel</option>
+              <option>Construction</option>
+              <option>Accounting</option>
+            </select>
+            <input name="website" placeholder="Website or current page" value="sampleclinic.example">
+            <textarea name="needs" placeholder="Business needs">Needs a booking website, inquiry handling, CRM follow-up, and better patient request tracking.</textarea>
+            <div class="split-actions">
+              <button class="primary-btn" type="submit">Generate proposal</button>
+              <button class="ghost-btn" type="button" data-save-lead>Save lead</button>
+              <button class="ghost-btn" type="button" data-copy-proposal>Copy draft</button>
+            </div>
+          </form>
+        </article>
+
+        <aside>
+          <article class="panel output-panel">
+            <span class="panel-label">Generated preview</span>
+            <h2>Client email</h2>
+            <div class="proposal-output" id="proposalOutput"></div>
+          </article>
+          <article class="panel" id="workflow">
+            <span class="panel-label">Automation steps</span>
+            <h2>Workflow status</h2>
+            <div class="step-list" id="proposalSteps"></div>
+          </article>
+        </aside>
+      </section>
+
+      <section class="panel" id="crm">
+        <div class="panel-top">
+          <div>
+            <span class="panel-label">Mini CRM</span>
+            <h2>Saved prospects</h2>
+          </div>
+          <input class="compact-input" id="proposalSearch" placeholder="Filter leads">
+        </div>
+        <div class="table-wrap">
+          <table class="table">
+            <thead><tr><th>Company</th><th>Email</th><th>Category</th><th>Status</th></tr></thead>
+            <tbody id="proposalLeadRows"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+    <script src="demo-pages.js"></script>
+  </body>
+</html>
