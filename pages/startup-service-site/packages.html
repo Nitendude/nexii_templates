@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexii Tech Automation - Smart Business Technology</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a class="nav-logo" href="index.html">Nexii Tech Automation<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="services.html">Services</a></li>
+    <li><a href="portfolio.html">Portfolio</a></li>
+    <li><a class="active" href="packages.html">Packages</a></li>
+    <li><a href="faq.html">FAQ</a></li>
+  </ul>
+  <a href="#inquiry" class="nav-cta" data-track="nav-audit">Get Quotation</a>
+  <a href="../../index.html#catalog" class="demo-hub-link">Demo Hub</a>
+  <div class="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+<section class="page-hero">
+  <div class="section-header center">
+    <div class="section-tag">Packages</div>
+    <h1 class="section-h2">Project Packages and Starting Points</h1>
+    <p class="section-sub">Simple starting ranges for websites, automation, and custom systems. Final scope is confirmed after a workflow audit.</p>
+  </div>
+</section>
+<!-- PRICING -->
+<section id="pricing">
+  <div class="section-header center">
+    <div class="section-tag">Packages</div>
+    <h2 class="section-h2">Start With the Right Level of Build</h2>
+    <p class="section-sub">Transparent starting points for common projects. Final scope is confirmed after the free audit.</p>
+  </div>
+  <div class="pricing-grid">
+    <div class="price-card fade-in">
+      <div class="price-label">Starter Website</div>
+      <h3>Launch Presence</h3>
+      <div class="price">From PHP 35k</div>
+      <p>For businesses that need a polished website, strong CTA, and inquiry flow.</p>
+      <ul>
+        <li>Responsive landing page</li>
+        <li>Contact form setup</li>
+        <li>Basic SEO structure</li>
+      </ul>
+      <a href="#inquiry" class="btn-secondary" data-track="package-website">Ask about this</a>
+    </div>
+    <div class="price-card featured fade-in">
+      <div class="price-label">Most Requested</div>
+      <h3>Automation Setup</h3>
+      <div class="price">From PHP 55k</div>
+      <p>For teams that want to remove repetitive admin work across existing tools.</p>
+      <ul>
+        <li>Workflow mapping</li>
+        <li>App integrations</li>
+        <li>Notifications and reports</li>
+      </ul>
+      <a href="#inquiry" class="btn-primary" data-track="package-automation">Automate my workflow</a>
+    </div>
+    <div class="price-card fade-in">
+      <div class="price-label">Custom System</div>
+      <h3>Operations Platform</h3>
+      <div class="price">Custom quote</div>
+      <p>For booking, inventory, dashboards, portals, or internal tools built around your process.</p>
+      <ul>
+        <li>Custom screens and roles</li>
+        <li>Database and dashboard</li>
+        <li>Deployment and handoff</li>
+      </ul>
+      <a href="#estimate" class="btn-secondary" data-track="package-system">Estimate project</a>
+    </div>
+  </div>
+</section>
+
+
+<!-- INQUIRY -->
+<section id="inquiry">
+  <div class="section-header center">
+    <div class="section-tag">Start Here</div>
+    <h2 class="section-h2">Request a Quotation</h2>
+    <p class="section-sub">Tell us what you need and we will send a project quotation directly to your inbox.</p>
+  </div>
+  <div class="inquiry-layout">
+    <form class="lead-form fade-in" id="leadForm" method="post" action="https://formsubmit.co/nexii.techautomations@yahoo.com">
+      <input type="hidden" name="_subject" value="New Nexii Tech Automation quotation request">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" id="leadSource" name="leadSource">
+      <input type="hidden" id="estimateNeedValue" name="estimate_need">
+      <input type="hidden" id="estimateTimelineValue" name="estimate_timeline">
+      <input type="hidden" id="estimateComplexityValue" name="estimate_complexity">
+      <input type="hidden" id="estimateResultValue" name="estimate_result">
+      <div class="form-row">
+        <label>Name<input type="text" name="name" required autocomplete="name"></label>
+        <label>Email<input type="email" name="email" required autocomplete="email"></label>
+      </div>
+      <label>Request Type
+        <select name="request_type" required>
+          <option>Quotation Request</option>
+          <option>Project Estimate</option>
+          <option>Website Inquiry</option>
+          <option>Automation Inquiry</option>
+          <option>Custom System Inquiry</option>
+          <option>General Question</option>
+        </select>
+      </label>
+      <div class="form-row">
+        <label>Business Type<input type="text" name="business" placeholder="Clinic, logistics, retail" required></label>
+        <label>Budget Range
+          <select name="budget" required>
+            <option value="">Select range</option>
+            <option>PHP 35k-PHP 60k</option>
+            <option>PHP 60k-PHP 120k</option>
+            <option>PHP 120k+</option>
+            <option>Need guidance</option>
+          </select>
+        </label>
+      </div>
+      <label>What do you need?
+        <select name="service" required>
+          <option value="">Choose service</option>
+          <option>Website Development</option>
+          <option>Business Automation</option>
+          <option>Custom System</option>
+          <option>Not sure yet</option>
+        </select>
+      </label>
+      <label>Project Details<textarea name="message" rows="5" placeholder="Tell us what you need, timeline, and any features you want included." required></textarea></label>
+      <button class="btn-primary" type="submit" data-track="lead-submit">Send Quotation Request</button>
+      <p class="form-status" id="leadStatus" role="status" aria-live="polite">Use the estimate panel or fill the form directly to request a quotation.</p>
+    </form>
+
+    <div class="estimate-panel fade-in" id="estimate">
+      <div class="section-tag">Quick Estimate</div>
+      <h3>Project Fit Quiz</h3>
+      <label>Primary Need
+        <select id="estimateNeed">
+          <option value="Website">Website</option>
+          <option value="Automation">Automation</option>
+          <option value="Custom System">Custom System</option>
+        </select>
+      </label>
+      <label>Timeline
+        <select id="estimateTimeline">
+          <option value="Flexible">Flexible</option>
+          <option value="This month">This month</option>
+          <option value="Urgent">Urgent</option>
+        </select>
+      </label>
+      <label>Complexity
+        <select id="estimateComplexity">
+          <option value="simple">Simple</option>
+          <option value="standard">Standard</option>
+          <option value="advanced">Advanced</option>
+        </select>
+      </label>
+      <div class="estimate-result" id="estimateResult">Estimated starting range: PHP 35k-PHP 60k</div>
+      <button class="btn-secondary" type="button" id="applyEstimate" data-track="estimate-to-form">Use this estimate</button>
+    </div>
+  </div>
+</section>
+
+
+<!-- CTA -->
+<section id="cta">
+  <div class="cta-inner">
+    <div class="section-tag accent-text text-center">Ready to Start?</div>
+    <h2 class="section-h2 text-center">Get a Project Quotation</h2>
+    <p class="section-sub text-center">Bring one messy workflow. We'll help you see what can be automated, rebuilt, or simplified first.</p>
+    <div class="cta-actions">
+      <a href="#inquiry" class="btn-white" data-track="cta-form">Get Quotation</a>
+      <button type="button" class="btn-ghost" data-track="cta-calendar-preview" data-calendar-open>Currently Booking New Projects</button>
+    </div>
+  </div>
+</section>
+
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="nav-logo">Nexii Tech Automation<span class="footer-logo-dot">.</span></div>
+      <p>Smart systems for growing businesses. We build automation, websites, and custom platforms that actually work.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <ul>
+        <li><a href="services.html">Business Automation</a></li>
+        <li><a href="services.html">Website Development</a></li>
+        <li><a href="services.html">Custom Systems</a></li>
+        <li><a href="index.html#inquiry">API Integrations</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="index.html#team">About Us</a></li>
+        <li><a href="portfolio.html">Portfolio</a></li>
+        <li><a href="index.html#capabilities">Company Profile</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="mailto:nexii.techautomations@yahoo.com" data-track="footer-email">nexii.techautomations@yahoo.com</a></li>
+        <li><a href="index.html#inquiry">Parañaque, Metro Manila</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 Nexii Tech Automation. All rights reserved.</span>
+    <span>Privacy Policy | Terms of Service</span>
+  </div>
+</footer>
+
+<div class="calendar-modal" id="calendarModal" aria-hidden="true">
+  <div class="calendar-backdrop" data-calendar-close></div>
+  <div class="calendar-panel" role="dialog" aria-modal="true" aria-labelledby="calendarTitle">
+    <button type="button" class="calendar-close" aria-label="Close calendar" data-calendar-close>&times;</button>
+    <div class="calendar-header">
+      <div class="section-tag accent-text">Booking Preview</div>
+      <h3 id="calendarTitle">Current Client Calendar</h3>
+      <p>This is a sample availability view for May 11 to May 15, 2026. Most discovery and project review slots are already reserved.</p>
+    </div>
+    <div class="calendar-grid">
+      <article class="calendar-day">
+        <span class="calendar-date">Mon, May 11</span>
+        <span class="calendar-day-status full">Fully Booked</span>
+        <ul>
+          <li class="booked">10:00 AM Discovery Call</li>
+          <li class="booked">1:30 PM Build Review</li>
+          <li class="booked">4:00 PM Client Strategy</li>
+        </ul>
+      </article>
+      <article class="calendar-day">
+        <span class="calendar-date">Tue, May 12</span>
+        <span class="calendar-day-status limited">1 Slot Left</span>
+        <ul>
+          <li class="booked">11:00 AM Automation Audit</li>
+          <li class="booked">2:00 PM Launch Prep</li>
+          <li class="available">5:30 PM New Project Call</li>
+        </ul>
+      </article>
+      <article class="calendar-day">
+        <span class="calendar-date">Wed, May 13</span>
+        <span class="calendar-day-status full">Fully Booked</span>
+        <ul>
+          <li class="booked">9:30 AM Systems Workshop</li>
+          <li class="booked">12:30 PM Client Check-In</li>
+          <li class="booked">3:30 PM QA Review</li>
+        </ul>
+      </article>
+      <article class="calendar-day">
+        <span class="calendar-date">Thu, May 14</span>
+        <span class="calendar-day-status hold">Waitlist</span>
+        <ul>
+          <li class="booked">10:30 AM Website Planning</li>
+          <li class="booked">1:00 PM Dashboard Demo</li>
+          <li class="hold">On hold for overflow bookings</li>
+        </ul>
+      </article>
+      <article class="calendar-day">
+        <span class="calendar-date">Fri, May 15</span>
+        <span class="calendar-day-status limited">2 Slots Left</span>
+        <ul>
+          <li class="available">10:00 AM Intro Call</li>
+          <li class="booked">1:30 PM Delivery Review</li>
+          <li class="available">4:30 PM New Project Brief</li>
+        </ul>
+      </article>
+    </div>
+    <div class="calendar-legend">
+      <span><i class="dot booked-dot"></i>Booked</span>
+      <span><i class="dot available-dot"></i>Open</span>
+      <span><i class="dot hold-dot"></i>Waitlist</span>
+    </div>
+    <p class="calendar-note">Need a faster start? Send a quotation request and we can reply with the next available slot.</p>
+  </div>
+</div>
+
+<div class="mobile-sticky">
+  <a href="mailto:nexii.techautomations@yahoo.com" data-track="mobile-email">Email</a>
+  <a href="#inquiry" data-track="mobile-book">Book</a>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

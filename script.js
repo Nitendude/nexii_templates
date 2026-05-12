@@ -82,7 +82,7 @@ const demos = [
     audience: "client",
     type: "Website Template",
     url: "",
-    pageUrl: "pages/startup-service.html",
+    pageUrl: "pages/startup-service-site/index.html",
     summary: "Multi-page services website with packages, FAQ, portfolio, and service pages that can be adapted for agencies or service businesses.",
     tags: ["Services", "Packages", "Portfolio", "FAQ"],
     color: "#be123c",

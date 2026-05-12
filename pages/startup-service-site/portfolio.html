@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexii Tech Automation - Smart Business Technology</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a class="nav-logo" href="index.html">Nexii Tech Automation<span>.</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="services.html">Services</a></li>
+    <li><a class="active" href="portfolio.html">Portfolio</a></li>
+    <li><a href="packages.html">Packages</a></li>
+    <li><a href="faq.html">FAQ</a></li>
+  </ul>
+  <a href="#inquiry" class="nav-cta" data-track="nav-audit">Get Quotation</a>
+  <a href="../../index.html#catalog" class="demo-hub-link">Demo Hub</a>
+  <div class="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+<section class="page-hero">
+  <div class="section-header center">
+    <div class="section-tag">Portfolio & Progress</div>
+    <h1 class="section-h2">Portfolio and Founder-Built Progress</h1>
+    <p class="section-sub">See the system categories Nexii Tech Automation can build, plus real founder-built projects across logistics, booking, learning, automation, and IoT.</p>
+  </div>
+</section>
+<!-- PORTFOLIO -->
+<section id="portfolio">
+  <div class="section-header center">
+    <div class="section-tag">Our Work</div>
+    <h2 class="section-h2">Systems We've Built</h2>
+    <p class="section-sub">A snapshot of the tools and platforms we've delivered for businesses like yours.</p>
+  </div>
+  <div class="filter-tabs" aria-label="Portfolio filters">
+    <button class="filter-btn active" type="button" data-filter="all">All</button>
+    <button class="filter-btn" type="button" data-filter="systems">Systems</button>
+    <button class="filter-btn" type="button" data-filter="websites">Websites</button>
+    <button class="filter-btn" type="button" data-filter="automation">Automation</button>
+  </div>
+  <div class="portfolio-grid">
+    <div class="portfolio-card fade-in" data-category="systems">
+      <div class="portfolio-visual">
+        <div class="mini-dash">
+          <div class="mini-caption">BOOKING CALENDAR</div>
+          <div class="mini-row"><div class="mini-dot green"></div><div class="mini-bar-wrap"><div class="mini-bar w-85"></div></div><span class="mini-label">Mon</span></div>
+          <div class="mini-row"><div class="mini-dot cyan"></div><div class="mini-bar-wrap"><div class="mini-bar w-60"></div></div><span class="mini-label">Tue</span></div>
+          <div class="mini-row"><div class="mini-dot yellow"></div><div class="mini-bar-wrap"><div class="mini-bar w-92"></div></div><span class="mini-label">Wed</span></div>
+          <div class="mini-grid">
+            <div class="mini-cell">9:00 AM</div>
+            <div class="mini-cell">11:00 AM</div>
+            <div class="mini-cell">2:00 PM</div>
+          </div>
+        </div>
+      </div>
+      <div class="portfolio-info">
+        <div class="portfolio-tag">Custom System</div>
+        <h3>Booking & Scheduling System</h3>
+        <p>End-to-end appointment management with SMS/email reminders, calendar sync, and client portal.</p>
+        <div class="portfolio-tech">
+          <span class="tech-badge">Next.js</span>
+          <span class="tech-badge">PostgreSQL</span>
+          <span class="tech-badge">Twilio</span>
+        </div>
+      </div>
+    </div>
+    <div class="portfolio-card fade-in" data-category="systems">
+      <div class="portfolio-visual v2">
+        <div class="mini-dash">
+          <div class="mini-caption">INVENTORY STATUS</div>
+          <div class="mini-stat-grid">
+            <div class="mini-cell stat"><span class="mini-stat-value">1,284</span><span class="mini-stat-label">Items</span></div>
+            <div class="mini-cell stat"><span class="mini-stat-value green">94%</span><span class="mini-stat-label">In Stock</span></div>
+          </div>
+          <div class="mini-stack">
+            <div class="mini-row"><div class="mini-dot green"></div><div class="mini-bar-wrap"><div class="mini-bar w-94"></div></div><span class="mini-label">Stock</span></div>
+            <div class="mini-row"><div class="mini-dot yellow"></div><div class="mini-bar-wrap"><div class="mini-bar w-12 low-stock"></div></div><span class="mini-label">Low</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="portfolio-info">
+        <div class="portfolio-tag">Custom System</div>
+        <h3>Inventory Management System</h3>
+        <p>Real-time stock tracking, automated reorder alerts, supplier management, and sales analytics.</p>
+        <div class="portfolio-tech">
+          <span class="tech-badge">React</span>
+          <span class="tech-badge">Node.js</span>
+          <span class="tech-badge">MySQL</span>
+        </div>
+      </div>
+    </div>
+    <div class="portfolio-card fade-in" data-category="automation">
+      <div class="portfolio-visual v3">
+        <div class="mini-dash">
+          <div class="mini-caption">AUTOMATION FLOWS</div>
+          <div class="mini-row"><div class="mini-dot glow-green"></div><div class="flow-text">Lead to CRM to Slack</div><span class="mini-label">Active</span></div>
+          <div class="mini-row"><div class="mini-dot glow-cyan"></div><div class="flow-text">Form to Email to Invoice</div><span class="mini-label">Active</span></div>
+          <div class="mini-row"><div class="mini-dot glow-green"></div><div class="flow-text">Payment to Receipt to DB</div><span class="mini-label">Active</span></div>
+          <div class="flow-summary">3 of 3 workflows running</div>
+        </div>
+      </div>
+      <div class="portfolio-info">
+        <div class="portfolio-tag">Automation</div>
+        <h3>Business Automation Dashboard</h3>
+        <p>Centralized workflow management with n8n, monitoring, logging, and control of all automations.</p>
+        <div class="portfolio-tech">
+          <span class="tech-badge">n8n</span>
+          <span class="tech-badge">Docker</span>
+          <span class="tech-badge">Webhooks</span>
+        </div>
+      </div>
+    </div>
+    <div class="portfolio-card fade-in" data-category="websites">
+      <div class="portfolio-visual v4">
+        <div class="site-preview">
+          <div class="site-nav"></div>
+          <div class="site-hero"></div>
+          <div class="site-lines"><span></span><span></span><span></span></div>
+        </div>
+      </div>
+      <div class="portfolio-info">
+        <div class="portfolio-tag">Website</div>
+        <h3>Lead Generation Website</h3>
+        <p>Conversion-focused landing page with service pages, inquiry form, tracking hooks, and SEO-ready structure.</p>
+        <div class="portfolio-tech">
+          <span class="tech-badge">HTML</span>
+          <span class="tech-badge">CSS</span>
+          <span class="tech-badge">Analytics</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- PROGRESS PROJECTS -->
+<section id="progress-projects">
+  <div class="section-header center">
+    <div class="section-tag">Progress So Far</div>
+    <h2 class="section-h2">Projects We've Already Built</h2>
+    <p class="section-sub">A clearer look at live systems, platforms, and automation work already created across logistics, booking, learning, and IoT monitoring.</p>
+  </div>
+  <div class="portfolio-grid progress-grid">
+    <div class="portfolio-card fade-in" data-category="systems">
+      <div class="portfolio-visual">
+        <div class="mini-dash">
+          <div class="mini-caption">JOB ORDER TRACKING</div>
+          <div class="mini-row"><div class="mini-dot green"></div><div class="mini-bar-wrap"><div class="mini-bar w-85"></div></div><span class="mini-label">JO</span></div>
+          <div class="mini-row"><div class="mini-dot cyan"></div><div class="mini-bar-wrap"><div class="mini-bar w-60"></div></div><span class="mini-label">RBAC</span></div>
+          <div class="mini-row"><div class="mini-dot yellow"></div><div class="mini-bar-wrap"><div class="mini-bar w-92"></div></div><span class="mini-label">SQL</span></div>
+          <div class="mini-grid">
+            <div class="mini-cell">14k+ JO</div>
+            <div class="mini-cell">Live Data</div>
+            <div class="mini-cell">Roles</div>
+          </div>
+        </div>
+      </div>
+      <div class="portfolio-info">
+        <div class="portfolio-tag">Logistics Platform</div>
+        <h3>APM Customs Brokerage System</h3>
+        <p>Brokerage and logistics operations system with dynamic job order entry, tracking, role-based access, and optimized backend queries.</p>
+        <div class="portfolio-tech">
+          <span class="tech-badge">PHP</span>
+          <span class="tech-badge">Laravel</span>
+          <span class="tech-badge">MySQL</span>
+          <span class="tech-badge">RBAC</span>
+        </div>
+        <a class="portfolio-link" href="https://apmcb.com" target="_blank" rel="noreferrer">Open Project</a>
+      </div>
+    </div>
+    <div class="portfolio-card fade-in" data-category="websites">
+      <div class="portfolio-visual v2">
+        <div class="mini-dash">
+          <div class="mini-caption">SHIPMENT QUOTATIONS</div>
+          <div class="mini-stat-grid">
+            <div class="mini-cell stat"><span class="mini-stat-value">12k+</span><span class="mini-stat-label">Shipments</span></div>
+            <div class="mini-cell stat"><span class="mini-stat-value green">12k+</span><span class="mini-stat-label">Quotes</span></div>
+          </div>
+          <div class="mini-stack">
+            <div class="mini-row"><div class="mini-dot green"></div><div class="mini-bar-wrap"><div class="mini-bar w-94"></div></div><span class="mini-label">Forms</span></div>
+            <div class="mini-row"><div class="mini-dot yellow"></div><div class="mini-bar-wrap"><div class="mini-bar w-60"></div></div><span class="mini-label">Leads</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="portfolio-info">
+        <div class="portfolio-tag">Logistics Website</div>
+        <h3>Extreme Sea-Air Logistics Website</h3>
+        <p>Company website for automated shipment quotations and client onboarding, built with responsive pages and smoother client data handling.</p>
+        <div class="portfolio-tech">
+          <span class="tech-badge">HTML</span>
+          <span class="tech-badge">CSS</span>
+          <span class="tech-badge">JavaScript</span>
+          <span class="tech-badge">Automation</span>
+        </div>
+        <a class="portfolio-link" href="https://extremesea-air.com.ph" target="_blank" rel="noreferrer">Open Project</a>
+      </div>
+    </div>
+    <div class="portfolio-card fade-in" data-category="systems">
+      <div class="portfolio-visual v3">
+        <div class="mini-dash">
+          <div class="mini-caption">RESORT BOOKING</div>
+          <div class="mini-row"><div class="mini-dot glow-green"></div><div class="flow-text">Guest -> Room -> Invoice</div><span class="mini-label">Live</span></div>
+          <div class="mini-row"><div class="mini-dot glow-cyan"></div><div class="flow-text">Admin -> Approval</div><span class="mini-label">Active</span></div>
+          <div class="mini-row"><div class="mini-dot glow-green"></div><div class="flow-text">Message -> Customer</div><span class="mini-label">Active</span></div>
+          <div class="flow-summary">PHP 3M+ annual booking sales</div>
+        </div>
+      </div>
+      <div class="portfolio-info">
+        <div class="portfolio-tag">Booking Platform</div>
+        <h3>Beemo's Hidden Patch</h3>
+        <p>Resort booking system with room listings, pricing, availability tracking, admin approvals, invoicing, and real-time customer messaging.</p>
+        <div class="portfolio-tech">
+          <span class="tech-badge">Booking System</span>
+          <span class="tech-badge">Admin Panel</span>
+          <span class="tech-badge">Messaging</span>
+          <span class="tech-badge">Invoices</span>
+        </div>
+        <a class="portfolio-link" href="https://beemoshiddenpatch.ph/booking/guest_links.php" target="_blank" rel="noreferrer">Open Project</a>
+      </div>
+    </div>
+    <div class="portfolio-card fade-in" data-category="systems">
+      <div class="portfolio-visual v4">
+        <div class="site-preview">
+          <div class="site-nav"></div>
+          <div class="site-hero"></div>
+          <div class="site-lines"><span></span><span></span><span></span></div>
+        </div>
+      </div>
+      <div class="portfolio-info">
+        <div class="portfolio-tag">Learning Platform</div>
+        <h3>E-Portfolio Platform</h3>
+        <p>Academic LMS for students and professors with role-based access, responsive UI, course uploads, and grading workflows.</p>
+        <div class="portfolio-tech">
+          <span class="tech-badge">LMS</span>
+          <span class="tech-badge">Responsive UI</span>
+          <span class="tech-badge">Role Access</span>
+          <span class="tech-badge">Academic Tools</span>
+        </div>
+      </div>
+    </div>
+    <div class="portfolio-card fade-in" data-category="automation">
+      <div class="portfolio-visual v3">
+        <div class="mini-dash">
+          <div class="mini-caption">MESSENGER BOT</div>
+          <div class="mini-row"><div class="mini-dot glow-green"></div><div class="flow-text">FAQ -> Auto Reply</div><span class="mini-label">Active</span></div>
+          <div class="mini-row"><div class="mini-dot glow-cyan"></div><div class="flow-text">Lead -> Capture</div><span class="mini-label">Active</span></div>
+          <div class="mini-row"><div class="mini-dot glow-green"></div><div class="flow-text">Support -> Handoff</div><span class="mini-label">Ready</span></div>
+          <div class="flow-summary">Hospitality and logistics support workflows</div>
+        </div>
+      </div>
+      <div class="portfolio-info">
+        <div class="portfolio-tag">Automation</div>
+        <h3>Messenger Automation Bot</h3>
+        <p>Facebook Messenger auto-reply chatbot for Beemo's Hidden Patch and Extreme Sea-Air with FAQs, lead capture, and support escalation.</p>
+        <div class="portfolio-tech">
+          <span class="tech-badge">Chatbot</span>
+          <span class="tech-badge">Lead Capture</span>
+          <span class="tech-badge">FAQs</span>
+          <span class="tech-badge">Support Workflow</span>
+        </div>
+      </div>
+    </div>
+    <div class="portfolio-card fade-in" data-category="systems">
+      <div class="portfolio-visual portfolio-media">
+        <video controls muted preload="metadata" playsinline>
+          <source src="assets/nexuspro-demo.mp4" type="video/mp4">
+        </video>
+      </div>
+      <div class="portfolio-info">
+        <div class="portfolio-tag">Learning Platform</div>
+        <h3>NexiiPro</h3>
+        <p>Learning and industry training platform combining LMS workflows, e-commerce, coding exercises, certifications, analytics, secure auth, and cloud deployment.</p>
+        <div class="portfolio-tech">
+          <span class="tech-badge">Laravel</span>
+          <span class="tech-badge">MySQL</span>
+          <span class="tech-badge">REST API</span>
+          <span class="tech-badge">Cloud</span>
+        </div>
+      </div>
+    </div>
+    <div class="portfolio-card fade-in" data-category="systems">
+      <div class="portfolio-visual portfolio-media">
+        <img src="assets/dagat-dashboard.jpeg" alt="Dagat analytics dashboard showing wave height, PGA, alerts, and recent samples.">
+      </div>
+      <div class="portfolio-info">
+        <div class="portfolio-tag">IoT & Monitoring</div>
+        <h3>Dagat Project</h3>
+        <p>Smart ocean sensor network for the Philippine Navy using LoRa and acoustic communication, telemetry firmware, and a live monitoring dashboard.</p>
+        <div class="portfolio-tech">
+          <span class="tech-badge">IoT</span>
+          <span class="tech-badge">LoRa</span>
+          <span class="tech-badge">Python</span>
+          <span class="tech-badge">Telemetry</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- CASE STUDY -->
+<section id="case-study">
+  <div class="case-study-wrap">
+    <div>
+      <div class="section-tag">Case Study Preview</div>
+      <h2 class="section-h2">A Clinic Booking Workflow That Removed Hours of Admin Work</h2>
+      <p class="section-sub">A wellness clinic needed fewer missed appointments, faster intake, and a cleaner way to manage weekly schedules.</p>
+    </div>
+    <div class="case-grid">
+      <div class="case-card fade-in">
+        <span>Problem</span>
+        <p>Manual reminders, paper intake forms, and calendar conflicts were slowing the front desk.</p>
+      </div>
+      <div class="case-card fade-in">
+        <span>Solution</span>
+        <p>We built booking, reminders, intake capture, staff calendars, and a simple operations dashboard.</p>
+      </div>
+      <div class="case-card fade-in">
+        <span>Result</span>
+        <p>Admin time dropped by 70%, missed appointments decreased, and staff could see the week at a glance.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- INQUIRY -->
+<section id="inquiry">
+  <div class="section-header center">
+    <div class="section-tag">Start Here</div>
+    <h2 class="section-h2">Request a Quotation</h2>
+    <p class="section-sub">Tell us what you need and we will send a project quotation directly to your inbox.</p>
+  </div>
+  <div class="inquiry-layout">
+    <form class="lead-form fade-in" id="leadForm" method="post" action="https://formsubmit.co/nexii.techautomations@yahoo.com">
+      <input type="hidden" name="_subject" value="New Nexii Tech Automation quotation request">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" id="leadSource" name="leadSource">
+      <input type="hidden" id="estimateNeedValue" name="estimate_need">
+      <input type="hidden" id="estimateTimelineValue" name="estimate_timeline">
+      <input type="hidden" id="estimateComplexityValue" name="estimate_complexity">
+      <input type="hidden" id="estimateResultValue" name="estimate_result">
+      <div class="form-row">
+        <label>Name<input type="text" name="name" required autocomplete="name"></label>
+        <label>Email<input type="email" name="email" required autocomplete="email"></label>
+      </div>
+      <label>Request Type
+        <select name="request_type" required>
+          <option>Quotation Request</option>
+          <option>Project Estimate</option>
+          <option>Website Inquiry</option>
+          <option>Automation Inquiry</option>
+          <option>Custom System Inquiry</option>
+          <option>General Question</option>
+        </select>
+      </label>
+      <div class="form-row">
+        <label>Business Type<input type="text" name="business" placeholder="Clinic, logistics, retail" required></label>
+        <label>Budget Range
+          <select name="budget" required>
+            <option value="">Select range</option>
+            <option>PHP 35k-PHP 60k</option>
+            <option>PHP 60k-PHP 120k</option>
+            <option>PHP 120k+</option>
+            <option>Need guidance</option>
+          </select>
+        </label>
+      </div>
+      <label>What do you need?
+        <select name="service" required>
+          <option value="">Choose service</option>
+          <option>Website Development</option>
+          <option>Business Automation</option>
+          <option>Custom System</option>
+          <option>Not sure yet</option>
+        </select>
+      </label>
+      <label>Project Details<textarea name="message" rows="5" placeholder="Tell us what you need, timeline, and any features you want included." required></textarea></label>
+      <button class="btn-primary" type="submit" data-track="lead-submit">Send Quotation Request</button>
+      <p class="form-status" id="leadStatus" role="status" aria-live="polite">Use the estimate panel or fill the form directly to request a quotation.</p>
+    </form>
+
+    <div class="estimate-panel fade-in" id="estimate">
+      <div class="section-tag">Quick Estimate</div>
+      <h3>Project Fit Quiz</h3>
+      <label>Primary Need
+        <select id="estimateNeed">
+          <option value="Website">Website</option>
+          <option value="Automation">Automation</option>
+          <option value="Custom System">Custom System</option>
+        </select>
+      </label>
+      <label>Timeline
+        <select id="estimateTimeline">
+          <option value="Flexible">Flexible</option>
+          <option value="This month">This month</option>
+          <option value="Urgent">Urgent</option>
+        </select>
+      </label>
+      <label>Complexity
+        <select id="estimateComplexity">
+          <option value="simple">Simple</option>
+          <option value="standard">Standard</option>
+          <option value="advanced">Advanced</option>
+        </select>
+      </label>
+      <div class="estimate-result" id="estimateResult">Estimated starting range: PHP 35k-PHP 60k</div>
+      <button class="btn-secondary" type="button" id="applyEstimate" data-track="estimate-to-form">Use this estimate</button>
+    </div>
+  </div>
+</section>
+
+
+<!-- CTA -->
+<section id="cta">
+  <div class="cta-inner">
+    <div class="section-tag accent-text text-center">Ready to Start?</div>
+    <h2 class="section-h2 text-center">Get a Project Quotation</h2>
+    <p class="section-sub text-center">Bring one messy workflow. We'll help you see what can be automated, rebuilt, or simplified first.</p>
+    <div class="cta-actions">
+      <a href="#inquiry" class="btn-white" data-track="cta-form">Get Quotation</a>
+      <button type="button" class="btn-ghost" data-track="cta-calendar-preview" data-calendar-open>Currently Booking New Projects</button>
+    </div>
+  </div>
+</section>
+
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="nav-logo">Nexii Tech Automation<span class="footer-logo-dot">.</span></div>
+      <p>Smart systems for growing businesses. We build automation, websites, and custom platforms that actually work.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <ul>
+        <li><a href="services.html">Business Automation</a></li>
+        <li><a href="services.html">Website Development</a></li>
+        <li><a href="services.html">Custom Systems</a></li>
+        <li><a href="index.html#inquiry">API Integrations</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="index.html#team">About Us</a></li>
+        <li><a href="portfolio.html">Portfolio</a></li>
+        <li><a href="index.html#capabilities">Company Profile</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="mailto:nexii.techautomations@yahoo.com" data-track="footer-email">nexii.techautomations@yahoo.com</a></li>
+        <li><a href="index.html#inquiry">Parañaque, Metro Manila</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 Nexii Tech Automation. All rights reserved.</span>
+    <span>Privacy Policy | Terms of Service</span>
+  </div>
+</footer>
+
+<div class="calendar-modal" id="calendarModal" aria-hidden="true">
+  <div class="calendar-backdrop" data-calendar-close></div>
+  <div class="calendar-panel" role="dialog" aria-modal="true" aria-labelledby="calendarTitle">
+    <button type="button" class="calendar-close" aria-label="Close calendar" data-calendar-close>&times;</button>
+    <div class="calendar-header">
+      <div class="section-tag accent-text">Booking Preview</div>
+      <h3 id="calendarTitle">Current Client Calendar</h3>
+      <p>This is a sample availability view for May 11 to May 15, 2026. Most discovery and project review slots are already reserved.</p>
+    </div>
+    <div class="calendar-grid">
+      <article class="calendar-day">
+        <span class="calendar-date">Mon, May 11</span>
+        <span class="calendar-day-status full">Fully Booked</span>
+        <ul>
+          <li class="booked">10:00 AM Discovery Call</li>
+          <li class="booked">1:30 PM Build Review</li>
+          <li class="booked">4:00 PM Client Strategy</li>
+        </ul>
+      </article>
+      <article class="calendar-day">
+        <span class="calendar-date">Tue, May 12</span>
+        <span class="calendar-day-status limited">1 Slot Left</span>
+        <ul>
+          <li class="booked">11:00 AM Automation Audit</li>
+          <li class="booked">2:00 PM Launch Prep</li>
+          <li class="available">5:30 PM New Project Call</li>
+        </ul>
+      </article>
+      <article class="calendar-day">
+        <span class="calendar-date">Wed, May 13</span>
+        <span class="calendar-day-status full">Fully Booked</span>
+        <ul>
+          <li class="booked">9:30 AM Systems Workshop</li>
+          <li class="booked">12:30 PM Client Check-In</li>
+          <li class="booked">3:30 PM QA Review</li>
+        </ul>
+      </article>
+      <article class="calendar-day">
+        <span class="calendar-date">Thu, May 14</span>
+        <span class="calendar-day-status hold">Waitlist</span>
+        <ul>
+          <li class="booked">10:30 AM Website Planning</li>
+          <li class="booked">1:00 PM Dashboard Demo</li>
+          <li class="hold">On hold for overflow bookings</li>
+        </ul>
+      </article>
+      <article class="calendar-day">
+        <span class="calendar-date">Fri, May 15</span>
+        <span class="calendar-day-status limited">2 Slots Left</span>
+        <ul>
+          <li class="available">10:00 AM Intro Call</li>
+          <li class="booked">1:30 PM Delivery Review</li>
+          <li class="available">4:30 PM New Project Brief</li>
+        </ul>
+      </article>
+    </div>
+    <div class="calendar-legend">
+      <span><i class="dot booked-dot"></i>Booked</span>
+      <span><i class="dot available-dot"></i>Open</span>
+      <span><i class="dot hold-dot"></i>Waitlist</span>
+    </div>
+    <p class="calendar-note">Need a faster start? Send a quotation request and we can reply with the next available slot.</p>
+  </div>
+</div>
+
+<div class="mobile-sticky">
+  <a href="mailto:nexii.techautomations@yahoo.com" data-track="mobile-email">Email</a>
+  <a href="#inquiry" data-track="mobile-book">Book</a>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
