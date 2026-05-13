@@ -1,13 +1,1403 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Enterprise ERP Business Management System</title>
-    <link rel="stylesheet" href="erp-business-management.css">
-  </head>
-  <body>
-    <main id="erpApp"></main>
-    <script src="erp-business-management.js"></script>
-  </body>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXII BSM DEMO - Business Management System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#FFFFFF;--surface:#F8F9FA;--surface-2:#F1F3F5;
+  --border:#E5E7EB;--border-strong:#D1D5DB;
+  --text-primary:#111827;--text-secondary:#6B7280;--text-tertiary:#9CA3AF;
+  --accent:#1D4ED8;--accent-hover:#1E40AF;--accent-text:#FFFFFF;
+  --sidebar-bg:#0F172A;--sidebar-text:#F9FAFB;--sidebar-muted:#94A3B8;
+  --sidebar-active-bg:rgba(29,78,216,0.18);--sidebar-hover-bg:#1E293B;
+  --sidebar-w:228px;--topbar-h:48px;
+  --green:#059669;--yellow:#D97706;--red:#DC2626;--blue:#1D4ED8;--purple:#7C3AED;
+  --status-available-text:#065F46;--status-available-bg:#ECFDF5;
+  --status-reserved-text:#92400E;--status-reserved-bg:#FFFBEB;
+  --status-sold-text:#1E40AF;--status-sold-bg:#EFF6FF;
+  --status-pending-text:#6B7280;--status-pending-bg:#F3F4F6;
+  --status-approved-text:#065F46;--status-approved-bg:#ECFDF5;
+  --status-declined-text:#991B1B;--status-declined-bg:#FEF2F2;
+  --status-overdue-text:#991B1B;--status-overdue-bg:#FEF2F2;
+  --status-paid-text:#065F46;--status-paid-bg:#ECFDF5;
+  --status-partial-text:#92400E;--status-partial-bg:#FFFBEB;
+}
+body.dark{
+  --bg:#0B1120;--surface:#111827;--surface-2:#1F2937;
+  --border:#1F2937;--border-strong:#334155;
+  --text-primary:#E5E7EB;--text-secondary:#94A3B8;--text-tertiary:#64748B;
+  --accent:#60A5FA;--accent-hover:#3B82F6;--accent-text:#0B1120;
+  --sidebar-bg:#020617;--sidebar-text:#F8FAFC;--sidebar-muted:#94A3B8;
+  --sidebar-active-bg:rgba(96,165,250,0.18);--sidebar-hover-bg:#111827;
+  --status-available-text:#86EFAC;--status-available-bg:#052E1B;
+  --status-reserved-text:#FCD34D;--status-reserved-bg:#422006;
+  --status-sold-text:#93C5FD;--status-sold-bg:#172554;
+  --status-pending-text:#CBD5E1;--status-pending-bg:#1F2937;
+  --status-approved-text:#86EFAC;--status-approved-bg:#052E1B;
+  --status-declined-text:#FCA5A5;--status-declined-bg:#450A0A;
+  --status-overdue-text:#FCA5A5;--status-overdue-bg:#450A0A;
+  --status-paid-text:#86EFAC;--status-paid-bg:#052E1B;
+  --status-partial-text:#FCD34D;--status-partial-bg:#422006;
+}
+html,body{height:100%;overflow:hidden;font-family:'IBM Plex Sans',sans-serif;font-size:13px;color:var(--text-primary);background:var(--bg);-webkit-font-smoothing:antialiased}
+
+/* ===== LOGIN ===== */
+#login-screen{
+  position:fixed;inset:0;background:var(--sidebar-bg);
+  display:flex;align-items:stretch;z-index:999;
+}
+.login-left{
+  flex:1;display:flex;flex-direction:column;justify-content:center;
+  padding:60px;border-right:1px solid #1E293B;
+  background:linear-gradient(135deg,#0F172A 0%,#162032 100%);
+}
+.login-brand{display:flex;align-items:center;gap:14px;margin-bottom:48px}
+.login-mark{
+  width:44px;height:44px;background:var(--accent);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.login-mark svg{width:22px;height:22px;fill:#fff}
+.login-brand-name{color:#F9FAFB;font-size:20px;font-weight:600;letter-spacing:-0.02em}
+.login-brand-sub{color:var(--sidebar-muted);font-size:11px;letter-spacing:0.06em;text-transform:uppercase;margin-top:2px}
+.login-tagline{color:#F9FAFB;font-size:28px;font-weight:600;line-height:1.25;letter-spacing:-0.03em;margin-bottom:12px}
+.login-tagline span{color:#60A5FA}
+.login-desc{color:var(--sidebar-muted);font-size:13px;line-height:1.65;max-width:320px}
+.login-modules{display:flex;flex-wrap:wrap;gap:6px;margin-top:36px}
+.lm-tag{
+  font-size:10.5px;padding:4px 10px;background:#1E293B;
+  color:#94A3B8;border:1px solid #334155;letter-spacing:0.03em;
+}
+.login-right{
+  width:440px;flex-shrink:0;background:#fff;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:60px 48px;
+}
+.login-form-title{font-size:18px;font-weight:600;color:var(--text-primary);margin-bottom:6px;letter-spacing:-0.02em}
+.login-form-sub{font-size:12.5px;color:var(--text-secondary);margin-bottom:32px}
+.login-label{font-size:11.5px;font-weight:600;color:var(--text-secondary);letter-spacing:0.04em;text-transform:uppercase;display:block;margin-bottom:6px}
+.login-input{
+  width:100%;font-family:'IBM Plex Sans',sans-serif;font-size:13px;
+  color:var(--text-primary);background:var(--bg);border:1px solid var(--border-strong);
+  padding:9px 12px;outline:none;height:38px;margin-bottom:20px;
+  transition:border-color 0.15s;
+}
+.login-input:focus{border-color:var(--accent)}
+.login-btn{
+  width:100%;height:38px;background:var(--accent);color:#fff;
+  font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:600;
+  border:none;cursor:pointer;letter-spacing:0.02em;
+  transition:background 0.15s;margin-top:4px;
+}
+.login-btn:hover{background:var(--accent-hover)}
+.login-demo-note{
+  margin-top:20px;padding:10px 12px;background:var(--surface);
+  border:1px solid var(--border);font-size:11.5px;color:var(--text-secondary);
+}
+.login-demo-note strong{color:var(--text-primary)}
+.login-error{
+  font-size:12px;color:var(--red);margin-top:-12px;margin-bottom:16px;display:none;
+}
+
+/* ===== APP ===== */
+#app{display:flex;height:100vh;width:100vw;display:none}
+#sidebar{
+  width:var(--sidebar-w);flex-shrink:0;background:var(--sidebar-bg);
+  display:flex;flex-direction:column;height:100%;overflow:hidden;
+  border-right:1px solid #1E293B;
+}
+.sb-brand{
+  height:var(--topbar-h);display:flex;align-items:center;padding:0 16px;
+  border-bottom:1px solid #1E293B;flex-shrink:0;gap:10px;
+}
+.sb-brand-mark{width:24px;height:24px;background:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sb-brand-mark svg{width:13px;height:13px;fill:#fff}
+.sb-brand-name{color:var(--sidebar-text);font-size:13px;font-weight:600;letter-spacing:-0.01em}
+.sb-brand-sub{color:var(--sidebar-muted);font-size:9.5px;letter-spacing:0.06em;text-transform:uppercase}
+.sb-scroll{flex:1;overflow-y:auto;padding-bottom:8px}
+.sb-scroll::-webkit-scrollbar{width:0}
+.sb-section{padding:16px 0 2px}
+.sb-section-label{padding:0 14px 5px;font-size:9px;font-weight:600;color:#475569;letter-spacing:0.1em;text-transform:uppercase}
+.sb-nav{list-style:none}
+.sb-nav li a{
+  display:flex;align-items:center;padding:6px 14px;
+  color:var(--sidebar-muted);text-decoration:none;font-size:12.5px;font-weight:400;
+  letter-spacing:0.01em;border-left:2px solid transparent;
+  transition:background 0.1s,color 0.1s;gap:9px;cursor:pointer;
+}
+.sb-nav li a:hover{background:var(--sidebar-hover-bg);color:var(--sidebar-text)}
+.sb-nav li a.active{background:var(--sidebar-active-bg);color:var(--sidebar-text);border-left-color:var(--accent);font-weight:500}
+.sb-nav li a svg{width:13px;height:13px;flex-shrink:0;opacity:0.6}
+.sb-nav li a.active svg{opacity:1}
+.sb-footer{padding:12px 14px;border-top:1px solid #1E293B;flex-shrink:0}
+.sb-user{display:flex;align-items:center;gap:9px}
+.sb-avatar{width:28px;height:28px;border-radius:50%;background:#1E293B;display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:600;color:var(--sidebar-text);flex-shrink:0}
+.sb-user-name{color:var(--sidebar-text);font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-user-role{color:var(--sidebar-muted);font-size:10px}
+.sb-logout{margin-left:auto;cursor:pointer;color:#475569;flex-shrink:0}
+.sb-logout:hover{color:var(--red)}
+.sb-logout svg{width:14px;height:14px}
+
+/* Main */
+#main{flex:1;display:flex;flex-direction:column;min-width:0;overflow:hidden}
+#topbar{
+  height:var(--topbar-h);flex-shrink:0;background:var(--bg);
+  border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:16px;
+}
+.topbar-title{font-size:13.5px;font-weight:600;color:var(--text-primary)}
+.topbar-bc{font-size:11.5px;color:var(--text-tertiary)}
+.topbar-bc span{color:var(--text-secondary)}
+.topbar-spacer{flex:1}
+.topbar-meta{display:flex;align-items:center;gap:14px}
+.topbar-clock{font-size:11.5px;color:var(--text-secondary);font-family:'IBM Plex Mono',monospace}
+.topbar-badge{display:flex;align-items:center;gap:5px;font-size:11px;color:#92400E;background:#FFFBEB;padding:3px 8px;border:1px solid #FDE68A}
+.topbar-badge .dot{width:5px;height:5px;border-radius:50%;background:var(--yellow);flex-shrink:0}
+.theme-toggle{height:28px;min-width:78px;border:1px solid var(--border-strong);background:var(--surface);color:var(--text-secondary);font-family:'IBM Plex Sans',sans-serif;font-size:11.5px;font-weight:600;display:inline-flex;align-items:center;gap:7px;padding:0 9px;cursor:pointer}
+.theme-toggle:hover{background:var(--surface-2);color:var(--text-primary)}
+.theme-toggle .knob{width:16px;height:16px;border-radius:50%;background:var(--accent);box-shadow:inset 0 0 0 4px rgba(255,255,255,0.25)}
+.hub-link{height:28px;border:1px solid var(--border-strong);background:var(--surface);color:var(--text-secondary);font-family:'IBM Plex Sans',sans-serif;font-size:11.5px;font-weight:600;display:inline-flex;align-items:center;padding:0 9px;text-decoration:none}
+.hub-link:hover{background:var(--surface-2);color:var(--text-primary)}
+#workspace{flex:1;overflow-y:auto;background:var(--bg)}
+#workspace::-webkit-scrollbar{width:6px}
+#workspace::-webkit-scrollbar-thumb{background:var(--border-strong)}
+
+/* Modules */
+.module{display:none;padding:0;min-height:100%}
+.module.active{display:block}
+.page-header{padding:18px 24px 14px;border-bottom:1px solid var(--border);background:var(--bg);display:flex;align-items:flex-end;justify-content:space-between}
+.page-title{font-size:16px;font-weight:600;color:var(--text-primary);letter-spacing:-0.01em}
+.page-sub{font-size:11.5px;color:var(--text-secondary);margin-top:2px}
+.page-actions{display:flex;gap:8px;align-items:center}
+.ctrl-bar{padding:10px 24px;border-bottom:1px solid var(--border);background:var(--surface);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ctrl-bar-label{font-size:11.5px;color:var(--text-secondary);margin-left:auto}
+
+/* Inputs */
+input[type=text],input[type=search],input[type=password],select{
+  font-family:'IBM Plex Sans',sans-serif;font-size:12.5px;color:var(--text-primary);
+  background:var(--bg);border:1px solid var(--border-strong);padding:5px 10px;outline:none;height:30px;
+}
+input[type=text]:focus,input[type=search]:focus,select:focus{border-color:var(--accent)}
+select{cursor:pointer;padding-right:26px;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%236B7280' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center}
+.search-wrap{position:relative;display:flex;align-items:center}
+.search-wrap svg{position:absolute;left:8px;width:12px;height:12px;color:var(--text-tertiary);pointer-events:none}
+.search-wrap input{padding-left:28px;width:230px}
+
+/* Buttons */
+.btn{font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:500;padding:5px 12px;height:30px;border:1px solid var(--border-strong);background:var(--bg);color:var(--text-primary);cursor:pointer;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;transition:background 0.1s}
+.btn:hover{background:var(--surface-2)}
+.btn.busy{opacity:.72;pointer-events:none}
+.btn.flash{box-shadow:0 0 0 2px rgba(29,78,216,.18)}
+.btn-primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn-primary:hover{background:var(--accent-hover)}
+.btn-sm{height:26px;padding:3px 10px;font-size:11.5px}
+.btn-danger{background:var(--red);color:#fff;border-color:var(--red)}
+
+/* Tables */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+thead{position:sticky;top:0;z-index:10;background:var(--surface)}
+thead th{padding:8px 14px;font-size:10.5px;font-weight:600;color:var(--text-secondary);text-align:left;letter-spacing:0.05em;text-transform:uppercase;border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none}
+thead th:hover{color:var(--text-primary)}
+thead th.sorted{color:var(--accent)}
+tbody tr{border-bottom:1px solid var(--border);transition:background 0.08s}
+tbody tr:hover{background:var(--surface)}
+tbody td{padding:8px 14px;font-size:12.5px;color:var(--text-primary);white-space:nowrap}
+tbody td.mono{font-family:'IBM Plex Mono',monospace;font-size:11.5px}
+tbody td.dim{color:var(--text-secondary)}
+tbody td.amt{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500}
+.row-link{cursor:pointer}
+.table-container{overflow-y:auto;max-height:calc(100vh - var(--topbar-h) - 51px - 49px - 48px - 41px)}
+.table-footer{padding:9px 16px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--surface)}
+.table-count{font-size:11.5px;color:var(--text-secondary)}
+
+/* Badges */
+.badge{display:inline-flex;align-items:center;padding:2px 7px;font-size:10.5px;font-weight:500;letter-spacing:0.02em;border:1px solid transparent;white-space:nowrap}
+.badge-available{color:var(--status-available-text);background:var(--status-available-bg);border-color:#A7F3D0}
+.badge-reserved{color:var(--status-reserved-text);background:var(--status-reserved-bg);border-color:#FDE68A}
+.badge-sold{color:var(--status-sold-text);background:var(--status-sold-bg);border-color:#BFDBFE}
+.badge-pending{color:var(--status-pending-text);background:var(--status-pending-bg);border-color:var(--border)}
+.badge-approved,.badge-completed,.badge-paid,.badge-active{color:var(--status-approved-text);background:var(--status-approved-bg);border-color:#A7F3D0}
+.badge-declined,.badge-overdue,.badge-cancelled{color:var(--status-declined-text);background:var(--status-declined-bg);border-color:#FCA5A5}
+.badge-partial,.badge-processing{color:var(--status-partial-text);background:var(--status-partial-bg);border-color:#FDE68A}
+.badge-installment{color:#5B21B6;background:#F5F3FF;border-color:#DDD6FE}
+.badge-delivered{color:#065F46;background:#ECFDF5;border-color:#A7F3D0}
+.badge-processingpayroll{color:#1E40AF;background:#EFF6FF;border-color:#BFDBFE}
+
+/* Dashboard */
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);border-bottom:1px solid var(--border)}
+.kpi-block{padding:18px 20px;border-right:1px solid var(--border)}
+.kpi-block:last-child{border-right:none}
+.kpi-label{font-size:10px;font-weight:600;color:var(--text-secondary);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px}
+.kpi-value{font-size:24px;font-weight:600;color:var(--text-primary);letter-spacing:-0.02em;font-family:'IBM Plex Mono',monospace}
+.kpi-sub{font-size:11px;color:var(--text-secondary);margin-top:4px}
+.kpi-delta{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:500}
+.kpi-delta.up{color:var(--green)}.kpi-delta.down{color:var(--red)}.kpi-delta.warn{color:var(--yellow)}
+.alerts-panel{border-bottom:1px solid var(--border)}
+.alerts-header{padding:10px 24px;display:flex;align-items:center;justify-content:space-between;background:var(--surface)}
+.alerts-header h3{font-size:10.5px;font-weight:600;color:var(--text-primary);letter-spacing:0.04em;text-transform:uppercase}
+.alert-list{list-style:none}
+.alert-item{display:flex;align-items:flex-start;gap:12px;padding:9px 24px;border-bottom:1px solid var(--border);font-size:12.5px}
+.alert-item:last-child{border-bottom:none}
+.alert-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.alert-dot.red{background:var(--red)}.alert-dot.yellow{background:var(--yellow)}.alert-dot.blue{background:var(--blue)}
+.alert-text{color:var(--text-primary)}
+.alert-meta{font-size:10.5px;color:var(--text-tertiary);margin-top:2px}
+.section-header{padding:12px 24px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.section-title{font-size:11px;font-weight:600;color:var(--text-primary);letter-spacing:0.04em;text-transform:uppercase}
+.dash-scroll{overflow-y:auto;height:calc(100vh - var(--topbar-h) - 49px - 114px - 35px)}
+
+/* GL / Finance modules */
+.two-col{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--border)}
+.col-pane{overflow-y:auto;max-height:calc(100vh - var(--topbar-h) - 51px - 49px - 41px)}
+.col-pane:first-child{border-right:1px solid var(--border)}
+.sub-header{padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border);font-size:10.5px;font-weight:600;color:var(--text-secondary);letter-spacing:0.05em;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between}
+.acct-item{padding:8px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;font-size:12.5px}
+.acct-item:hover{background:var(--surface)}
+.acct-code{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-tertiary);width:60px;flex-shrink:0}
+.acct-name{color:var(--text-primary);flex:1}
+.acct-type{font-size:10.5px;color:var(--text-secondary);margin-right:12px}
+.acct-bal{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;color:var(--text-primary)}
+.acct-bal.credit{color:var(--green)}.acct-bal.debit{color:var(--red)}
+
+/* Cash fund */
+.cf-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-bottom:1px solid var(--border)}
+.cf-card{padding:18px 20px;border-right:1px solid var(--border)}
+.cf-card:last-child{border-right:none}
+.cf-branch{font-size:10.5px;font-weight:600;color:var(--text-secondary);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:8px}
+.cf-amount{font-size:22px;font-weight:600;font-family:'IBM Plex Mono',monospace;color:var(--text-primary);letter-spacing:-0.02em}
+.cf-meta{font-size:11px;color:var(--text-tertiary);margin-top:4px}
+.cf-bar{height:3px;background:var(--border);margin-top:10px;position:relative}
+.cf-bar-fill{height:100%;background:var(--accent)}
+
+/* Payroll */
+.payroll-summary{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--border)}
+.payroll-card{padding:16px 20px;border-right:1px solid var(--border);background:var(--bg)}
+.payroll-card:last-child{border-right:none}
+.payroll-label{font-size:10px;font-weight:600;color:var(--text-secondary);letter-spacing:.06em;text-transform:uppercase;margin-bottom:7px}
+.payroll-value{font-family:'IBM Plex Mono',monospace;font-size:20px;font-weight:600;color:var(--text-primary)}
+.payroll-sub{font-size:11px;color:var(--text-tertiary);margin-top:3px}
+.live-stamp{font-size:11px;color:var(--text-tertiary);font-family:'IBM Plex Mono',monospace}
+.toast{position:fixed;right:18px;bottom:18px;z-index:200;background:var(--sidebar-bg);color:var(--sidebar-text);border:1px solid var(--border-strong);padding:10px 12px;font-size:12px;box-shadow:0 12px 30px rgba(0,0,0,.18);opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .18s,transform .18s}
+.toast.show{opacity:1;transform:translateY(0)}
+
+/* Side panel */
+.sp-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.18);z-index:100;display:none}
+.sp-overlay.open{display:block}
+.side-panel{position:fixed;top:0;right:0;height:100%;width:420px;background:var(--bg);border-left:1px solid var(--border);z-index:101;overflow-y:auto;transform:translateX(100%);transition:transform 0.18s ease}
+.side-panel.open{transform:translateX(0)}
+.sp-header{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--bg);z-index:2}
+.sp-title{font-size:14px;font-weight:600;color:var(--text-primary)}
+.sp-close{width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:1px solid var(--border);background:var(--bg);color:var(--text-secondary);font-size:16px;line-height:1}
+.sp-close:hover{background:var(--surface-2)}
+.sp-body{padding:18px 20px}
+.sp-section{margin-bottom:18px}
+.sp-section-label{font-size:9.5px;font-weight:600;letter-spacing:0.07em;text-transform:uppercase;color:var(--text-tertiary);margin-bottom:9px;padding-bottom:5px;border-bottom:1px solid var(--border)}
+.sp-row{display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px solid var(--surface-2)}
+.sp-row:last-child{border-bottom:none}
+.sp-key{font-size:11.5px;color:var(--text-secondary)}
+.sp-val{font-size:12.5px;color:var(--text-primary);font-weight:500;text-align:right}
+.sp-val.mono{font-family:'IBM Plex Mono',monospace;font-size:11.5px}
+.sp-actions{display:flex;gap:8px;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
+
+/* Time & Expenses */
+.te-tabs{display:flex;border-bottom:1px solid var(--border);background:var(--surface)}
+.te-tab{padding:10px 20px;font-size:12.5px;font-weight:500;color:var(--text-secondary);cursor:pointer;border-bottom:2px solid transparent}
+.te-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.te-panel{display:none}.te-panel.active{display:block}
+
+/* Misc */
+.live-dot{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--green);font-weight:500}
+.live-dot::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--green);display:inline-block;animation:pulse 1.5s ease infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.empty-state{padding:48px 24px;text-align:center}
+.empty-title{font-size:13px;font-weight:600;color:var(--text-secondary);margin-bottom:6px}
+.empty-sub{font-size:12px;color:var(--text-tertiary)}
+.tag{font-size:10px;padding:2px 7px;background:var(--surface-2);color:var(--text-secondary);border:1px solid var(--border);font-family:'IBM Plex Mono',monospace}
+.divider{height:1px;background:var(--border);margin:0}
+body.dark .login-right{background:var(--bg)}
+body.dark .login-demo-note,body.dark .lm-tag,body.dark .tag{background:var(--surface);border-color:var(--border-strong)}
+body.dark #coa-list .sub-header{background:var(--bg)!important}
+body.dark .badge-delivered{color:var(--status-approved-text);background:var(--status-approved-bg);border-color:#166534}
+@media(max-width:1280px){:root{--sidebar-w:200px}.kpi-grid{grid-template-columns:repeat(3,1fr)}.cf-grid{grid-template-columns:repeat(2,1fr)}.payroll-summary{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<!-- ===== LOGIN ===== -->
+<div id="login-screen">
+  <div class="login-left">
+    <div class="login-brand">
+      <div class="login-mark">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+      </div>
+      <div>
+        <div class="login-brand-name">NEXII BSM DEMO</div>
+        <div class="login-brand-sub">Business Management System</div>
+      </div>
+    </div>
+    <div class="login-tagline">Enterprise operations<br><span>inside one command center.</span></div>
+    <div class="login-desc">A unified business management platform for inventory, sales, financing, procurement, HR, payroll, and back-office operations across Philippine branches.</div>
+    <div class="login-modules">
+      <div class="lm-tag">Inventory</div><div class="lm-tag">Sales Orders</div><div class="lm-tag">Receivables</div>
+      <div class="lm-tag">Payables</div><div class="lm-tag">Cash Fund</div><div class="lm-tag">Banking</div>
+      <div class="lm-tag">General Ledger</div><div class="lm-tag">Purchases</div><div class="lm-tag">Time & Expenses</div>
+    </div>
+  </div>
+  <div class="login-right">
+    <div class="login-form-title">Team Login</div>
+    <div class="login-form-sub">Enter your credentials to access the system.</div>
+    <label class="login-label">Username</label>
+    <input class="login-input" type="text" id="l-user" value="operations.admin" placeholder="e.g. operations.admin" onkeydown="if(event.key==='Enter')doLogin()">
+    <label class="login-label">Password</label>
+    <input class="login-input" type="password" id="l-pass" value="demo" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    <div class="login-error" id="l-err">Invalid username or password. Please try again.</div>
+    <button class="login-btn" onclick="doLogin()">Sign In</button>
+    <div class="login-demo-note">
+      <strong>Demo credentials:</strong> pre-filled for client demos — just click Sign In.
+    </div>
+  </div>
+</div>
+
+<!-- ===== APP ===== -->
+<div id="app">
+  <aside id="sidebar">
+    <div class="sb-brand">
+      <div class="sb-brand-mark"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg></div>
+      <div><div class="sb-brand-name">NEXII BSM DEMO</div><div class="sb-brand-sub">Business Management System</div></div>
+    </div>
+    <div class="sb-scroll">
+      <div class="sb-section">
+        <div class="sb-section-label">Overview</div>
+        <ul class="sb-nav">
+          <li><a class="active" onclick="nav('dashboard')" id="nav-dashboard">
+            <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="0.5"/><rect x="9" y="1" width="6" height="6" rx="0.5"/><rect x="1" y="9" width="6" height="6" rx="0.5"/><rect x="9" y="9" width="6" height="6" rx="0.5"/></svg>
+            Dashboard
+          </a></li>
+        </ul>
+      </div>
+      <div class="sb-section">
+        <div class="sb-section-label">Sales</div>
+        <ul class="sb-nav">
+          <li><a onclick="nav('sales')" id="nav-sales">
+            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2h10l2 4-7 1.5L2 2zm1 5l.5 7h9l.5-7H3z"/></svg>
+            Sales Orders
+          </a></li>
+          <li><a onclick="nav('receivables')" id="nav-receivables">
+            <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="3" width="14" height="10" rx="1"/><rect x="3" y="9" width="3" height="2" rx="0.3" fill="#fff"/><path d="M1 7h14" stroke="#fff" stroke-width="0.8" fill="none"/></svg>
+            Receivables
+          </a></li>
+          <li><a onclick="nav('customers')" id="nav-customers">
+            <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="6" cy="5" r="3"/><path d="M1 14c0-3.314 2.239-5 5-5s5 1.686 5 5"/><circle cx="12" cy="5" r="2"/><path d="M12 9c1.933 0 3 1.12 3 3"/></svg>
+            Customers
+          </a></li>
+        </ul>
+      </div>
+      <div class="sb-section">
+        <div class="sb-section-label">Procurement</div>
+        <ul class="sb-nav">
+          <li><a onclick="nav('purchases')" id="nav-purchases">
+            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M3 2h10l2 3H1zm0 4h10v8H3z"/></svg>
+            Purchase Orders
+          </a></li>
+          <li><a onclick="nav('payables')" id="nav-payables">
+            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 3h12v10H2zm3 3h6v1H5zm0 2.5h4v1H5z"/></svg>
+            Payables
+          </a></li>
+        </ul>
+      </div>
+      <div class="sb-section">
+        <div class="sb-section-label">Warehouse</div>
+        <ul class="sb-nav">
+          <li><a onclick="nav('inventory')" id="nav-inventory">
+            <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="3" width="14" height="2" rx="0.5"/><rect x="1" y="7" width="14" height="2" rx="0.5"/><rect x="1" y="11" width="14" height="2" rx="0.5"/></svg>
+            Inventory
+          </a></li>
+        </ul>
+      </div>
+      <div class="sb-section">
+        <div class="sb-section-label">Finance</div>
+        <ul class="sb-nav">
+          <li><a onclick="nav('cashfund')" id="nav-cashfund">
+            <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="7"/><path d="M8 4v1m0 6v1m-2-4h3a1 1 0 010 2H7a1 1 0 100 2h4" stroke="#fff" stroke-width="0.8" fill="none"/></svg>
+            Cash Fund Mgmt
+          </a></li>
+          <li><a onclick="nav('banking')" id="nav-banking">
+            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M1 6h14l-7-5-7 5zm1 1v6h3v-6H2zm4 0v6h4v-6H6zm5 0v6h3v-6h-3zM1 13h14v2H1z"/></svg>
+            Banking
+          </a></li>
+          <li><a onclick="nav('gl')" id="nav-gl">
+            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2h12v12H2zm2 2v8h8V4H4zm1 1h6v1H5zm0 2h6v1H5zm0 2h4v1H5z"/></svg>
+            General Ledger
+          </a></li>
+        </ul>
+      </div>
+      <div class="sb-section">
+        <div class="sb-section-label">HR & Admin</div>
+        <ul class="sb-nav">
+          <li><a onclick="nav('timeexp')" id="nav-timeexp">
+            <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 2" stroke="#fff" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>
+            Time &amp; Expenses
+          </a></li>
+          <li><a onclick="nav('payroll')" id="nav-payroll">
+            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 3h12v10H2z"/><path d="M4 6h8M4 8.5h5M4 11h8" stroke="#fff" stroke-width="0.8" fill="none"/></svg>
+            Payroll
+          </a></li>
+          <li><a onclick="nav('branches')" id="nav-branches">
+            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1L1 5v10h5V9h4v6h5V5z"/></svg>
+            Branches
+          </a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="sb-footer">
+      <div class="sb-user">
+        <div class="sb-avatar" id="sb-av">JD</div>
+        <div class="sb-user-info" style="min-width:0">
+          <div class="sb-user-name" id="sb-name">Patricia Mendoza</div>
+          <div class="sb-user-role" id="sb-role">Administrator</div>
+        </div>
+        <div class="sb-logout" onclick="doLogout()" title="Sign out">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 14H3a1 1 0 01-1-1V3a1 1 0 011-1h3"/><path d="M11 11l3-3-3-3M14 8H6"/></svg>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <div id="main">
+    <div id="topbar">
+      <div>
+        <div class="topbar-title" id="tb-title">Dashboard</div>
+        <div class="topbar-bc">NEXII BSM DEMO &rsaquo; <span id="tb-page">Overview</span></div>
+      </div>
+      <div class="topbar-spacer"></div>
+      <div class="topbar-meta">
+        <div class="topbar-badge"><span class="dot"></span> 5 Alerts Active</div>
+        <a class="hub-link" href="../index.html#catalog">Demo Hub</a>
+        <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark mode"><span class="knob"></span><span id="theme-label">Light</span></button>
+        <div class="topbar-clock" id="tb-clock"></div>
+      </div>
+    </div>
+    <div id="workspace">
+
+      <!-- ===== DASHBOARD ===== -->
+      <div class="module active" id="mod-dashboard">
+        <div class="page-header">
+          <div><div class="page-title">Executive Dashboard</div><div class="page-sub">Operational overview &mdash; all branches &mdash; <span class="live-dot">Live</span></div></div>
+          <div class="page-actions"><button class="btn btn-sm">Export Report</button><button class="btn btn-sm btn-primary">Refresh</button></div>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi-block"><div class="kpi-label">Total Inventory</div><div class="kpi-value">1,248</div><div class="kpi-sub"><span class="kpi-delta up">&#9650; 34</span> vs last week</div></div>
+          <div class="kpi-block"><div class="kpi-label">Units Sold (MTD)</div><div class="kpi-value">214</div><div class="kpi-sub"><span class="kpi-delta up">&#9650; 19</span> vs last month</div></div>
+          <div class="kpi-block"><div class="kpi-label">Monthly Revenue</div><div class="kpi-value" style="font-size:20px">&#8369;18.4M</div><div class="kpi-sub"><span class="kpi-delta up">&#9650; 8.2%</span> vs May</div></div>
+          <div class="kpi-block"><div class="kpi-label">Pending Receivables</div><div class="kpi-value" style="color:var(--yellow)">&#8369;4.1M</div><div class="kpi-sub"><span class="kpi-delta warn">&#9650; 12</span> new this week</div></div>
+          <div class="kpi-block"><div class="kpi-label">Overdue Payables</div><div class="kpi-value" style="color:var(--red)">&#8369;890K</div><div class="kpi-sub"><span class="kpi-delta down">3 invoices</span> past due</div></div>
+        </div>
+        <div class="alerts-panel">
+          <div class="alerts-header"><h3>Active Alerts</h3><button class="btn btn-sm">Manage</button></div>
+          <ul class="alert-list">
+            <li class="alert-item"><div class="alert-dot red"></div><div><div class="alert-text">Cebu Branch — Honda Click 125i stock below threshold (2 units remaining)</div><div class="alert-meta">Triggered May 12, 2026 08:14 &middot; Reorder request pending</div></div></li>
+            <li class="alert-item"><div class="alert-dot red"></div><div><div class="alert-text">Davao Branch — Supplier invoice INV-2026-00312 overdue by 18 days (&#8369;245,000)</div><div class="alert-meta">Triggered May 10, 2026 09:00 &middot; Finance team notified</div></div></li>
+            <li class="alert-item"><div class="alert-dot yellow"></div><div><div class="alert-text">Quezon City North — 6 installment accounts with missed payments this month</div><div class="alert-meta">Triggered May 12, 2026 07:30 &middot; Collection team engaged</div></div></li>
+            <li class="alert-item"><div class="alert-dot yellow"></div><div><div class="alert-text">Manila Main — Cash fund balance below &#8369;50,000 (current: &#8369;38,200)</div><div class="alert-meta">Triggered May 11, 2026 16:45 &middot; Replenishment request submitted</div></div></li>
+            <li class="alert-item"><div class="alert-dot blue"></div><div><div class="alert-text">Taguig Branch — 3 units reserved for &gt;30 days with no financing movement</div><div class="alert-meta">Triggered May 10, 2026 14:00 &middot; Branch manager notified</div></div></li>
+          </ul>
+        </div>
+        <div class="section-header"><div class="section-title">Recent Sales Orders</div><button class="btn btn-sm" onclick="nav('sales')">View All</button></div>
+        <div class="dash-scroll">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>SO No.</th><th>Customer</th><th>Model</th><th>Amount</th><th>Mode</th><th>Branch</th><th>Status</th><th>Date</th></tr></thead>
+              <tbody id="dash-so-tb"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== INVENTORY ===== -->
+      <div class="module" id="mod-inventory">
+        <div class="page-header">
+          <div><div class="page-title">Inventory Management</div><div class="page-sub">Serialized motor units &mdash; all branches</div></div>
+          <div class="page-actions"><button class="btn btn-sm">Export</button><button class="btn btn-sm btn-primary">+ Add Unit</button></div>
+        </div>
+        <div class="ctrl-bar">
+          <div class="search-wrap"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10 10l3.5 3.5"/></svg><input type="search" id="inv-q" placeholder="Search unit, engine, chassis, model..." oninput="filterInv()"></div>
+          <select id="inv-brand" onchange="filterInv()"><option value="">All Brands</option><option>Honda</option><option>Yamaha</option><option>Kawasaki</option><option>Suzuki</option><option>TVS</option></select>
+          <select id="inv-status" onchange="filterInv()"><option value="">All Statuses</option><option>Available</option><option>Reserved</option><option>Sold</option></select>
+          <select id="inv-branch" onchange="filterInv()"><option value="">All Branches</option></select>
+          <div class="ctrl-bar-label" id="inv-count">Showing 0 units</div>
+        </div>
+        <div class="table-container">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th onclick="srtInv('id')">Unit ID</th><th onclick="srtInv('brand')">Brand</th><th onclick="srtInv('model')">Model</th><th>Engine No.</th><th>Chassis No.</th><th>Color</th><th onclick="srtInv('branch')">Branch</th><th onclick="srtInv('status')">Status</th><th onclick="srtInv('price')">SRP (&#8369;)</th><th onclick="srtInv('date')">Date Received</th></tr></thead>
+              <tbody id="inv-tb"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="table-footer"><span class="table-count" id="inv-ft"></span><div style="display:flex;gap:8px"><button class="btn btn-sm">&#8592; Prev</button><button class="btn btn-sm">Next &#8594;</button></div></div>
+      </div>
+
+      <!-- ===== SALES ORDERS ===== -->
+      <div class="module" id="mod-sales">
+        <div class="page-header">
+          <div><div class="page-title">Sales Orders</div><div class="page-sub">All customer purchase transactions</div></div>
+          <div class="page-actions"><button class="btn btn-sm">Export</button><button class="btn btn-sm btn-primary">+ New Order</button></div>
+        </div>
+        <div class="ctrl-bar">
+          <div class="search-wrap"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10 10l3.5 3.5"/></svg><input type="search" id="so-q" placeholder="Search order, customer, model..." oninput="filterSO()"></div>
+          <select id="so-status" onchange="filterSO()"><option value="">All Statuses</option><option>Completed</option><option>Processing</option><option>Pending</option><option>Cancelled</option></select>
+          <select id="so-mode" onchange="filterSO()"><option value="">All Payment Modes</option><option>Cash</option><option>Installment</option><option>Bank Financing</option></select>
+          <select id="so-branch" onchange="filterSO()"><option value="">All Branches</option></select>
+          <div class="ctrl-bar-label" id="so-count"></div>
+        </div>
+        <div class="table-container">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>SO No.</th><th>Date</th><th>Customer</th><th>Model</th><th>SRP</th><th>Down Payment</th><th>Mode</th><th>Branch</th><th>Status</th></tr></thead>
+              <tbody id="so-tb"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="table-footer"><span class="table-count" id="so-ft"></span></div>
+      </div>
+
+      <!-- ===== RECEIVABLES ===== -->
+      <div class="module" id="mod-receivables">
+        <div class="page-header">
+          <div><div class="page-title">Receivables</div><div class="page-sub">Installment accounts &amp; collection monitoring</div></div>
+          <div class="page-actions"><button class="btn btn-sm">Export</button><button class="btn btn-sm btn-primary">+ Record Payment</button></div>
+        </div>
+        <div class="ctrl-bar">
+          <div class="search-wrap"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10 10l3.5 3.5"/></svg><input type="search" id="ar-q" placeholder="Search account, customer, invoice..." oninput="filterAR()"></div>
+          <select id="ar-status" onchange="filterAR()"><option value="">All Statuses</option><option>Current</option><option>Overdue</option><option>Paid</option></select>
+          <select id="ar-branch" onchange="filterAR()"><option value="">All Branches</option></select>
+          <div class="ctrl-bar-label" id="ar-count"></div>
+        </div>
+        <div class="table-container">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Account No.</th><th>Customer</th><th>Model</th><th>Total Amount</th><th>Balance</th><th>Monthly Due</th><th>Next Due Date</th><th>Days Overdue</th><th>Branch</th><th>Status</th></tr></thead>
+              <tbody id="ar-tb"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="table-footer"><span class="table-count" id="ar-ft"></span></div>
+      </div>
+
+      <!-- ===== CUSTOMERS ===== -->
+      <div class="module" id="mod-customers">
+        <div class="page-header">
+          <div><div class="page-title">Customer Records</div><div class="page-sub">All registered customers</div></div>
+          <div class="page-actions"><button class="btn btn-sm">Export</button><button class="btn btn-sm btn-primary">+ New Customer</button></div>
+        </div>
+        <div class="ctrl-bar">
+          <div class="search-wrap"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10 10l3.5 3.5"/></svg><input type="search" id="cust-q" placeholder="Search name, ID, contact..." oninput="filterCust()"></div>
+          <select id="cust-branch" onchange="filterCust()"><option value="">All Branches</option></select>
+          <div class="ctrl-bar-label" id="cust-count"></div>
+        </div>
+        <div class="table-container">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Customer ID</th><th>Full Name</th><th>Contact No.</th><th>Address</th><th>Branch</th><th>Units Purchased</th><th>Total Spent</th><th>Account Status</th></tr></thead>
+              <tbody id="cust-tb"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="table-footer"><span class="table-count" id="cust-ft"></span></div>
+      </div>
+
+      <!-- ===== PURCHASES ===== -->
+      <div class="module" id="mod-purchases">
+        <div class="page-header">
+          <div><div class="page-title">Purchase Orders</div><div class="page-sub">Supplier orders &amp; delivery tracking</div></div>
+          <div class="page-actions"><button class="btn btn-sm">Export</button><button class="btn btn-sm btn-primary">+ New PO</button></div>
+        </div>
+        <div class="ctrl-bar">
+          <div class="search-wrap"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10 10l3.5 3.5"/></svg><input type="search" id="po-q" placeholder="Search PO, supplier, model..." oninput="filterPO()"></div>
+          <select id="po-status" onchange="filterPO()"><option value="">All Statuses</option><option>Pending</option><option>Approved</option><option>Delivered</option><option>Cancelled</option></select>
+          <select id="po-supplier" onchange="filterPO()"><option value="">All Suppliers</option><option>Honda Philippines</option><option>Yamaha Motor PH</option><option>Kawasaki Motors PH</option><option>Suzuki Philippines</option><option>TVS Motor PH</option></select>
+          <div class="ctrl-bar-label" id="po-count"></div>
+        </div>
+        <div class="table-container">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>PO No.</th><th>Date</th><th>Supplier</th><th>Model / Units</th><th>Qty</th><th>Total Amount</th><th>Expected Delivery</th><th>Destination Branch</th><th>Status</th></tr></thead>
+              <tbody id="po-tb"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="table-footer"><span class="table-count" id="po-ft"></span></div>
+      </div>
+
+      <!-- ===== PAYABLES ===== -->
+      <div class="module" id="mod-payables">
+        <div class="page-header">
+          <div><div class="page-title">Payables</div><div class="page-sub">Supplier invoices &amp; payment obligations</div></div>
+          <div class="page-actions"><button class="btn btn-sm">Export</button><button class="btn btn-sm btn-primary">+ Record Payment</button></div>
+        </div>
+        <div class="ctrl-bar">
+          <div class="search-wrap"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10 10l3.5 3.5"/></svg><input type="search" id="ap-q" placeholder="Search invoice, vendor..." oninput="filterAP()"></div>
+          <select id="ap-status" onchange="filterAP()"><option value="">All Statuses</option><option>Pending</option><option>Partial</option><option>Paid</option><option>Overdue</option></select>
+          <div class="ctrl-bar-label" id="ap-count"></div>
+        </div>
+        <div class="table-container">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Invoice No.</th><th>Vendor</th><th>Description</th><th>Invoice Amount</th><th>Amount Paid</th><th>Balance</th><th>Invoice Date</th><th>Due Date</th><th>Status</th></tr></thead>
+              <tbody id="ap-tb"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="table-footer"><span class="table-count" id="ap-ft"></span></div>
+      </div>
+
+      <!-- ===== CASH FUND ===== -->
+      <div class="module" id="mod-cashfund">
+        <div class="page-header">
+          <div><div class="page-title">Cash Fund Management</div><div class="page-sub">Petty cash &amp; operational fund per branch</div></div>
+          <div class="page-actions"><button class="btn btn-sm">Export</button><button class="btn btn-sm btn-primary">+ Fund Transfer</button></div>
+        </div>
+        <div class="cf-grid" id="cf-grid"></div>
+        <div class="section-header"><div class="section-title">Cash Fund Ledger — May 2026</div><button class="btn btn-sm">View Full History</button></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Date</th><th>Branch</th><th>Reference</th><th>Description</th><th>Cash In (&#8369;)</th><th>Cash Out (&#8369;)</th><th>Balance (&#8369;)</th><th>Recorded By</th></tr></thead>
+            <tbody id="cf-tb"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===== BANKING ===== -->
+      <div class="module" id="mod-banking">
+        <div class="page-header">
+          <div><div class="page-title">Banking</div><div class="page-sub">Bank accounts &amp; transaction reconciliation</div></div>
+          <div class="page-actions"><button class="btn btn-sm">Export</button><button class="btn btn-sm btn-primary">+ New Transaction</button></div>
+        </div>
+        <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr)">
+          <div class="kpi-block"><div class="kpi-label">BPI — Main Account</div><div class="kpi-value" style="font-size:20px">&#8369;12,480,500</div><div class="kpi-sub">Acct No. <span class="tag">1234-5678-90</span></div></div>
+          <div class="kpi-block"><div class="kpi-label">BDO — Operations Account</div><div class="kpi-value" style="font-size:20px">&#8369;6,901,200</div><div class="kpi-sub">Acct No. <span class="tag">9876-5432-10</span></div></div>
+          <div class="kpi-block"><div class="kpi-label">MetroBank — Payroll Account</div><div class="kpi-value" style="font-size:20px">&#8369;2,134,000</div><div class="kpi-sub">Acct No. <span class="tag">1122-3344-55</span></div></div>
+        </div>
+        <div class="section-header"><div class="section-title">Recent Bank Transactions</div><button class="btn btn-sm">Reconcile</button></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Date</th><th>Bank</th><th>Reference No.</th><th>Description</th><th>Debit (&#8369;)</th><th>Credit (&#8369;)</th><th>Running Balance</th><th>Type</th></tr></thead>
+            <tbody>
+              <tr><td class="mono dim">May 12</td><td>BPI</td><td class="mono">BPI-20260512-001</td><td>Collection — Installment accounts (batch)</td><td class="dim">—</td><td class="amt" style="color:var(--green)">184,500.00</td><td class="amt">12,480,500.00</td><td><span class="badge badge-approved">Credit</span></td></tr>
+              <tr><td class="mono dim">May 12</td><td>BDO</td><td class="mono">BDO-20260512-001</td><td>Supplier payment — Honda Philippines (PO-2026-0091)</td><td class="amt" style="color:var(--red)">980,000.00</td><td class="dim">—</td><td class="amt">6,901,200.00</td><td><span class="badge badge-declined">Debit</span></td></tr>
+              <tr><td class="mono dim">May 11</td><td>BPI</td><td class="mono">BPI-20260511-002</td><td>Cash sales deposit — Manila Main</td><td class="dim">—</td><td class="amt" style="color:var(--green)">357,800.00</td><td class="amt">12,296,000.00</td><td><span class="badge badge-approved">Credit</span></td></tr>
+              <tr><td class="mono dim">May 11</td><td>MetroBank</td><td class="mono">MB-20260511-001</td><td>Payroll disbursement — May 11 (bimonthly)</td><td class="amt" style="color:var(--red)">642,000.00</td><td class="dim">—</td><td class="amt">2,134,000.00</td><td><span class="badge badge-declined">Debit</span></td></tr>
+              <tr><td class="mono dim">May 10</td><td>BPI</td><td class="mono">BPI-20260510-003</td><td>Bank financing proceeds — BPI MS remittance</td><td class="dim">—</td><td class="amt" style="color:var(--green)">220,000.00</td><td class="amt">11,938,200.00</td><td><span class="badge badge-approved">Credit</span></td></tr>
+              <tr><td class="mono dim">May 10</td><td>BDO</td><td class="mono">BDO-20260510-002</td><td>Utility expenses — Cebu &amp; Davao branches</td><td class="amt" style="color:var(--red)">48,200.00</td><td class="dim">—</td><td class="amt">7,881,200.00</td><td><span class="badge badge-declined">Debit</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ===== GENERAL LEDGER ===== -->
+      <div class="module" id="mod-gl">
+        <div class="page-header">
+          <div><div class="page-title">General Ledger</div><div class="page-sub">Journal entries &amp; chart of accounts</div></div>
+          <div class="page-actions"><button class="btn btn-sm">Export</button><button class="btn btn-sm btn-primary">+ Journal Entry</button></div>
+        </div>
+        <div class="ctrl-bar">
+          <div class="search-wrap"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10 10l3.5 3.5"/></svg><input type="search" id="gl-q" placeholder="Search journal entry, account..." oninput="filterGL()"></div>
+          <select id="gl-type" onchange="filterGL()"><option value="">All Types</option><option>Sales</option><option>Purchase</option><option>Payment</option><option>Adjustment</option></select>
+          <div class="ctrl-bar-label" id="gl-count"></div>
+        </div>
+        <div class="two-col">
+          <div class="col-pane">
+            <div class="sub-header">Journal Entries — May 2026</div>
+            <div class="table-wrap"><table>
+              <thead><tr><th>Date</th><th>Ref No.</th><th>Account</th><th>Description</th><th>Debit</th><th>Credit</th></tr></thead>
+              <tbody id="gl-tb"></tbody>
+            </table></div>
+          </div>
+          <div class="col-pane">
+            <div class="sub-header">Chart of Accounts <span><button class="btn btn-sm">+ Add Account</button></span></div>
+            <div id="coa-list">
+              <div class="sub-header" style="background:#fff;font-size:9.5px;color:#94A3B8;padding-left:24px">ASSETS</div>
+              <div class="acct-item"><span class="acct-code">1000</span><span class="acct-name">Cash on Hand</span><span class="acct-type">Asset</span><span class="acct-bal credit">&#8369;421,200</span></div>
+              <div class="acct-item"><span class="acct-code">1001</span><span class="acct-name">Cash in Bank — BPI</span><span class="acct-type">Asset</span><span class="acct-bal credit">&#8369;12,480,500</span></div>
+              <div class="acct-item"><span class="acct-code">1002</span><span class="acct-name">Cash in Bank — BDO</span><span class="acct-type">Asset</span><span class="acct-bal credit">&#8369;6,901,200</span></div>
+              <div class="acct-item"><span class="acct-code">1100</span><span class="acct-name">Accounts Receivable</span><span class="acct-type">Asset</span><span class="acct-bal credit">&#8369;4,120,800</span></div>
+              <div class="acct-item"><span class="acct-code">1200</span><span class="acct-name">Inventory — Motor Units</span><span class="acct-type">Asset</span><span class="acct-bal credit">&#8369;87,340,000</span></div>
+              <div class="sub-header" style="background:#fff;font-size:9.5px;color:#94A3B8;padding-left:24px;margin-top:4px">LIABILITIES</div>
+              <div class="acct-item"><span class="acct-code">2000</span><span class="acct-name">Accounts Payable</span><span class="acct-type">Liability</span><span class="acct-bal debit">&#8369;3,240,000</span></div>
+              <div class="acct-item"><span class="acct-code">2100</span><span class="acct-name">Accrued Expenses</span><span class="acct-type">Liability</span><span class="acct-bal debit">&#8369;890,000</span></div>
+              <div class="sub-header" style="background:#fff;font-size:9.5px;color:#94A3B8;padding-left:24px;margin-top:4px">EQUITY</div>
+              <div class="acct-item"><span class="acct-code">3000</span><span class="acct-name">Owner's Equity</span><span class="acct-type">Equity</span><span class="acct-bal credit">&#8369;50,000,000</span></div>
+              <div class="acct-item"><span class="acct-code">3100</span><span class="acct-name">Retained Earnings</span><span class="acct-type">Equity</span><span class="acct-bal credit">&#8369;22,180,000</span></div>
+              <div class="sub-header" style="background:#fff;font-size:9.5px;color:#94A3B8;padding-left:24px;margin-top:4px">REVENUE</div>
+              <div class="acct-item"><span class="acct-code">4000</span><span class="acct-name">Sales Revenue</span><span class="acct-type">Revenue</span><span class="acct-bal credit">&#8369;18,412,000</span></div>
+              <div class="acct-item"><span class="acct-code">4100</span><span class="acct-name">Service Income</span><span class="acct-type">Revenue</span><span class="acct-bal credit">&#8369;320,500</span></div>
+              <div class="sub-header" style="background:#fff;font-size:9.5px;color:#94A3B8;padding-left:24px;margin-top:4px">EXPENSES</div>
+              <div class="acct-item"><span class="acct-code">5000</span><span class="acct-name">Cost of Goods Sold</span><span class="acct-type">Expense</span><span class="acct-bal debit">&#8369;12,640,000</span></div>
+              <div class="acct-item"><span class="acct-code">5100</span><span class="acct-name">Salaries &amp; Wages</span><span class="acct-type">Expense</span><span class="acct-bal debit">&#8369;1,284,000</span></div>
+              <div class="acct-item"><span class="acct-code">5200</span><span class="acct-name">Utilities Expense</span><span class="acct-type">Expense</span><span class="acct-bal debit">&#8369;186,400</span></div>
+              <div class="acct-item"><span class="acct-code">5300</span><span class="acct-name">Rent Expense</span><span class="acct-type">Expense</span><span class="acct-bal debit">&#8369;420,000</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== TIME & EXPENSES ===== -->
+      <div class="module" id="mod-timeexp">
+        <div class="page-header">
+          <div><div class="page-title">Time &amp; Expenses</div><div class="page-sub">Staff attendance &amp; expense reimbursements</div></div>
+          <div class="page-actions"><button class="btn btn-sm">Export</button><button class="btn btn-sm btn-primary">+ Submit Expense</button></div>
+        </div>
+        <div class="te-tabs">
+          <div class="te-tab active" onclick="teTab('attendance',this)">Attendance Log</div>
+          <div class="te-tab" onclick="teTab('expense',this)">Expense Claims</div>
+        </div>
+        <div class="ctrl-bar">
+          <div class="search-wrap"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10 10l3.5 3.5"/></svg><input type="search" placeholder="Search employee, branch..."></div>
+          <select id="te-branch" onchange="renderEmployees()"><option value="">All Branches</option></select>
+          <select><option>May 2026</option><option>April 2026</option><option>March 2026</option></select>
+        </div>
+        <div class="te-panel active" id="te-attendance">
+          <div class="table-container">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Employee ID</th><th>Name</th><th>Position</th><th>Branch</th><th>Date</th><th>Time In</th><th>Time Out</th><th>Hours Worked</th><th>Status</th></tr></thead>
+                <tbody id="emp-tb"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="te-panel" id="te-expense">
+          <div class="table-container">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Claim No.</th><th>Employee</th><th>Branch</th><th>Category</th><th>Description</th><th>Amount</th><th>Date Filed</th><th>Status</th></tr></thead>
+                <tbody id="exp-tb"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== PAYROLL ===== -->
+      <div class="module" id="mod-payroll">
+        <div class="page-header">
+          <div><div class="page-title">Payroll Management</div><div class="page-sub">Staff salary run, deductions, and payout monitoring &mdash; <span class="live-dot">Live</span></div></div>
+          <div class="page-actions"><button class="btn btn-sm" onclick="exportPayroll()">Export Payroll</button><button class="btn btn-sm" onclick="approvePayroll()">Approve Run</button><button class="btn btn-sm btn-primary" onclick="processPayroll()">Process Payout</button></div>
+        </div>
+        <div class="payroll-summary">
+          <div class="payroll-card"><div class="payroll-label">Payroll Period</div><div class="payroll-value">May 1-15</div><div class="payroll-sub">Semi-monthly cycle</div></div>
+          <div class="payroll-card"><div class="payroll-label">Gross Payroll</div><div class="payroll-value" id="payroll-gross">&#8369;0</div><div class="payroll-sub">Basic + overtime + allowances</div></div>
+          <div class="payroll-card"><div class="payroll-label">Net Payout</div><div class="payroll-value" id="payroll-net">&#8369;0</div><div class="payroll-sub">After statutory deductions</div></div>
+          <div class="payroll-card"><div class="payroll-label">Ready for Release</div><div class="payroll-value" id="payroll-ready">0</div><div class="payroll-sub" id="payroll-run-sub">Updated live</div></div>
+        </div>
+        <div class="ctrl-bar">
+          <div class="search-wrap"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10 10l3.5 3.5"/></svg><input type="search" id="payroll-q" placeholder="Search staff, position, payroll no..." oninput="filterPayroll()"></div>
+          <select id="payroll-branch" onchange="filterPayroll()"><option value="">All Branches</option></select>
+          <select id="payroll-status" onchange="filterPayroll()"><option value="">All Statuses</option><option>Draft</option><option>Reviewed</option><option>Approved</option><option>Processing</option><option>Released</option></select>
+          <select id="payroll-period" onchange="filterPayroll()"><option>May 1-15, 2026</option><option>Apr 16-30, 2026</option><option>Apr 1-15, 2026</option></select>
+          <div class="ctrl-bar-label"><span class="live-stamp" id="payroll-live">Syncing payroll...</span></div>
+        </div>
+        <div class="table-container">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Payroll No.</th><th>Employee</th><th>Position</th><th>Branch</th><th>Basic Pay</th><th>Overtime</th><th>Allowance</th><th>Deductions</th><th>Net Pay</th><th>Status</th><th>Action</th></tr></thead>
+              <tbody id="payroll-tb"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="table-footer"><span class="table-count" id="payroll-count">0 payroll records</span><div style="display:flex;gap:8px"><button class="btn btn-sm" onclick="markPayrollReviewed()">Mark Reviewed</button><button class="btn btn-sm" onclick="refreshPayroll()">Refresh Live</button></div></div>
+      </div>
+
+      <!-- ===== BRANCHES ===== -->
+      <div class="module" id="mod-branches">
+        <div class="page-header">
+          <div><div class="page-title">Branch Directory</div><div class="page-sub">All NEXII BSM DEMO locations</div></div>
+          <div class="page-actions"><button class="btn btn-sm">Export</button><button class="btn btn-sm btn-primary">+ Add Branch</button></div>
+        </div>
+        <div class="ctrl-bar">
+          <div class="search-wrap"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10 10l3.5 3.5"/></svg><input type="search" id="branch-q" placeholder="Search branch, manager, region..." oninput="renderBranches()"></div>
+          <select id="branch-region" onchange="renderBranches()"><option value="">All Regions</option><option>NCR</option><option>Luzon</option><option>Visayas</option><option>Mindanao</option></select>
+        </div>
+        <div class="table-container">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Branch Name</th><th>Region</th><th>Address</th><th>Branch Manager</th><th>Contact No.</th><th>Inventory</th><th>Units Sold (MTD)</th><th>Cash Fund</th><th>Status</th></tr></thead>
+              <tbody id="branch-tb"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="table-footer"><span class="table-count" id="branch-count">0 branches</span></div>
+      </div>
+
+    </div><!-- /workspace -->
+  </div><!-- /main -->
+</div><!-- /app -->
+
+<!-- Side Panel -->
+<div class="sp-overlay" id="sp-overlay" onclick="closePanel()"></div>
+<div class="side-panel" id="side-panel">
+  <div class="sp-header">
+    <div class="sp-title" id="sp-title">Details</div>
+    <div class="sp-close" onclick="closePanel()">&#215;</div>
+  </div>
+  <div class="sp-body" id="sp-body"></div>
+</div>
+
+<script>
+// ===== DATA =====
+let invData = [];
+
+let soData = [];
+
+let arData = [];
+
+let poData = [];
+
+let apData = [];
+
+let glData = [];
+
+let custData = [];
+
+const firstNames = ['Adrian','Sophia','Marcus','Daniel','Alyssa','Ethan','Camille','Nico','Liam','Angela','Patricia','Rafael','Isabel','Gabriel','Bea','Carlo','Mikaela','Andre','Katrina','Paolo','Janine','Luis','Hazel','Marco','Sofia','Arvin','Clarissa','Martin','Bianca','Noel','Lara','Enrico','Janelle','Vince','Kyla','Mateo','Trisha','Rodel','Andrea','Jericho','Pauline','Aldrin','Mariel','Julian','Giselle','Kenneth','Marian','Alvin','Nina','Cedric','Regina','Jomar','Leila','Harvey','Christine','Anton','Rochelle','Dennis','Jasmine','Rowena','Miguel','Rosario','Grace','Patrick','Victor','Renzo','Maureen','Cesar','Elaine','Ramon','Cassandra','Joshua','Monica','Nathan','Rhea','Diego','Irene','Gerald','Mara','Olivia','Noah','Emma','Lucas','Mia','Henry','Ava','Mason','Chloe','Logan','Sienna','Elliot','Amelia','Owen','Naomi','Caleb','Freya','Miles','Zoe','Evan'];
+const lastNames = ['Villanueva','Reyes','Dela Cruz','Fernandez','Ramos','Navarro','Santos','Bautista','Mendoza','Garcia','Soriano','Aquino','Castillo','Mercado','Santiago','Flores','Valdez','Salazar','Domingo','Cordero','Manalo','Ignacio','Abad','Lacson','Tolentino','Uy','De Leon','Magtibay','Tuazon','Evangelista','Panganiban','Robles','Javier','Dizon','Corpuz','Gonzales','Villamor','Samson','Lim','Yap','Francisco','Pineda','Tan','Cruz','Sy','Villar','Padilla','Angeles','Ong','Velasco','Alcantara','Macapagal','Chua','Ocampo','Bernal','Pascual','Castro','Imperial','Ferrer','Buenaventura','Hernandez','Rivera','Torres','Diaz','Bennett','Walker','Williams','Chen','Patel','Nguyen','Tanaka','Morgan','Cooper','Anderson','Thompson','Kim','Sullivan','Brooks','Carter','Murphy'];
+const usedNames = new Set();
+function personName(seed){for(let step=0;step<firstNames.length*lastNames.length;step++){const name=`${firstNames[(seed+step)%firstNames.length]} ${lastNames[((seed*7)+step*13)%lastNames.length]}`;if(!usedNames.has(name)){usedNames.add(name);return name}}return `Demo Person ${seed}`}
+function pad(n,w=3){return String(n).padStart(w,'0')}
+function phone(seed){return `09${17+(seed%10)}-${pad((100+seed*37)%1000)}-${pad((200+seed*53)%1000)}`}
+function dateLong(seed){return `May ${pad(12-(seed%12),2)}, 2026`}
+function dateShort(seed){return `May ${pad(12-(seed%12),2)}`}
+function isoDate(seed){return `2026-04-${pad(1+(seed%28),2)}`}
+
+const branchBases = [
+['Manila Main','NCR','Rizal Avenue, Santa Cruz','Manila','Metro Manila'],['Quezon City North','NCR','Quezon Avenue','Quezon City','Metro Manila'],['Makati Ayala','NCR','Gil Puyat Avenue','Makati','Metro Manila'],['Taguig BGC','NCR','32nd Street, Bonifacio Global City','Taguig','Metro Manila'],['Pasig Ortigas','NCR','Ortigas Avenue','Pasig','Metro Manila'],
+['Pasay EDSA','NCR','EDSA Extension','Pasay','Metro Manila'],['Mandaluyong Shaw','NCR','Shaw Boulevard','Mandaluyong','Metro Manila'],['Caloocan Monumento','NCR','Rizal Avenue Extension','Caloocan','Metro Manila'],['Valenzuela Karuhatan','NCR','MacArthur Highway','Valenzuela','Metro Manila'],['Paranaque Sucat','NCR','Dr. A. Santos Avenue','Paranaque','Metro Manila'],
+['Las Pinas Alabang-Zapote','NCR','Alabang-Zapote Road','Las Pinas','Metro Manila'],['Muntinlupa Alabang','NCR','National Road, Alabang','Muntinlupa','Metro Manila'],['Marikina Sumulong','NCR','Sumulong Highway','Marikina','Metro Manila'],['San Juan Greenhills','NCR','Ortigas Avenue','San Juan','Metro Manila'],['Navotas North Bay','NCR','North Bay Boulevard','Navotas','Metro Manila'],
+['Malabon C-4','NCR','C-4 Road','Malabon','Metro Manila'],['Antipolo Masinag','Luzon','Marcos Highway','Antipolo','Rizal'],['Bacoor Molino','Luzon','Molino Boulevard','Bacoor','Cavite'],['Dasmarinas Governor Drive','Luzon','Governor Drive','Dasmarinas','Cavite'],['Imus Aguinaldo','Luzon','Aguinaldo Highway','Imus','Cavite'],
+['General Trias Manggahan','Luzon','Governor Ferrer Drive','General Trias','Cavite'],['Cavite City San Roque','Luzon','P. Burgos Avenue','Cavite City','Cavite'],['Trece Martires Capitol','Luzon','Capitol Road','Trece Martires','Cavite'],['Santa Rosa Balibago','Luzon','Santa Rosa-Tagaytay Road','Santa Rosa','Laguna'],['Calamba Crossing','Luzon','National Highway','Calamba','Laguna'],
+['San Pablo Maharlika','Luzon','Maharlika Highway','San Pablo','Laguna'],['Lipa Ayala Highway','Luzon','Ayala Highway','Lipa','Batangas'],['Batangas City Diversion','Luzon','Diversion Road','Batangas City','Batangas'],['Lucena Iyam','Luzon','Dalahican Road','Lucena','Quezon'],['Tayabas Diversion','Luzon','Tayabas-Lucena Road','Tayabas','Quezon'],
+['San Fernando Pampanga','Luzon','Jose Abad Santos Avenue','San Fernando','Pampanga'],['Angeles Balibago','Luzon','MacArthur Highway','Angeles','Pampanga'],['Mabalacat Dau','Luzon','Dau Access Road','Mabalacat','Pampanga'],['Olongapo Rizal','Luzon','Rizal Avenue','Olongapo','Zambales'],['Balanga Capitol','Luzon','Capitol Drive','Balanga','Bataan'],
+['Malolos Crossing','Luzon','MacArthur Highway','Malolos','Bulacan'],['Meycauayan Camalig','Luzon','MacArthur Highway','Meycauayan','Bulacan'],['San Jose del Monte','Luzon','Quirino Highway','San Jose del Monte','Bulacan'],['Cabanatuan Maharlika','Luzon','Maharlika Highway','Cabanatuan','Nueva Ecija'],['Tarlac City San Roque','Luzon','MacArthur Highway','Tarlac City','Tarlac'],
+['Dagupan Downtown','Luzon','A.B. Fernandez Avenue','Dagupan','Pangasinan'],['Urdaneta MacArthur','Luzon','MacArthur Highway','Urdaneta','Pangasinan'],['San Fernando La Union','Luzon','Quezon Avenue','San Fernando','La Union'],['Baguio Session','Luzon','Session Road','Baguio','Benguet'],['Tuguegarao Carig','Luzon','Cagayan Valley Road','Tuguegarao','Cagayan'],
+['Ilagan Centro','Luzon','Maharlika Highway','Ilagan','Isabela'],['Santiago Balintocatoc','Luzon','Pan-Philippine Highway','Santiago','Isabela'],['Laoag Bacarra','Luzon','Bacarra Road','Laoag','Ilocos Norte'],['Vigan Bantay','Luzon','Quezon Avenue','Vigan','Ilocos Sur'],['Legazpi Rizal','Luzon','Rizal Street','Legazpi','Albay'],
+['Naga Magsaysay','Luzon','Magsaysay Avenue','Naga','Camarines Sur'],['Sorsogon Diversion','Luzon','Maharlika Highway','Sorsogon City','Sorsogon'],['Virac San Roque','Luzon','Catanduanes Circumferential Road','Virac','Catanduanes'],['Puerto Princesa Rizal','Luzon','Rizal Avenue','Puerto Princesa','Palawan'],['Calapan Nautical','Luzon','Nautical Highway','Calapan','Oriental Mindoro'],
+['Cebu City Colon','Visayas','Colon Street','Cebu City','Cebu'],['Mandaue North Reclamation','Visayas','North Reclamation Area','Mandaue','Cebu'],['Lapu-Lapu Basak','Visayas','M.L. Quezon National Highway','Lapu-Lapu','Cebu'],['Talisay Cebu Tabunok','Visayas','Natalio Bacalso Avenue','Talisay','Cebu'],['Danao Central','Visayas','Central Nautical Highway','Danao','Cebu'],
+['Toledo Lutopan','Visayas','Toledo-Tabuelan Road','Toledo','Cebu'],['Tagbilaran CPG','Visayas','Carlos P. Garcia Avenue','Tagbilaran','Bohol'],['Dumaguete Real','Visayas','Real Street','Dumaguete','Negros Oriental'],['Bacolod Lacson','Visayas','Lacson Street','Bacolod','Negros Occidental'],['Silay Rizal','Visayas','Rizal Street','Silay','Negros Occidental'],
+['Kabankalan Crossing','Visayas','National Highway','Kabankalan','Negros Occidental'],['Iloilo Diversion','Visayas','Benigno Aquino Avenue','Iloilo City','Iloilo'],['Roxas Pueblo','Visayas','Arnaldo Boulevard','Roxas City','Capiz'],['Kalibo Andagao','Visayas','Roxas Avenue','Kalibo','Aklan'],['Tacloban Real','Visayas','Real Street','Tacloban','Leyte'],
+['Ormoc Aviles','Visayas','Aviles Street','Ormoc','Leyte'],['Maasin Tunga-Tunga','Visayas','Tomas Oppus Street','Maasin','Southern Leyte'],['Catbalogan Pier','Visayas','Rizal Avenue','Catbalogan','Samar'],['Davao Bajada','Mindanao','J.P. Laurel Avenue','Davao City','Davao del Sur'],['Tagum Apokon','Mindanao','Apokon Road','Tagum','Davao del Norte'],
+['Panabo Gredu','Mindanao','Panabo Wharf Road','Panabo','Davao del Norte'],['Digos Tres de Mayo','Mindanao','Rizal Avenue','Digos','Davao del Sur'],['Mati Dahican','Mindanao','Dahican Road','Mati','Davao Oriental'],['General Santos Pioneer','Mindanao','Pioneer Avenue','General Santos','South Cotabato'],['Koronadal Alunan','Mindanao','Alunan Avenue','Koronadal','South Cotabato'],
+['Kidapawan Quezon','Mindanao','Quezon Boulevard','Kidapawan','Cotabato'],['Cotabato City Sinsuat','Mindanao','Sinsuat Avenue','Cotabato City','Maguindanao del Norte'],['Cagayan de Oro Agora','Mindanao','Claro M. Recto Avenue','Cagayan de Oro','Misamis Oriental'],['Iligan Tibanga','Mindanao','Macapagal Avenue','Iligan','Lanao del Norte'],['Malaybalay Sayre','Mindanao','Sayre Highway','Malaybalay','Bukidnon'],
+['Valencia Bukidnon','Mindanao','Sayre Highway','Valencia','Bukidnon'],['Butuan J.C. Aquino','Mindanao','J.C. Aquino Avenue','Butuan','Agusan del Norte'],['Surigao Borromeo','Mindanao','Borromeo Street','Surigao City','Surigao del Norte'],['Tandag Capitol','Mindanao','Capitol Road','Tandag','Surigao del Sur'],['Zamboanga Canelar','Mindanao','Gov. Camins Avenue','Zamboanga City','Zamboanga del Sur'],
+['Dipolog Turno','Mindanao','Dipolog-Oroquieta Road','Dipolog','Zamboanga del Norte'],['Pagadian F.S. Pajares','Mindanao','F.S. Pajares Avenue','Pagadian','Zamboanga del Sur'],['Isabela Basilan','Mindanao','Valderrosa Street','Isabela City','Basilan'],['Marawi MSU','Mindanao','Amai Pakpak Avenue','Marawi','Lanao del Sur'],['Ozamiz Port Road','Mindanao','Port Road','Ozamiz','Misamis Occidental'],
+['Gingoog National Highway','Mindanao','Butuan-Cagayan de Oro-Iligan Road','Gingoog','Misamis Oriental'],['Bislig Mangagoy','Mindanao','Espiritu Street','Bislig','Surigao del Sur'],['Bayugan Rotunda','Mindanao','National Highway','Bayugan','Agusan del Sur'],['Jolo Capitol','Mindanao','Scott Road','Jolo','Sulu'],['Bongao Port','Mindanao','Bongao-Pagasinan Road','Bongao','Tawi-Tawi']
+];
+const branchData = branchBases.map((b,i)=>({name:b[0],region:b[1],address:`${b[2]}, ${b[3]}, ${b[4]}`,city:b[3],province:b[4],manager:personName(i),contact:phone(i),inventory:0,sold:0,cashFund:35000+((i*7391)%95000),status:i%19===0?'Low Fund':i%23===0?'Low Stock':'Normal'}));
+const catalog = [
+  {brand:'Honda',model:'Click 125i',colors:['Pearl White','Matte Black','Vivid Red'],price:89900},{brand:'Honda',model:'Beat',colors:['Red','Black','Blue'],price:67900},{brand:'Honda',model:'ADV 160',colors:['Morion Gray','Pearl White','Matte Red'],price:148900},{brand:'Honda',model:'PCX 160',colors:['Pearl White','Matte Blue','Black'],price:134900},
+  {brand:'Yamaha',model:'Mio i 125',colors:['Matte Blue','Matte Black','White'],price:78900},{brand:'Yamaha',model:'NMAX 155',colors:['Blue','Gray','Black'],price:132900},{brand:'Yamaha',model:'Aerox 155',colors:['Nardo Gray','Racing Blue','Black'],price:138900},{brand:'Yamaha',model:'Sniper 155',colors:['Racing Red','Cyan','Black'],price:125900},
+  {brand:'Kawasaki',model:'Barako II',colors:['Red','Black','Green'],price:68000},{brand:'Kawasaki',model:'Rouser NS160',colors:['Ebony Black','Metallic Gray','Red'],price:118900},{brand:'Suzuki',model:'Raider R150',colors:['Gray','Blue','Red'],price:111900},{brand:'Suzuki',model:'Burgman Street 125',colors:['Pearl White','Matte Black','Silver'],price:82900},
+  {brand:'TVS',model:'Apache RTR 160',colors:['Matte Black','Red','White'],price:124900},{brand:'TVS',model:'Dazz 110',colors:['Blue','White','Black'],price:59900}
+];
+const suppliers = [{name:'Honda Philippines',models:'Click 125i, Beat, ADV 160, PCX 160'},{name:'Yamaha Motor PH',models:'Mio i 125, NMAX 155, Aerox 155, Sniper 155'},{name:'Kawasaki Motors PH',models:'Barako II, Rouser NS160'},{name:'Suzuki Philippines',models:'Raider R150, Burgman Street 125'},{name:'TVS Motor PH',models:'Apache RTR 160, Dazz 110'},{name:'Metro Accessories Inc.',models:'Helmets, boxes, riding gear'}];
+
+custData = Array.from({length:360},(_,i)=>{const branch=branchData[(i*11)%branchData.length];const units=1+(i%8===0?1:0)+(i%31===0?1:0);return {id:`CUST-${pad(i+1)}`,name:personName(180+i),contact:phone(200+i),address:`${branch.city}, ${branch.province}`,branch:branch.name,units,total:units*(65000+((i*977)%90000)),status:i%29===0?'Overdue':'Active'}});
+invData = Array.from({length:1248},(_,i)=>{const unit=catalog[(i*5)%catalog.length],branch=branchData[(i*7)%branchData.length],color=unit.colors[i%unit.colors.length];const status=i%6===0?'Sold':i%9===0?'Reserved':'Available';return {id:`UNIT-${pad(i+1,4)}`,brand:unit.brand,model:unit.model,color,engine:`ENG-2026-${pad(10000+i*17,5)}`,chassis:`CHS-2026-${pad(20000+i*19,5)}`,branch:branch.name,status,price:unit.price,date:isoDate(i)}});
+soData = Array.from({length:420},(_,i)=>{const customer=custData[i%custData.length],unit=catalog[(i*3)%catalog.length],color=unit.colors[(i+1)%unit.colors.length];const mode=i%5===0?'Bank Financing':i%3===0?'Cash':'Installment';const status=i%41===0?'Cancelled':i%9===0?'Pending':i%7===0?'Processing':'Completed';const dp=mode==='Cash'?unit.price:mode==='Bank Financing'?Math.round(unit.price*.3):Math.round(unit.price*.2);return {no:`SO-2026-${pad(720-i,4)}`,date:dateLong(i),customer:customer.name,model:`${unit.brand} ${unit.model} (${color})`,srp:unit.price,dp,mode,branch:customer.branch,status}});
+arData = soData.filter(r=>r.mode!=='Cash'&&r.status!=='Cancelled').slice(0,250).map((r,i)=>{const status=i%17===0?'Paid':i%11===0?'Overdue':'Current';const balance=status==='Paid'?0:r.srp-r.dp-Math.round((i%6)*r.srp*.055);return {no:`AR-2026-${pad(300+i)}`,customer:r.customer,model:r.model.replace(/\s\(.+\)$/,''),total:r.srp,balance:Math.max(0,balance),monthly:status==='Paid'?0:Math.round((r.srp-r.dp)/24),due:status==='Paid'?'—':dateLong(i+3),overdue:status==='Overdue'?5+(i%21):0,branch:r.branch,status}});
+poData = Array.from({length:180},(_,i)=>{const supplier=suppliers[i%suppliers.length],branch=branchData[(i*13)%branchData.length],qty=12+((i*7)%46);return {no:`PO-2026-${pad(280-i,4)}`,date:dateLong(i+1),supplier:supplier.name,model:supplier.models,qty,amount:qty*(62000+((i*311)%83000)),delivery:dateLong(i+8),branch:branch.name,status:i%13===0?'Cancelled':i%5===0?'Pending':i%3===0?'Approved':'Delivered'}});
+apData = poData.slice(0,140).map((r,i)=>{const paid=i%6===0?0:i%4===0?Math.round(r.amount*.45):r.amount;const due=r.amount-paid;return {inv:`INV-2026-${pad(510-i)}`,vendor:r.supplier,desc:`${r.model} delivery batch (${r.no})`,amount:r.amount,paid,due,invDate:dateLong(i+2),dueDate:dateLong(i+18),status:due===0?'Paid':i%6===0?'Overdue':'Partial'}});
+glData = Array.from({length:200},(_,i)=>{const so=soData[i%soData.length],ar=arData[i%arData.length],ap=apData[i%apData.length];const variants=[{account:'Cash in Bank - BPI / Accounts Receivable',desc:`Installment payment received - ${ar.customer}`,amount:ar.monthly||ar.total,type:'Payment'},{account:'Accounts Payable / Cash in Bank - BDO',desc:`Supplier payment - ${ap.vendor} (${ap.inv})`,amount:Math.max(ap.paid,38500),type:'Purchase'},{account:'Cash on Hand / Sales Revenue',desc:`Cash sales deposit - ${so.branch}`,amount:so.srp,type:'Sales'},{account:'Operating Expense / Cash Fund',desc:`Branch activity expense - ${branchData[(i*5)%branchData.length].name}`,amount:1800+((i*257)%18000),type:'Adjustment'}];const v=variants[i%variants.length];return {date:dateShort(i),ref:`JE-202605${pad(12-(i%12),2)}-${pad(i+1)}`,account:v.account,desc:v.desc,debit:v.amount,credit:v.amount,type:v.type}});
+const employeeData = Array.from({length:90},(_,i)=>{const positions=['Branch Manager','Sales Agent','Finance Officer','Collector','Encoder','Inventory Clerk','Branch Cashier','Service Coordinator'];const status=i%23===0?'Absent':i%11===0?'Late':'Present';return {id:`EMP-${pad(i+1)}`,name:personName(390+i),position:positions[i%positions.length],branch:branchData[(i*9)%branchData.length].name,date:'May 12',timeIn:status==='Absent'?'—':i%11===0?'09:08 AM':'08:0'+(i%10)+' AM',timeOut:status==='Absent'||status==='Late'?'—':'05:'+pad(1+(i%49),2)+' PM',hours:status==='Absent'||status==='Late'?'—':(8.5+(i%10)/10).toFixed(2)+' hrs',status}});
+const payrollRates={'Branch Manager':48000,'Sales Agent':28000,'Finance Officer':36000,'Collector':26000,'Encoder':23000,'Inventory Clerk':24000,'Branch Cashier':25000,'Service Coordinator':27000};
+let payrollData = employeeData.map((e,i)=>{const basic=Math.round((payrollRates[e.position]||25000)/2);const overtime=(i%5)*550;const allowance=1200+(i%4)*350;const deductions=Math.round(basic*.085)+((i%6)*120);const status=i%13===0?'Draft':i%7===0?'Reviewed':i%5===0?'Approved':i%3===0?'Processing':'Released';return {no:`PAY-202605-${pad(i+1)}`,employeeId:e.id,employee:e.name,position:e.position,branch:e.branch,basic,overtime,allowance,deductions,net:basic+overtime+allowance-deductions,status,updated:dateShort(i)}});
+const expenseData = Array.from({length:60},(_,i)=>{const categories=['Transportation','Representation','Fuel','Office Supplies','Branch Repairs','Courier','Meals'];const descriptions=['client visit','bank deposit run','branch delivery vehicle','printer ink and forms','showroom minor repair','document dispatch','field collection route'];return {no:`EXP-202605${pad(12-(i%12),2)}-${pad(i+1)}`,employee:personName(520+i),branch:branchData[(i*4)%branchData.length].name,category:categories[i%categories.length],desc:descriptions[i%descriptions.length],amount:150+((i*431)%8500),date:dateShort(i),status:i%7===0?'Pending':i%5===0?'Reimbursed':'Approved'}});
+const cashFundData = Array.from({length:100},(_,i)=>{const branch=branchData[(i*3)%branchData.length],isIn=i%4===0,amount=isIn?10000+((i*137)%45000):750+((i*271)%9800);return {date:dateShort(i),branch:branch.name,ref:`CF-202605${pad(12-(i%12),2)}-${pad(i+1)}`,desc:isIn?'Branch fund replenishment':'Operating cash disbursement',cashIn:isIn?amount:0,cashOut:isIn?0:amount,balance:branch.cashFund,recordedBy:personName(620+i)}});
+branchData.forEach(b=>{b.inventory=invData.filter(u=>u.branch===b.name&&u.status!=='Sold').length;b.sold=soData.filter(s=>s.branch===b.name&&s.status==='Completed').length;if(b.inventory<3)b.status='Low Stock'});
+
+// ===== FILTERS =====
+let invSort={f:'id',asc:true};
+function fmt(n){return new Intl.NumberFormat('en-PH',{minimumFractionDigits:2}).format(n)}
+function badge(s){
+  const map={Available:'available',Reserved:'reserved',Sold:'sold',Completed:'approved',Processing:'processing',Pending:'pending',Cancelled:'declined',Delivered:'delivered',Approved:'approved',Overdue:'overdue',Paid:'paid','Partial':'partial',Current:'approved',Active:'approved','Low Fund':'reserved','Low Stock':'reserved','Normal':'approved',Present:'approved',Late:'reserved',Absent:'declined',Reimbursed:'paid',Cash:'approved',Credit:'approved',Debit:'declined',Installment:'installment',Draft:'pending',Reviewed:'processing',Released:'paid'};
+  return`<span class="badge badge-${map[s]||'pending'}">${s}</span>`;
+}
+
+function populateBranchSelects(){
+  ['inv-branch','so-branch','ar-branch','cust-branch','te-branch','payroll-branch'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el)return;
+    const selected=el.value;
+    el.innerHTML='<option value="">All Branches</option>'+branchData.map(b=>`<option>${b.name}</option>`).join('');
+    el.value=selected;
+  });
+}
+
+function renderDashboard(){
+  const tb=document.getElementById('dash-so-tb');
+  if(!tb)return;
+  tb.innerHTML=soData.slice(0,12).map(r=>`<tr><td class="mono">${r.no}</td><td>${r.customer}</td><td>${r.model}</td><td class="amt">&#8369;${fmt(r.srp)}</td><td>${badge(r.mode)}</td><td class="dim">${r.branch}</td><td>${badge(r.status)}</td><td class="dim mono">${r.date.replace(', 2026','')}</td></tr>`).join('');
+}
+
+function renderCashFund(){
+  const grid=document.getElementById('cf-grid');
+  const tb=document.getElementById('cf-tb');
+  if(grid){
+    grid.innerHTML=branchData.map(b=>{
+      const pct=Math.min(100,Math.round(b.cashFund/1300));
+      const low=b.cashFund<50000;
+      return `<div class="cf-card"><div class="cf-branch">${b.name}</div><div class="cf-amount">&#8369;${fmt(b.cashFund).replace('.00','')}</div><div class="cf-meta">Updated: May 12, 2026 &mdash; ${low?'<span style="color:var(--red)">Below threshold</span>':'Normal'}</div><div class="cf-bar"><div class="cf-bar-fill" style="width:${pct}%"></div></div></div>`;
+    }).join('');
+  }
+  if(tb){
+    tb.innerHTML=cashFundData.map(r=>`<tr><td class="mono dim">${r.date}</td><td class="dim">${r.branch}</td><td class="mono">${r.ref}</td><td>${r.desc}</td><td class="${r.cashIn?'amt':'dim'}" style="${r.cashIn?'color:var(--green)':''}">${r.cashIn?fmt(r.cashIn):'—'}</td><td class="${r.cashOut?'amt':'dim'}" style="${r.cashOut?'color:var(--red)':''}">${r.cashOut?fmt(r.cashOut):'—'}</td><td class="amt">${fmt(r.balance)}</td><td class="dim">${r.recordedBy}</td></tr>`).join('');
+  }
+}
+
+function renderEmployees(){
+  const emp=document.getElementById('emp-tb');
+  const exp=document.getElementById('exp-tb');
+  const branch=document.getElementById('te-branch')?.value||'';
+  const employees=employeeData.filter(r=>!branch||r.branch===branch);
+  const expenses=expenseData.filter(r=>!branch||r.branch===branch);
+  if(emp){
+    emp.innerHTML=employees.map(r=>`<tr><td class="mono">${r.id}</td><td>${r.name}</td><td class="dim">${r.position}</td><td class="dim">${r.branch}</td><td class="mono dim">${r.date}</td><td class="mono">${r.timeIn}</td><td class="mono">${r.timeOut}</td><td class="mono">${r.hours}</td><td>${badge(r.status)}</td></tr>`).join('');
+  }
+  if(exp){
+    exp.innerHTML=expenses.map(r=>`<tr><td class="mono">${r.no}</td><td>${r.employee}</td><td class="dim">${r.branch}</td><td>${r.category}</td><td>${r.desc}</td><td class="amt">&#8369;${fmt(r.amount)}</td><td class="mono dim">${r.date}</td><td>${badge(r.status)}</td></tr>`).join('');
+  }
+}
+
+function payrollRows(){
+  const q=(document.getElementById('payroll-q')?.value||'').toLowerCase();
+  const branch=document.getElementById('payroll-branch')?.value||'';
+  const status=document.getElementById('payroll-status')?.value||'';
+  return payrollData.filter(r=>(!branch||r.branch===branch)&&(!status||r.status===status)&&(!q||[r.no,r.employee,r.employeeId,r.position,r.branch].join(' ').toLowerCase().includes(q)));
+}
+
+function renderPayroll(){
+  const tb=document.getElementById('payroll-tb');
+  if(!tb)return;
+  const rows=payrollRows();
+  const gross=rows.reduce((sum,r)=>sum+r.basic+r.overtime+r.allowance,0);
+  const net=rows.reduce((sum,r)=>sum+r.net,0);
+  const ready=rows.filter(r=>['Approved','Processing','Released'].includes(r.status)).length;
+  document.getElementById('payroll-gross').textContent=`₱${fmt(gross).replace('.00','')}`;
+  document.getElementById('payroll-net').textContent=`₱${fmt(net).replace('.00','')}`;
+  document.getElementById('payroll-ready').textContent=ready;
+  document.getElementById('payroll-count').textContent=`${rows.length} of ${payrollData.length} payroll records`;
+  document.getElementById('payroll-run-sub').textContent=`${rows.filter(r=>r.status==='Released').length} released, ${rows.filter(r=>r.status==='Draft').length} drafts`;
+  document.getElementById('payroll-live').textContent=`Live sync: ${new Date().toLocaleTimeString('en-PH',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true})}`;
+  tb.innerHTML=rows.map(r=>`<tr class="row-link" onclick="openPayrollPanel('${r.no}')">
+    <td class="mono">${r.no}</td><td><strong>${r.employee}</strong><div class="dim mono" style="font-size:10px">${r.employeeId}</div></td>
+    <td class="dim">${r.position}</td><td class="dim">${r.branch}</td>
+    <td class="amt">₱${fmt(r.basic)}</td><td class="amt">₱${fmt(r.overtime)}</td><td class="amt">₱${fmt(r.allowance)}</td>
+    <td class="amt" style="color:var(--red)">₱${fmt(r.deductions)}</td><td class="amt" style="color:var(--green)">₱${fmt(r.net)}</td>
+    <td>${badge(r.status)}</td><td><button class="btn btn-sm" onclick="event.stopPropagation();openPayrollPanel('${r.no}')">View</button></td>
+  </tr>`).join('')||'<tr><td colspan="11" style="text-align:center;padding:32px;color:var(--text-tertiary)">No payroll records found</td></tr>';
+}
+function filterPayroll(){renderPayroll()}
+
+function renderBranches(){
+  const tb=document.getElementById('branch-tb');
+  if(!tb)return;
+  const q=(document.getElementById('branch-q')?.value||'').toLowerCase();
+  const region=document.getElementById('branch-region')?.value||'';
+  const rows=branchData.filter(r=>(!region||r.region===region)&&(!q||[r.name,r.region,r.address,r.manager].join(' ').toLowerCase().includes(q)));
+  tb.innerHTML=rows.map(r=>`<tr><td><strong>${r.name}</strong></td><td class="dim">${r.region}</td><td class="dim">${r.address}</td><td>${r.manager}</td><td class="mono dim">${r.contact}</td><td class="mono">${r.inventory}</td><td class="mono"><strong>${r.sold}</strong></td><td class="amt" style="${r.cashFund<50000?'color:var(--red)':''}">&#8369;${fmt(r.cashFund).replace('.00','')}</td><td>${badge(r.status)}</td></tr>`).join('');
+  document.getElementById('branch-count').textContent=`${rows.length} of ${branchData.length} branches`;
+}
+
+function initializeDemo(){
+  populateBranchSelects();
+  renderDashboard();
+  renderCashFund();
+  renderEmployees();
+  renderPayroll();
+  renderBranches();
+}
+
+function filterInv(){
+  const q=document.getElementById('inv-q').value.toLowerCase();
+  const br=document.getElementById('inv-brand').value;
+  const st=document.getElementById('inv-status').value;
+  const bch=document.getElementById('inv-branch').value;
+  let d=invData.filter(r=>
+    (!br||r.brand===br)&&(!st||r.status===st)&&(!bch||r.branch===bch)&&
+    (!q||[r.id,r.model,r.engine,r.chassis,r.color,r.branch].join(' ').toLowerCase().includes(q))
+  );
+  d.sort((a,b)=>{const f=invSort.f;const v=invSort.asc?1:-1;return typeof a[f]==='number'?v*(a[f]-b[f]):v*String(a[f]).localeCompare(String(b[f]))});
+  document.getElementById('inv-count').textContent=`${d.length} of ${invData.length} units`;
+  document.getElementById('inv-ft').textContent=`${d.length} units`;
+  document.getElementById('inv-tb').innerHTML=d.map(r=>`<tr class="row-link" onclick="openInvPanel(${JSON.stringify(r).replace(/"/g,'&quot;')})">
+    <td class="mono">${r.id}</td><td>${r.brand}</td><td><strong>${r.model}</strong></td>
+    <td class="mono">${r.engine}</td><td class="mono">${r.chassis}</td>
+    <td class="dim">${r.color}</td><td class="dim">${r.branch}</td><td>${badge(r.status)}</td>
+    <td class="amt">&#8369;${fmt(r.price)}</td><td class="mono dim">${r.date}</td>
+  </tr>`).join('')||'<tr><td colspan="10" style="text-align:center;padding:32px;color:var(--text-tertiary)">No units found</td></tr>';
+}
+function srtInv(f){invSort=invSort.f===f?{f,asc:!invSort.asc}:{f,asc:true};filterInv()}
+
+function filterSO(){
+  const q=document.getElementById('so-q').value.toLowerCase();
+  const st=document.getElementById('so-status').value;
+  const m=document.getElementById('so-mode').value;
+  const b=document.getElementById('so-branch').value;
+  let d=soData.filter(r=>(!st||r.status===st)&&(!m||r.mode===m)&&(!b||r.branch===b)&&(!q||[r.no,r.customer,r.model].join(' ').toLowerCase().includes(q)));
+  document.getElementById('so-count').textContent=`${d.length} orders`;
+  document.getElementById('so-ft').textContent=`${d.length} of ${soData.length} orders`;
+  document.getElementById('so-tb').innerHTML=d.map(r=>`<tr class="row-link" onclick="openSOPanel(${JSON.stringify(r).replace(/"/g,'&quot;')})">
+    <td class="mono">${r.no}</td><td class="mono dim">${r.date.replace(', 2026','')}</td>
+    <td><strong>${r.customer}</strong></td><td class="dim">${r.model}</td>
+    <td class="amt">&#8369;${fmt(r.srp)}</td><td class="amt">&#8369;${fmt(r.dp)}</td>
+    <td>${badge(r.mode==='Installment'?'Installment':r.mode==='Bank Financing'?'Processing':'Approved')}</td>
+    <td class="dim">${r.branch}</td><td>${badge(r.status)}</td>
+  </tr>`).join('')||'<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--text-tertiary)">No orders found</td></tr>';
+}
+
+function filterAR(){
+  const q=document.getElementById('ar-q').value.toLowerCase();
+  const st=document.getElementById('ar-status').value;
+  const b=document.getElementById('ar-branch').value;
+  let d=arData.filter(r=>(!st||r.status===st)&&(!b||r.branch===b)&&(!q||[r.no,r.customer,r.model].join(' ').toLowerCase().includes(q)));
+  document.getElementById('ar-count').textContent=`${d.length} accounts`;
+  document.getElementById('ar-ft').textContent=`${d.length} of ${arData.length} accounts`;
+  document.getElementById('ar-tb').innerHTML=d.map(r=>`<tr class="row-link">
+    <td class="mono">${r.no}</td><td><strong>${r.customer}</strong></td><td class="dim">${r.model}</td>
+    <td class="amt">&#8369;${fmt(r.total)}</td><td class="amt" style="${r.status==='Overdue'?'color:var(--red)':''}">&#8369;${fmt(r.balance)}</td>
+    <td class="amt">${r.monthly?'&#8369;'+fmt(r.monthly):'—'}</td>
+    <td class="mono dim">${r.due}</td>
+    <td class="mono${r.overdue>0?' ':"dim"}" style="${r.overdue>0?'color:var(--red)':''}">${r.overdue>0?r.overdue+'d':'—'}</td>
+    <td class="dim">${r.branch}</td><td>${badge(r.status)}</td>
+  </tr>`).join('')||'<tr><td colspan="10" style="text-align:center;padding:32px;color:var(--text-tertiary)">No accounts found</td></tr>';
+}
+
+function filterCust(){
+  const q=document.getElementById('cust-q').value.toLowerCase();
+  const b=document.getElementById('cust-branch').value;
+  let d=custData.filter(r=>(!b||r.branch===b)&&(!q||[r.id,r.name,r.contact,r.address].join(' ').toLowerCase().includes(q)));
+  document.getElementById('cust-count').textContent=`${d.length} customers`;
+  document.getElementById('cust-ft').textContent=`${d.length} of ${custData.length} customers`;
+  document.getElementById('cust-tb').innerHTML=d.map(r=>`<tr>
+    <td class="mono">${r.id}</td><td><strong>${r.name}</strong></td>
+    <td class="mono dim">${r.contact}</td><td class="dim">${r.address}</td>
+    <td class="dim">${r.branch}</td><td class="mono" style="text-align:center">${r.units}</td>
+    <td class="amt">&#8369;${fmt(r.total)}</td><td>${badge(r.status)}</td>
+  </tr>`).join('');
+}
+
+function filterPO(){
+  const q=document.getElementById('po-q').value.toLowerCase();
+  const st=document.getElementById('po-status').value;
+  const sup=document.getElementById('po-supplier').value;
+  let d=poData.filter(r=>(!st||r.status===st)&&(!sup||r.supplier===sup)&&(!q||[r.no,r.supplier,r.model].join(' ').toLowerCase().includes(q)));
+  document.getElementById('po-count').textContent=`${d.length} orders`;
+  document.getElementById('po-ft').textContent=`${d.length} of ${poData.length} orders`;
+  document.getElementById('po-tb').innerHTML=d.map(r=>`<tr class="row-link" onclick="openPOPanel(${JSON.stringify(r).replace(/"/g,'&quot;')})">
+    <td class="mono">${r.no}</td><td class="mono dim">${r.date.replace(', 2026','')}</td>
+    <td><strong>${r.supplier}</strong></td><td class="dim">${r.model}</td>
+    <td class="mono" style="text-align:center">${r.qty}</td>
+    <td class="amt">&#8369;${fmt(r.amount)}</td>
+    <td class="mono dim">${r.delivery.replace(', 2026','')}</td>
+    <td class="dim">${r.branch}</td><td>${badge(r.status)}</td>
+  </tr>`).join('')||'<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--text-tertiary)">No orders found</td></tr>';
+}
+
+function filterAP(){
+  const q=document.getElementById('ap-q').value.toLowerCase();
+  const st=document.getElementById('ap-status').value;
+  let d=apData.filter(r=>(!st||r.status===st)&&(!q||[r.inv,r.vendor,r.desc].join(' ').toLowerCase().includes(q)));
+  document.getElementById('ap-count').textContent=`${d.length} invoices`;
+  document.getElementById('ap-ft').textContent=`${d.length} of ${apData.length} invoices`;
+  document.getElementById('ap-tb').innerHTML=d.map(r=>`<tr>
+    <td class="mono">${r.inv}</td><td><strong>${r.vendor}</strong></td><td class="dim">${r.desc}</td>
+    <td class="amt">&#8369;${fmt(r.amount)}</td>
+    <td class="amt" style="color:var(--green)">&#8369;${fmt(r.paid)}</td>
+    <td class="amt" style="${r.due>0?'color:var(--red)':''}">&#8369;${fmt(r.due)}</td>
+    <td class="mono dim">${r.invDate.replace(', 2026','')}</td>
+    <td class="mono dim">${r.dueDate.replace(', 2026','')}</td>
+    <td>${badge(r.status)}</td>
+  </tr>`).join('');
+}
+
+function filterGL(){
+  const q=document.getElementById('gl-q').value.toLowerCase();
+  const t=document.getElementById('gl-type').value;
+  let d=glData.filter(r=>(!t||r.type===t)&&(!q||[r.ref,r.account,r.desc].join(' ').toLowerCase().includes(q)));
+  document.getElementById('gl-count').textContent=`${d.length} entries`;
+  document.getElementById('gl-tb').innerHTML=d.map(r=>`<tr>
+    <td class="mono dim">${r.date}</td><td class="mono">${r.ref}</td>
+    <td class="dim" style="max-width:160px;overflow:hidden;text-overflow:ellipsis">${r.account}</td>
+    <td class="dim">${r.desc}</td>
+    <td class="amt" style="color:var(--red)">&#8369;${fmt(r.debit)}</td>
+    <td class="amt" style="color:var(--green)">&#8369;${fmt(r.credit)}</td>
+  </tr>`).join('');
+}
+
+// ===== PANELS =====
+function openInvPanel(r){
+  document.getElementById('sp-title').textContent=r.id+' — '+r.model;
+  document.getElementById('sp-body').innerHTML=`
+    <div class="sp-section"><div class="sp-section-label">Unit Information</div>
+      <div class="sp-row"><span class="sp-key">Unit ID</span><span class="sp-val mono">${r.id}</span></div>
+      <div class="sp-row"><span class="sp-key">Brand</span><span class="sp-val">${r.brand}</span></div>
+      <div class="sp-row"><span class="sp-key">Model</span><span class="sp-val">${r.model}</span></div>
+      <div class="sp-row"><span class="sp-key">Color</span><span class="sp-val">${r.color}</span></div>
+      <div class="sp-row"><span class="sp-key">Status</span><span class="sp-val">${badge(r.status)}</span></div>
+    </div>
+    <div class="sp-section"><div class="sp-section-label">Serial Numbers</div>
+      <div class="sp-row"><span class="sp-key">Engine No.</span><span class="sp-val mono">${r.engine}</span></div>
+      <div class="sp-row"><span class="sp-key">Chassis No.</span><span class="sp-val mono">${r.chassis}</span></div>
+    </div>
+    <div class="sp-section"><div class="sp-section-label">Pricing & Location</div>
+      <div class="sp-row"><span class="sp-key">SRP</span><span class="sp-val mono">&#8369;${fmt(r.price)}</span></div>
+      <div class="sp-row"><span class="sp-key">Branch</span><span class="sp-val">${r.branch}</span></div>
+      <div class="sp-row"><span class="sp-key">Date Received</span><span class="sp-val mono">${r.date}</span></div>
+    </div>
+    <div class="sp-actions">
+      <button class="btn btn-sm btn-primary">Create Sales Order</button>
+      <button class="btn btn-sm">Transfer Unit</button>
+      <button class="btn btn-sm">Edit</button>
+    </div>`;
+  openPanel();
+}
+
+function openSOPanel(r){
+  document.getElementById('sp-title').textContent=r.no;
+  document.getElementById('sp-body').innerHTML=`
+    <div class="sp-section"><div class="sp-section-label">Order Details</div>
+      <div class="sp-row"><span class="sp-key">Order No.</span><span class="sp-val mono">${r.no}</span></div>
+      <div class="sp-row"><span class="sp-key">Date</span><span class="sp-val mono">${r.date}</span></div>
+      <div class="sp-row"><span class="sp-key">Status</span><span class="sp-val">${badge(r.status)}</span></div>
+      <div class="sp-row"><span class="sp-key">Branch</span><span class="sp-val">${r.branch}</span></div>
+    </div>
+    <div class="sp-section"><div class="sp-section-label">Customer & Unit</div>
+      <div class="sp-row"><span class="sp-key">Customer</span><span class="sp-val">${r.customer}</span></div>
+      <div class="sp-row"><span class="sp-key">Model</span><span class="sp-val">${r.model}</span></div>
+    </div>
+    <div class="sp-section"><div class="sp-section-label">Payment</div>
+      <div class="sp-row"><span class="sp-key">SRP</span><span class="sp-val mono">&#8369;${fmt(r.srp)}</span></div>
+      <div class="sp-row"><span class="sp-key">Down Payment</span><span class="sp-val mono">&#8369;${fmt(r.dp)}</span></div>
+      <div class="sp-row"><span class="sp-key">Balance</span><span class="sp-val mono">&#8369;${fmt(r.srp-r.dp)}</span></div>
+      <div class="sp-row"><span class="sp-key">Mode</span><span class="sp-val">${r.mode}</span></div>
+    </div>
+    <div class="sp-actions">
+      <button class="btn btn-sm btn-primary">Print OR</button>
+      <button class="btn btn-sm">View Account</button>
+    </div>`;
+  openPanel();
+}
+
+function openPOPanel(r){
+  document.getElementById('sp-title').textContent=r.no;
+  document.getElementById('sp-body').innerHTML=`
+    <div class="sp-section"><div class="sp-section-label">Purchase Order</div>
+      <div class="sp-row"><span class="sp-key">PO No.</span><span class="sp-val mono">${r.no}</span></div>
+      <div class="sp-row"><span class="sp-key">Date Issued</span><span class="sp-val mono">${r.date}</span></div>
+      <div class="sp-row"><span class="sp-key">Status</span><span class="sp-val">${badge(r.status)}</span></div>
+    </div>
+    <div class="sp-section"><div class="sp-section-label">Supplier & Units</div>
+      <div class="sp-row"><span class="sp-key">Supplier</span><span class="sp-val">${r.supplier}</span></div>
+      <div class="sp-row"><span class="sp-key">Models</span><span class="sp-val">${r.model}</span></div>
+      <div class="sp-row"><span class="sp-key">Quantity</span><span class="sp-val mono">${r.qty} units</span></div>
+      <div class="sp-row"><span class="sp-key">Total Amount</span><span class="sp-val mono">&#8369;${fmt(r.amount)}</span></div>
+    </div>
+    <div class="sp-section"><div class="sp-section-label">Delivery</div>
+      <div class="sp-row"><span class="sp-key">Expected Delivery</span><span class="sp-val mono">${r.delivery}</span></div>
+      <div class="sp-row"><span class="sp-key">Destination</span><span class="sp-val">${r.branch}</span></div>
+    </div>
+    <div class="sp-actions">
+      <button class="btn btn-sm btn-primary">Mark Delivered</button>
+      <button class="btn btn-sm">Print PO</button>
+    </div>`;
+  openPanel();
+}
+
+function openPayrollPanel(no){
+  const r=payrollData.find(x=>x.no===no);
+  if(!r)return;
+  document.getElementById('sp-title').textContent=r.no;
+  document.getElementById('sp-body').innerHTML=`
+    <div class="sp-section"><div class="sp-section-label">Employee Payroll</div>
+      <div class="sp-row"><span class="sp-key">Employee</span><span class="sp-val">${r.employee}</span></div>
+      <div class="sp-row"><span class="sp-key">Employee ID</span><span class="sp-val mono">${r.employeeId}</span></div>
+      <div class="sp-row"><span class="sp-key">Position</span><span class="sp-val">${r.position}</span></div>
+      <div class="sp-row"><span class="sp-key">Branch</span><span class="sp-val">${r.branch}</span></div>
+      <div class="sp-row"><span class="sp-key">Status</span><span class="sp-val">${badge(r.status)}</span></div>
+    </div>
+    <div class="sp-section"><div class="sp-section-label">Salary Computation</div>
+      <div class="sp-row"><span class="sp-key">Basic Pay</span><span class="sp-val mono">₱${fmt(r.basic)}</span></div>
+      <div class="sp-row"><span class="sp-key">Overtime</span><span class="sp-val mono">₱${fmt(r.overtime)}</span></div>
+      <div class="sp-row"><span class="sp-key">Allowance</span><span class="sp-val mono">₱${fmt(r.allowance)}</span></div>
+      <div class="sp-row"><span class="sp-key">Deductions</span><span class="sp-val mono">₱${fmt(r.deductions)}</span></div>
+      <div class="sp-row"><span class="sp-key">Net Pay</span><span class="sp-val mono">₱${fmt(r.net)}</span></div>
+    </div>
+    <div class="sp-actions">
+      <button class="btn btn-sm btn-primary" onclick="updateOnePayroll('${r.no}','Approved')">Approve</button>
+      <button class="btn btn-sm" onclick="updateOnePayroll('${r.no}','Released')">Mark Released</button>
+      <button class="btn btn-sm">Print Payslip</button>
+    </div>`;
+  openPanel();
+}
+
+// ===== PANEL CONTROL =====
+function openPanel(){
+  document.getElementById('sp-overlay').classList.add('open');
+  setTimeout(()=>document.getElementById('side-panel').classList.add('open'),10);
+}
+function closePanel(){
+  document.getElementById('side-panel').classList.remove('open');
+  setTimeout(()=>document.getElementById('sp-overlay').classList.remove('open'),200);
+}
+
+// ===== NAVIGATION =====
+const navMeta={
+  dashboard:{title:'Dashboard',page:'Overview'},
+  inventory:{title:'Inventory',page:'Motor Units'},
+  sales:{title:'Sales Orders',page:'Transactions'},
+  receivables:{title:'Receivables',page:'Installment Accounts'},
+  customers:{title:'Customers',page:'Customer Records'},
+  purchases:{title:'Purchase Orders',page:'Procurement'},
+  payables:{title:'Payables',page:'Accounts Payable'},
+  cashfund:{title:'Cash Fund Management',page:'Finance'},
+  banking:{title:'Banking',page:'Bank Accounts & Transactions'},
+  gl:{title:'General Ledger',page:'Finance'},
+  timeexp:{title:'Time & Expenses',page:'HR & Admin'},
+  payroll:{title:'Payroll Management',page:'HR & Admin'},
+  branches:{title:'Branch Directory',page:'Administration'},
+};
+function nav(id){
+  document.querySelectorAll('.sb-nav a').forEach(a=>a.classList.remove('active'));
+  document.getElementById('nav-'+id)?.classList.add('active');
+  document.querySelectorAll('.module').forEach(m=>m.classList.remove('active'));
+  document.getElementById('mod-'+id)?.classList.add('active');
+  const m=navMeta[id]||{title:id,page:id};
+  document.getElementById('tb-title').textContent=m.title;
+  document.getElementById('tb-page').textContent=m.page;
+  closePanel();
+}
+
+// ===== TIME & EXPENSE TABS =====
+function teTab(id,el){
+  document.querySelectorAll('.te-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.te-panel').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('te-'+id).classList.add('active');
+}
+
+// ===== LIVE ACTIONS =====
+let toastTimer=null;
+function showToast(msg){
+  let t=document.getElementById('toast');
+  if(!t){
+    t=document.createElement('div');
+    t.id='toast';
+    t.className='toast';
+    document.body.appendChild(t);
+  }
+  t.textContent=msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),2200);
+}
+function flashButton(btn,label){
+  if(!btn)return;
+  const old=btn.textContent;
+  btn.classList.add('busy','flash');
+  btn.textContent=label||'Working...';
+  setTimeout(()=>{btn.classList.remove('busy');btn.textContent=old;},520);
+  setTimeout(()=>btn.classList.remove('flash'),900);
+}
+function refreshPayroll(){
+  payrollData=payrollData.map((r,i)=>i%17===0&&r.status==='Processing'?{...r,status:'Released'}:r);
+  renderPayroll();
+  showToast('Payroll live data refreshed');
+}
+function markPayrollReviewed(){
+  payrollData=payrollData.map((r,i)=>r.status==='Draft'&&i%2===0?{...r,status:'Reviewed'}:r);
+  renderPayroll();
+  showToast('Draft payroll records marked for review');
+}
+function approvePayroll(){
+  payrollData=payrollData.map(r=>['Draft','Reviewed'].includes(r.status)?{...r,status:'Approved'}:r);
+  renderPayroll();
+  showToast('Payroll run approved');
+}
+function processPayroll(){
+  payrollData=payrollData.map(r=>r.status==='Approved'?{...r,status:'Processing'}:r);
+  renderPayroll();
+  showToast('Payroll payout processing started');
+}
+function updateOnePayroll(no,status){
+  payrollData=payrollData.map(r=>r.no===no?{...r,status}:r);
+  renderPayroll();
+  openPayrollPanel(no);
+  showToast(`${no} updated to ${status}`);
+}
+function exportPayroll(){
+  showToast(`Payroll export queued for ${payrollRows().length} records`);
+}
+function liveAction(btn){
+  const label=(btn.textContent||'Action').trim();
+  showToast(`${label.replace(/^[+]\s*/,'')} completed in demo mode`);
+}
+function toggleTheme(){
+  const dark=!document.body.classList.contains('dark');
+  document.body.classList.toggle('dark',dark);
+  document.getElementById('theme-label').textContent=dark?'Dark':'Light';
+  try{localStorage.setItem('nexii-theme',dark?'dark':'light')}catch(e){}
+  showToast(`${dark?'Dark':'Light'} mode enabled`);
+}
+function initTheme(){
+  let saved='';
+  try{saved=localStorage.getItem('nexii-theme')||''}catch(e){}
+  if(saved==='dark')document.body.classList.add('dark');
+  const label=document.getElementById('theme-label');
+  if(label)label.textContent=document.body.classList.contains('dark')?'Dark':'Light';
+}
+if(document.addEventListener){
+  document.addEventListener('click',e=>{
+    const btn=e.target.closest?.('.btn');
+    if(!btn||btn.closest('.sp-close'))return;
+    flashButton(btn);
+    if(btn.getAttribute('onclick'))return;
+    liveAction(btn);
+  });
+}
+
+// ===== CLOCK =====
+function tick(){
+  const now=new Date();
+  document.getElementById('tb-clock').textContent=now.toLocaleString('en-PH',{weekday:'short',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit',hour12:true});
+}
+initTheme();
+setInterval(tick,1000);tick();
+setInterval(()=>{if(document.getElementById('payroll-live'))renderPayroll()},15000);
+initializeDemo();
+
+// ===== LOGIN =====
+function doLogin(){
+  const u=document.getElementById('l-user').value.trim();
+  const p=document.getElementById('l-pass').value.trim();
+  if(!u||!p){document.getElementById('l-err').style.display='block';return}
+  document.getElementById('l-err').style.display='none';
+  const av=u.split(' ').filter(Boolean).map(w=>w[0].toUpperCase()).join('').substring(0,2)||'ST';
+  document.getElementById('sb-av').textContent=av;
+  document.getElementById('sb-name').textContent=u.charAt(0).toUpperCase()+u.slice(1);
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').style.display='flex';
+  initializeDemo();
+  filterInv();filterSO();filterAR();filterCust();filterPO();filterAP();filterGL();filterPayroll();
+}
+function doLogout(){
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('app').style.display='none';
+  document.getElementById('l-user').value='';
+  document.getElementById('l-pass').value='';
+}
+</script>
+</body>
 </html>

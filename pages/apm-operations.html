@@ -1,106 +1,224 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>APM Employee and Operations System</title>
-    <link rel="stylesheet" href="demo-pages.css">
-  </head>
-  <body data-demo="operations">
-    <main class="page-shell">
-      <nav class="demo-nav" aria-label="Demo navigation">
-        <a class="brand" href="../index.html"><span class="brand-mark">NX</span><span>Demo Hub</span></a>
-        <div class="demo-links" aria-label="Page sections">
-          <a href="#dashboard">Dashboard</a>
-          <a href="#workspace">Modules</a>
-          <a href="#approvals">Approvals</a>
-          <a href="#tickets">Tickets</a>
-        </div>
-        <a class="back-link" href="../index.html#catalog">Back to dashboard</a>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>APM Business Management System Demo</title>
+  <style>
+    :root{--bg:#f4f7fb;--panel:#fff;--ink:#101828;--muted:#667085;--line:#d7e0ea;--nav:#111827;--blue:#155eef;--green:#067647;--amber:#b54708;--red:#b42318;--slate:#334155;--shadow:0 16px 40px rgba(16,24,40,.08)}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:14px}button,input,select,textarea{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}.hidden{display:none!important}
+    .app{min-height:100vh;display:grid;grid-template-columns:248px minmax(0,1fr)}.sidebar{background:var(--nav);color:#e5edf8;padding:18px;display:flex;flex-direction:column;gap:18px;position:sticky;top:0;height:100vh}.brand{display:flex;align-items:center;gap:11px}.mark{width:40px;height:40px;border-radius:9px;background:#155eef;display:grid;place-items:center;color:#fff;font-weight:950}.brand strong{display:block}.brand span{display:block;color:#98a2b3;font-size:.8rem;margin-top:2px}.nav{display:grid;gap:6px}.nav button,.hub{min-height:40px;border:0;border-radius:8px;background:transparent;color:#cbd5e1;text-align:left;font-weight:850;padding:0 11px}.nav button:hover,.nav button.active,.hub:hover{background:rgba(255,255,255,.1);color:#fff}.side-note{margin-top:auto;border:1px solid rgba(255,255,255,.12);border-radius:12px;background:rgba(255,255,255,.06);padding:13px;color:#b8c5d6;line-height:1.45}.side-note strong{display:block;color:#fff;margin-bottom:5px}
+    main{min-width:0}.topbar{height:64px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:14px;padding:0 22px;position:sticky;top:0;z-index:10}.title strong{display:block}.title span{display:block;margin-top:2px;color:var(--muted);font-size:.84rem}.actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.btn{min-height:36px;border:1px solid var(--line);border-radius:8px;background:#fff;color:#1849a9;font-weight:850;padding:0 12px;display:inline-flex;align-items:center;justify-content:center;gap:7px}.btn:hover{background:#f8fafc}.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}.btn.dark{background:#101828;border-color:#101828;color:#fff}.btn.good{background:#ecfdf3;border-color:#bbf7d0;color:var(--green)}.btn.bad{background:#fff1f0;border-color:#ffd3ce;color:var(--red)}.btn.small{min-height:30px;font-size:.82rem;padding:0 9px}
+    .workspace{padding:20px;display:grid;gap:18px}.hero{border-radius:14px;background:linear-gradient(135deg,#101828,#334155 58%,#155eef);color:#fff;padding:24px;display:grid;grid-template-columns:minmax(0,1fr)360px;gap:22px;align-items:end;box-shadow:var(--shadow)}.hero h1{margin:8px 0 10px;font-size:clamp(2rem,4vw,4rem);line-height:1;letter-spacing:-.035em}.hero p{max-width:760px;color:#d8e0ec;line-height:1.6}.eyebrow{display:block;color:#facc15;font-size:.72rem;font-weight:950;letter-spacing:.1em;text-transform:uppercase}.hero-card{border:1px solid rgba(255,255,255,.16);border-radius:12px;background:rgba(255,255,255,.11);padding:16px;display:grid;gap:10px}.hero-card div{display:flex;justify-content:space-between;gap:12px}.hero-card span{color:#cbd5e1}.hero-card strong{font-size:1.25rem}
+    .stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}.stat{background:#fff;border:1px solid var(--line);border-radius:11px;padding:15px;box-shadow:var(--shadow)}.stat span{display:block;color:var(--muted);font-size:.76rem;font-weight:850}.stat strong{display:block;margin-top:6px;font-size:1.55rem}.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:14px}.section-head h2{margin:0;font-size:clamp(1.35rem,3vw,2.25rem)}.section-head p{margin:4px 0 0;color:var(--muted);line-height:1.5}.panel{background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}.pad{padding:18px}.grid{display:grid;grid-template-columns:minmax(0,1fr)380px;gap:18px;align-items:start}.module-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.module-card{border:1px solid var(--line);border-radius:11px;background:#fff;padding:16px;text-align:left;box-shadow:var(--shadow)}.module-card.active{border-color:#93c5fd;box-shadow:0 0 0 3px rgba(21,94,239,.12)}.module-card strong{display:block;margin-bottom:6px}.module-card p{margin:0;color:var(--muted);line-height:1.45}
+    .table-wrap{overflow:auto}table{width:100%;border-collapse:collapse}th,td{border-bottom:1px solid var(--line);padding:11px;text-align:left;white-space:nowrap}th{font-size:.73rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}.status{display:inline-flex;align-items:center;min-height:26px;border-radius:999px;background:#eef2ff;color:var(--blue);font-size:.76rem;font-weight:900;padding:0 9px}.status.ok{background:#ecfdf3;color:var(--green)}.status.warn{background:#fff4e5;color:var(--amber)}.status.bad{background:#fff1f0;color:var(--red)}
+    .form{display:grid;gap:10px}.field{display:grid;gap:6px}.field label{font-size:.73rem;color:var(--muted);font-weight:900;text-transform:uppercase;letter-spacing:.05em}input,select,textarea{width:100%;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);padding:10px 11px;outline:0}textarea{min-height:92px;resize:vertical}input:focus,select:focus,textarea:focus{border-color:#93c5fd;box-shadow:0 0 0 3px rgba(21,94,239,.12)}.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.activity{display:grid;gap:9px}.event{border:1px solid var(--line);border-radius:9px;background:#fff;padding:10px}.event strong{display:block}.event span{display:block;color:var(--muted);font-size:.82rem;margin-top:3px}.feature-band{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.feature{background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:16px}.feature strong{display:block;margin-bottom:6px}.feature p{margin:0;color:var(--muted);line-height:1.45}.report{white-space:pre-wrap;background:#101828;color:#dbeafe;border-radius:10px;padding:14px;line-height:1.55;min-height:220px}.toast{position:fixed;right:18px;bottom:18px;background:#101828;color:#fff;border-radius:10px;padding:12px 14px;font-weight:850;box-shadow:var(--shadow);opacity:0;transform:translateY(10px);transition:.2s;z-index:50}.toast.show{opacity:1;transform:translateY(0)}
+    @media(max-width:1100px){.app{grid-template-columns:1fr}.sidebar{position:static;height:auto}.hero,.grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.module-grid,.feature-band{grid-template-columns:repeat(2,1fr)}}@media(max-width:640px){.topbar{height:auto;align-items:flex-start;flex-direction:column;padding:14px}.workspace{padding:12px}.stats,.module-grid,.feature-band,.two{grid-template-columns:1fr}.hero h1{font-size:2.7rem}}
+  </style>
+</head>
+<body>
+  <section class="app">
+    <aside class="sidebar">
+      <div class="brand"><div class="mark">AP</div><div><strong>APM BSM</strong><span>Employee & Operations</span></div></div>
+      <nav class="nav">
+        <button class="active" data-module="overview">Dashboard</button>
+        <button data-module="employees">Employees</button>
+        <button data-module="finance">Finance</button>
+        <button data-module="billing">Billing</button>
+        <button data-module="jobs">Job Orders</button>
+        <button data-module="clients">Clients / CRM</button>
+        <button data-module="reports">Reports</button>
       </nav>
+      <a class="hub" href="../index.html#catalog">Back to Demo Hub</a>
+      <div class="side-note"><strong>BSM Demo</strong>A business management system for employees, approvals, cash advances, billing documents, clients, job orders, and support tickets.</div>
+    </aside>
 
-      <section class="demo-hero" style="--accent: #334155">
-        <div>
-          <span class="eyebrow">Laravel business system</span>
-          <h1>APM Employee and Operations System</h1>
-          <p>Interactive internal portal demo for HR records, approvals, cash advances, billing documents, job orders, support tickets, and audit controls.</p>
-          <div class="split-actions">
-            <button class="light-btn" type="button" data-fill-ops-demo>Load sample workday</button>
-            <button class="light-btn" type="button" data-reset-ops>Reset demo</button>
-          </div>
-        </div>
-        <div class="hero-panel">
-          <div><span>Pending approvals</span><strong id="opsPendingHero">4</strong></div>
-          <div><span>Open tickets</span><strong id="opsTicketsHero">3</strong></div>
-          <div><span>Active module</span><strong id="opsActiveHero">HR</strong></div>
-        </div>
-      </section>
+    <main>
+      <header class="topbar">
+        <div class="title"><strong id="screenTitle">Operations Dashboard</strong><span id="screenSub">Company-wide overview for HR, finance, billing, jobs, and client support.</span></div>
+        <div class="actions"><button class="btn" id="loadDay">Load Sample Workday</button><button class="btn primary" id="exportReport">Export Snapshot</button></div>
+      </header>
 
-      <section class="metrics" id="dashboard">
-        <article class="metric"><span>Employees</span><strong id="opsEmployees">48</strong></article>
-        <article class="metric"><span>Pending</span><strong id="opsPending">4</strong></article>
-        <article class="metric"><span>Billing docs</span><strong id="opsBilling">12</strong></article>
-        <article class="metric"><span>Tickets</span><strong id="opsTickets">3</strong></article>
-      </section>
+      <div class="workspace">
+        <section class="hero">
+          <div><span class="eyebrow">Business Management System</span><h1>APM Employee and Operations System</h1><p>A working static demo for a company operations portal: employee records, approvals, cash advances, billing documents, job orders, clients, support tickets, and audit activity.</p></div>
+          <aside class="hero-card">
+            <div><span>Pending approvals</span><strong id="heroApprovals">0</strong></div>
+            <div><span>Open tickets</span><strong id="heroTickets">0</strong></div>
+            <div><span>Active module</span><strong id="heroModule">Dashboard</strong></div>
+          </aside>
+        </section>
 
-      <section class="layout-grid">
-        <div>
-          <article class="panel" id="workspace">
-            <div class="panel-top">
-              <div>
-                <span class="panel-label">Module workspace</span>
-                <h2 id="opsModuleTitle">HR and Employee Hub</h2>
-              </div>
-              <div class="segmented" role="tablist" aria-label="Operations modules">
-                <button class="active" type="button" data-ops-module="hr">HR</button>
-                <button type="button" data-ops-module="accounting">Accounting</button>
-                <button type="button" data-ops-module="billing">Billing</button>
-                <button type="button" data-ops-module="jobs">Jobs</button>
-              </div>
-            </div>
-            <div class="workspace-grid" id="opsModuleCards"></div>
-          </article>
+        <section class="stats">
+          <article class="stat"><span>Employees</span><strong id="metricEmployees">0</strong></article>
+          <article class="stat"><span>Approvals</span><strong id="metricApprovals">0</strong></article>
+          <article class="stat"><span>Cash Advances</span><strong id="metricCash">0</strong></article>
+          <article class="stat"><span>Billing Docs</span><strong id="metricBilling">0</strong></article>
+          <article class="stat"><span>Open Tickets</span><strong id="metricTickets">0</strong></article>
+        </section>
 
-          <article class="panel" id="approvals">
-            <div class="panel-top">
-              <div>
-                <span class="panel-label">Approval queue</span>
-                <h2>Process requests during the demo</h2>
-              </div>
-              <button class="ghost-btn" type="button" data-add-approval>Add sample request</button>
-            </div>
-            <div class="table-wrap">
-              <table class="table">
-                <thead><tr><th>Request</th><th>Owner</th><th>Module</th><th>Status</th><th>Action</th></tr></thead>
-                <tbody id="opsApprovalRows"></tbody>
-              </table>
-            </div>
-          </article>
-        </div>
+        <section class="feature-band">
+          <article class="feature"><strong>Employee self-service</strong><p>Profiles, payslip access, leave requests, and HR document updates.</p></article>
+          <article class="feature"><strong>Finance approvals</strong><p>Cash advances, reimbursements, liquidation, and approval records.</p></article>
+          <article class="feature"><strong>Operations tracking</strong><p>Job orders, support tickets, service requests, and audit logs.</p></article>
+          <article class="feature"><strong>Client management</strong><p>Client records, billing documents, CRM notes, and service history.</p></article>
+        </section>
 
-        <aside>
-          <article class="panel" id="tickets">
-            <span class="panel-label">Create support ticket</span>
-            <h2>Live form</h2>
-            <form class="form-grid" id="opsTicketForm">
-              <input name="subject" placeholder="Ticket subject" value="Employee cannot access payslip">
-              <select name="priority">
-                <option>Normal</option>
-                <option>Urgent</option>
-                <option>Low</option>
-              </select>
-              <textarea name="notes" placeholder="Ticket notes">Payslip page opens but PDF download is missing for April payroll.</textarea>
-              <button class="primary-btn" type="submit">Create ticket</button>
-            </form>
-          </article>
-          <article class="panel">
-            <span class="panel-label">Activity log</span>
-            <h2>Recent actions</h2>
-            <div class="activity-list" id="opsActivity"></div>
-          </article>
-        </aside>
-      </section>
+        <section class="panel pad">
+          <div class="section-head"><div><span class="eyebrow">Module Workspace</span><h2 id="moduleTitle">Company command center</h2><p id="moduleDesc">Switch modules to show how each department works inside one system.</p></div></div>
+          <div class="module-grid" id="moduleCards"></div>
+        </section>
+
+        <section class="grid">
+          <div id="mainPanel"></div>
+          <aside class="side-stack">
+            <article class="panel pad">
+              <span class="eyebrow">Create Request</span>
+              <h2>Quick action</h2>
+              <form class="form" id="quickForm">
+                <div class="field"><label>Request type</label><select name="type"><option>Support Ticket</option><option>Cash Advance</option><option>Leave Request</option><option>Billing Document</option><option>Job Order</option></select></div>
+                <div class="field"><label>Subject</label><input name="subject" value="Employee cannot access payslip"></div>
+                <div class="field"><label>Owner</label><select name="owner" id="ownerSelect"></select></div>
+                <div class="field"><label>Notes</label><textarea name="notes">Please review and assign to the correct department.</textarea></div>
+                <button class="btn primary" type="submit">Submit Request</button>
+              </form>
+            </article>
+            <article class="panel pad">
+              <span class="eyebrow">Audit Trail</span>
+              <h2>Recent activity</h2>
+              <div class="activity" id="activityList"></div>
+            </article>
+          </aside>
+        </section>
+      </div>
     </main>
-    <script src="demo-pages.js"></script>
-  </body>
+  </section>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const money=new Intl.NumberFormat("en-PH",{style:"currency",currency:"PHP",maximumFractionDigits:0});
+    const employees=[
+      {id:"EMP-001",name:"Patricia Mendoza",role:"HR Manager",dept:"HR",status:"Active"},
+      {id:"EMP-002",name:"Marco Santos",role:"Finance Officer",dept:"Finance",status:"Active"},
+      {id:"EMP-003",name:"Leah Cruz",role:"Billing Specialist",dept:"Billing",status:"Active"},
+      {id:"EMP-004",name:"Ramon Uy",role:"Operations Lead",dept:"Operations",status:"On Leave"},
+      {id:"EMP-005",name:"Jessa Lim",role:"Client Support",dept:"Support",status:"Active"}
+    ];
+    let approvals=[
+      {id:"CA-7906",type:"Cash Advance",owner:"Marco Santos",dept:"Finance",amount:18000,status:"Review"},
+      {id:"LV-1048",type:"Leave Request",owner:"Ramon Uy",dept:"HR",amount:0,status:"Pending"},
+      {id:"BD-2210",type:"Billing Document",owner:"Leah Cruz",dept:"Billing",amount:145000,status:"Draft"},
+      {id:"JO-5520",type:"Job Order",owner:"Operations Team",dept:"Operations",amount:0,status:"Pending"}
+    ];
+    let tickets=[
+      {id:"TK-1001",subject:"Payslip PDF missing",owner:"Patricia Mendoza",priority:"Normal",status:"Open"},
+      {id:"TK-1002",subject:"Client record update",owner:"Jessa Lim",priority:"Urgent",status:"Open"},
+      {id:"TK-1003",subject:"Billing attachment upload",owner:"Leah Cruz",priority:"Low",status:"Resolved"}
+    ];
+    let clients=[
+      {name:"Northbay Construction",contact:"admin@northbay.example",status:"Active",balance:145000},
+      {name:"Prime Logistics",contact:"ops@primelogistics.example",status:"Active",balance:82000},
+      {name:"Bayan Health Group",contact:"finance@bayanhealth.example",status:"Prospect",balance:0}
+    ];
+    let jobs=[
+      {id:"JO-5520",client:"Northbay Construction",title:"Document package preparation",status:"Pending"},
+      {id:"JO-5521",client:"Prime Logistics",title:"Site support request",status:"In Progress"},
+      {id:"JO-5522",client:"Bayan Health Group",title:"Proposal follow-up",status:"Ready"}
+    ];
+    const activity=["System loaded","Dashboard opened"];
+    let active="overview";
+    const moduleMeta={
+      overview:{title:"Company command center",desc:"Switch modules to show how each department works inside one system.",cards:[["BSM Dashboard","KPIs across HR, finance, billing, jobs, support, and CRM."],["Unified approvals","Approve or return documents from multiple departments."],["Audit history","Track who created, approved, returned, or closed each request."],["Role-ready modules","Separate views for HR, finance, billing, operations, support, and management."]]},
+      employees:{title:"Employee management",desc:"HR workspace for employee records, leave requests, payslip support, and staff documents.",cards:[["Employee Profiles","Manage employee records, roles, departments, and status."],["Leave Requests","Submit and approve staff leave inside the workflow."],["Payslip Support","Create support tickets for missing or incorrect payslip files."],["HR Audit","Keep visible records of profile changes and approvals."]]},
+      finance:{title:"Finance and cash advances",desc:"Manage cash advances, reimbursements, liquidation, and payment approvals.",cards:[["Cash Advance Queue","Review employee cash requests and release approved items."],["Liquidation Records","Track receipts, notes, and close-out status."],["Payment Monitoring","Monitor pending, partial, and completed payments."],["Approval Controls","Require finance approval before release."]]},
+      billing:{title:"Billing document center",desc:"Create and track billing statements, invoices, notes, and client documents.",cards:[["Billing Statements","Create draft records and prepare client-ready documents."],["Invoice Tracker","Monitor billing status and missing attachments."],["Client Balances","See receivables by client and status."],["Document Audit","Record document changes and approvals."]]},
+      jobs:{title:"Operations and job orders",desc:"Track operational job orders, document packages, service requests, and handoffs.",cards:[["Job Order Board","View pending, in-progress, and ready operations tasks."],["Package Tracking","Prepare document packages for clients."],["Task Ownership","Assign operations work to responsible teams."],["Completion Log","Close tasks with audit notes."]]},
+      clients:{title:"Client CRM workspace",desc:"Track client records, contacts, balances, notes, and service history.",cards:[["Client Database","Store active accounts, prospects, contacts, and balances."],["Service History","Connect jobs and billing records to each client."],["Support Follow-up","Create tickets directly from client concerns."],["CRM Notes","Keep sales and service notes in one place."]]},
+      reports:{title:"Reports and management snapshot",desc:"Generate a board-ready text snapshot from the demo data.",cards:[["Operations Snapshot","Summarize KPIs, approvals, tickets, clients, and jobs."],["Department Health","See bottlenecks by function."],["Export Report","Download a static text snapshot."],["Management View","Use the system as an executive command center."]]}
+    };
+    const qs=s=>document.querySelector(s),qsa=s=>[...document.querySelectorAll(s)];
+    function notify(msg){const t=qs("#toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2000)}
+    function statusClass(s){return ["Approved","Active","Ready","Resolved"].includes(s)?"ok":["Review","Pending","Draft","In Progress","Prospect"].includes(s)?"warn":"bad"}
+    function addActivity(msg){activity.unshift(msg);renderActivity()}
+    function renderMetrics(){
+      qs("#metricEmployees").textContent=employees.length;
+      qs("#metricApprovals").textContent=approvals.filter(a=>!["Approved","Returned"].includes(a.status)).length;
+      qs("#metricCash").textContent=approvals.filter(a=>a.type==="Cash Advance").length;
+      qs("#metricBilling").textContent=approvals.filter(a=>a.type==="Billing Document").length;
+      qs("#metricTickets").textContent=tickets.filter(t=>t.status==="Open").length;
+      qs("#heroApprovals").textContent=qs("#metricApprovals").textContent;
+      qs("#heroTickets").textContent=qs("#metricTickets").textContent;
+      qs("#heroModule").textContent=moduleMeta[active].title.split(" ")[0];
+    }
+    function renderModules(){
+      const meta=moduleMeta[active];
+      qs("#moduleTitle").textContent=meta.title;
+      qs("#moduleDesc").textContent=meta.desc;
+      qs("#screenTitle").textContent=meta.title;
+      qs("#screenSub").textContent=meta.desc;
+      qs("#moduleCards").innerHTML=meta.cards.map((card,i)=>`<article class="module-card ${i===0?"active":""}"><strong>${card[0]}</strong><p>${card[1]}</p></article>`).join("");
+      qsa("[data-module]").forEach(button=>button.classList.toggle("active",button.dataset.module===active));
+    }
+    function renderMain(){
+      if(active==="employees") return renderEmployees();
+      if(active==="finance"||active==="billing") return renderApprovals(active==="finance"?"Finance approvals":"Billing approvals", active==="finance"?"Cash Advance":"Billing Document");
+      if(active==="jobs") return renderJobs();
+      if(active==="clients") return renderClients();
+      if(active==="reports") return renderReports();
+      return renderApprovals("Unified approval queue");
+    }
+    function renderApprovals(title,filterType){
+      const rows=filterType?approvals.filter(a=>a.type===filterType):approvals;
+      qs("#mainPanel").innerHTML=`<article class="panel"><div class="pad section-head"><div><span class="eyebrow">Approvals</span><h2>${title}</h2><p>Approve or return documents during the demo.</p></div><button class="btn" id="addApproval">Add Request</button></div><div class="table-wrap"><table><thead><tr><th>Reference</th><th>Type</th><th>Owner</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead><tbody>${rows.map(item=>`<tr><td><strong>${item.id}</strong></td><td>${item.type}</td><td>${item.owner}</td><td>${item.amount?money.format(item.amount):"-"}</td><td><span class="status ${statusClass(item.status)}">${item.status}</span></td><td><button class="btn small good" data-approve="${item.id}">Approve</button><button class="btn small bad" data-return="${item.id}">Return</button></td></tr>`).join("")}</tbody></table></div></article>`;
+      qsa("[data-approve]").forEach(b=>b.onclick=()=>updateApproval(b.dataset.approve,"Approved"));
+      qsa("[data-return]").forEach(b=>b.onclick=()=>updateApproval(b.dataset.return,"Returned"));
+      qs("#addApproval").onclick=()=>{approvals.unshift({id:`REQ-${Math.floor(1000+Math.random()*8999)}`,type:"Cash Advance",owner:"New Employee",dept:"Finance",amount:12000,status:"Pending"});addActivity("New approval request added");renderAll();};
+    }
+    function renderEmployees(){
+      qs("#mainPanel").innerHTML=`<article class="panel"><div class="pad section-head"><div><span class="eyebrow">Employees</span><h2>Employee records</h2><p>HR can inspect staff profiles and update status.</p></div><button class="btn" id="addEmployee">Add Employee</button></div><div class="table-wrap"><table><thead><tr><th>ID</th><th>Name</th><th>Role</th><th>Department</th><th>Status</th><th>Action</th></tr></thead><tbody>${employees.map(e=>`<tr><td>${e.id}</td><td><strong>${e.name}</strong></td><td>${e.role}</td><td>${e.dept}</td><td><span class="status ${statusClass(e.status)}">${e.status}</span></td><td><button class="btn small" data-toggle-employee="${e.id}">${e.status==="Active"?"Mark Leave":"Activate"}</button></td></tr>`).join("")}</tbody></table></div></article>`;
+      qsa("[data-toggle-employee]").forEach(b=>b.onclick=()=>{const e=employees.find(x=>x.id===b.dataset.toggleEmployee);e.status=e.status==="Active"?"On Leave":"Active";addActivity(`${e.name} status changed to ${e.status}`);renderAll();});
+      qs("#addEmployee").onclick=()=>{employees.push({id:`EMP-${String(employees.length+1).padStart(3,"0")}`,name:"New Staff Member",role:"Operations Staff",dept:"Operations",status:"Active"});addActivity("Employee record added");renderAll();};
+    }
+    function renderJobs(){
+      qs("#mainPanel").innerHTML=`<article class="panel"><div class="pad section-head"><div><span class="eyebrow">Job Orders</span><h2>Operations board</h2><p>Move work from pending to ready.</p></div><button class="btn" id="addJob">Add Job Order</button></div><div class="table-wrap"><table><thead><tr><th>ID</th><th>Client</th><th>Job</th><th>Status</th><th>Action</th></tr></thead><tbody>${jobs.map(j=>`<tr><td>${j.id}</td><td>${j.client}</td><td>${j.title}</td><td><span class="status ${statusClass(j.status)}">${j.status}</span></td><td><button class="btn small" data-progress-job="${j.id}">Progress</button></td></tr>`).join("")}</tbody></table></div></article>`;
+      qsa("[data-progress-job]").forEach(b=>b.onclick=()=>{const j=jobs.find(x=>x.id===b.dataset.progressJob);j.status=j.status==="Pending"?"In Progress":j.status==="In Progress"?"Ready":"Closed";addActivity(`${j.id} moved to ${j.status}`);renderAll();});
+      qs("#addJob").onclick=()=>{jobs.unshift({id:`JO-${5520+jobs.length}`,client:"New Client",title:"New operations request",status:"Pending"});addActivity("Job order added");renderAll();};
+    }
+    function renderClients(){
+      qs("#mainPanel").innerHTML=`<article class="panel"><div class="pad section-head"><div><span class="eyebrow">CRM</span><h2>Client records</h2><p>Track client balances and service status.</p></div><button class="btn" id="addClient">Add Client</button></div><div class="table-wrap"><table><thead><tr><th>Client</th><th>Contact</th><th>Status</th><th>Balance</th><th>Action</th></tr></thead><tbody>${clients.map((c,i)=>`<tr><td><strong>${c.name}</strong></td><td>${c.contact}</td><td><span class="status ${statusClass(c.status)}">${c.status}</span></td><td>${money.format(c.balance)}</td><td><button class="btn small" data-pay-client="${i}">Mark Paid</button></td></tr>`).join("")}</tbody></table></div></article>`;
+      qsa("[data-pay-client]").forEach(b=>b.onclick=()=>{const c=clients[Number(b.dataset.payClient)];c.balance=0;c.status="Active";addActivity(`${c.name} balance marked paid`);renderAll();});
+      qs("#addClient").onclick=()=>{clients.unshift({name:"New Demo Client",contact:"client@example.com",status:"Prospect",balance:0});addActivity("Client record added");renderAll();};
+    }
+    function buildReport(){
+      return `APM BUSINESS MANAGEMENT SYSTEM SNAPSHOT
+Generated: ${new Date().toLocaleString()}
+
+Employees: ${employees.length}
+Pending approvals: ${approvals.filter(a=>!["Approved","Returned"].includes(a.status)).length}
+Open tickets: ${tickets.filter(t=>t.status==="Open").length}
+Active clients: ${clients.filter(c=>c.status==="Active").length}
+Open job orders: ${jobs.filter(j=>j.status!=="Closed").length}
+
+Recommended admin actions:
+- Review pending cash advance and billing approvals.
+- Close resolved support tickets.
+- Follow up prospects with unpaid or active balances.
+- Move ready job orders to client delivery.`;
+    }
+    function renderReports(){
+      qs("#mainPanel").innerHTML=`<article class="panel pad"><div class="section-head"><div><span class="eyebrow">Reports</span><h2>Management snapshot</h2><p>Exportable summary for executives.</p></div><button class="btn primary" id="downloadReport">Download</button></div><pre class="report">${buildReport()}</pre></article>`;
+      qs("#downloadReport").onclick=downloadReport;
+    }
+    function updateApproval(id,status){const item=approvals.find(a=>a.id===id);if(!item)return;item.status=status;addActivity(`${item.id} ${status.toLowerCase()}`);renderAll();notify(`Request ${status.toLowerCase()}`)}
+    function renderActivity(){qs("#activityList").innerHTML=activity.slice(0,7).map(item=>`<div class="event"><strong>${item}</strong><span>${new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})}</span></div>`).join("")}
+    function renderOwners(){qs("#ownerSelect").innerHTML=employees.map(e=>`<option>${e.name}</option>`).join("")}
+    function renderAll(){renderMetrics();renderModules();renderMain();renderActivity();renderOwners()}
+    function downloadReport(){const blob=new Blob([buildReport()],{type:"text/plain"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="apm-bsm-snapshot.txt";a.click();URL.revokeObjectURL(url);addActivity("Report exported");notify("Snapshot exported")}
+    qsa("[data-module]").forEach(b=>b.onclick=()=>{active=b.dataset.module;addActivity(`${moduleMeta[active].title} opened`);renderAll();});
+    qs("#quickForm").onsubmit=e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.currentTarget).entries());if(d.type==="Support Ticket"){tickets.unshift({id:`TK-${1000+tickets.length+1}`,subject:d.subject,owner:d.owner,priority:"Normal",status:"Open"});}else{approvals.unshift({id:`REQ-${Math.floor(1000+Math.random()*8999)}`,type:d.type,owner:d.owner,dept:"Operations",amount:d.type==="Cash Advance"?15000:0,status:"Pending"});}addActivity(`${d.type} submitted: ${d.subject}`);renderAll();notify("Request submitted")};
+    qs("#loadDay").onclick=()=>{approvals.unshift({id:"CA-8820",type:"Cash Advance",owner:"Jessa Lim",dept:"Finance",amount:9500,status:"Pending"});tickets.unshift({id:"TK-1010",subject:"New user access request",owner:"Patricia Mendoza",priority:"Normal",status:"Open"});jobs.unshift({id:"JO-5530",client:"Northbay Construction",title:"Urgent billing package",status:"Pending"});addActivity("Sample workday loaded");renderAll();notify("Sample workday loaded")};
+    qs("#exportReport").onclick=downloadReport;
+    renderAll();
+  </script>
+</body>
 </html>

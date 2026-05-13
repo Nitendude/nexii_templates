@@ -1,18 +1,18 @@
 const demos = [
   {
-    title: "Enterprise ERP Business Management System",
-    client: "Enterprise operations teams",
+    title: "NEXII BSM Business Management System",
+    client: "Enterprise and dealership operations teams",
     industry: "Operations",
     status: "Template",
     audience: "client",
-    type: "ERP System",
+    type: "BSM / ERP System",
     url: "",
     pageUrl: "pages/erp-business-management.html",
-    summary: "Full business management system demo for finance, procurement, inventory, HR, CRM, projects, approvals, and executive reporting.",
-    tags: ["ERP", "Finance", "Inventory", "HR", "Reports"],
+    summary: "Full business management system demo for inventory, sales orders, receivables, purchasing, payables, finance, HR, payroll, branches, and executive reporting.",
+    tags: ["BSM", "ERP", "Finance", "Inventory", "Payroll"],
     color: "#1d4ed8",
     image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80",
-    icon: "ERP"
+    icon: "BSM"
   },
   {
     title: "Beemo's Hidden Patch Booking",
@@ -28,6 +28,21 @@ const demos = [
     color: "#0f766e",
     image: "https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=1200&q=80",
     icon: "BH"
+  },
+  {
+    title: "Resort Management System Demo",
+    client: "Resorts, glamping sites, and private villas",
+    industry: "Hospitality",
+    status: "Template",
+    audience: "client",
+    type: "Resort BSM / PMS",
+    url: "",
+    pageUrl: "pages/resort-management.html",
+    summary: "Full resort management template with guest booking, room inventory, housekeeping readiness, add-ons, payments, reservation admin, and operations dashboard.",
+    tags: ["Resort", "Bookings", "Housekeeping", "PMS", "Amenities"],
+    color: "#0f766e",
+    image: "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&w=1200&q=80",
+    icon: "RS"
   },
   {
     title: "APMCB Website",
@@ -75,16 +90,16 @@ const demos = [
     icon: "OP"
   },
   {
-    title: "Nexii Tech AI Proposal Portal",
-    client: "Nexii Tech Automations",
+    title: "AI Proposal Builder Demo",
+    client: "Sales teams and service businesses",
     industry: "Sales",
-    status: "Demo Page",
-    audience: "internal",
-    type: "Sales Automation",
+    status: "Template",
+    audience: "client",
+    type: "AI Sales Tool",
     url: "",
     pageUrl: "pages/nexii-ai-proposal-app/index.html",
-    summary: "Proposal and outreach portal for generating client proposals, categorizing leads, storing client data, and connecting automation endpoints.",
-    tags: ["AI proposal", "CRM", "n8n", "Lead intake"],
+    summary: "Client-safe AI proposal builder demo with intake form, generated proposal preview, approval workflow, sample pipeline, activity timeline, copy, send, and download actions.",
+    tags: ["AI proposal", "Sales", "Pipeline", "Demo safe"],
     color: "#7c3aed",
     image: "https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=1200&q=80",
     icon: "AI"

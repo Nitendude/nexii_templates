@@ -3,728 +3,281 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Nexii Tech AI Proposal Portal</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <title>Nexii AI Proposal Studio</title>
+  <style>
+    :root{--bg:#f4f7fb;--panel:#fff;--panel2:#f8fafc;--ink:#101828;--muted:#667085;--line:#d6e0ea;--blue:#155eef;--blue2:#1849a9;--teal:#0f766e;--green:#067647;--amber:#b54708;--red:#b42318;--nav:#111827;--shadow:0 18px 45px rgba(16,24,40,.08)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:14px}button,input,select,textarea{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}
+    .app{min-height:100vh;display:grid;grid-template-columns:252px minmax(0,1fr)}.sidebar{background:var(--nav);color:#e5edf8;padding:18px;display:flex;flex-direction:column;gap:18px;position:sticky;top:0;height:100vh}.brand{display:flex;gap:11px;align-items:center}.logo{width:40px;height:40px;border-radius:9px;background:#155eef;display:grid;place-items:center;color:#fff;font-weight:950}.brand strong{display:block}.brand span{display:block;margin-top:2px;color:#98a2b3;font-size:.8rem}
+    .nav{display:grid;gap:6px}.nav button,.hub{min-height:40px;border:0;border-radius:8px;background:transparent;color:#cbd5e1;text-align:left;font-weight:850;padding:0 11px}.nav button.active,.nav button:hover,.hub:hover{background:rgba(255,255,255,.1);color:#fff}.demo-note{margin-top:auto;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);border-radius:12px;padding:13px;color:#b8c5d6;line-height:1.45}.demo-note strong{display:block;color:#fff;margin-bottom:5px}
+    main{min-width:0}.top{height:62px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:14px;padding:0 22px;position:sticky;top:0;z-index:10}.title strong{display:block}.title span{display:block;margin-top:2px;color:var(--muted);font-size:.84rem}.actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .btn{min-height:36px;border:1px solid var(--line);border-radius:8px;background:#fff;color:#1849a9;font-weight:850;padding:0 12px;display:inline-flex;align-items:center;justify-content:center;gap:7px}.btn:hover{background:#f2f6fb}.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}.btn.dark{background:#101828;border-color:#101828;color:#fff}.btn.teal{background:var(--teal);border-color:var(--teal);color:#fff}.btn.red{background:#fff1f0;border-color:#ffd0cc;color:var(--red)}.btn.small{min-height:30px;font-size:.82rem;padding:0 9px}.workspace{padding:20px;display:grid;gap:16px}
+    .hero{display:grid;grid-template-columns:minmax(0,1.2fr)390px;gap:16px}.hero-main{min-height:230px;border-radius:14px;background:linear-gradient(135deg,#102a43 0%,#155eef 54%,#0f766e 100%);color:#fff;padding:24px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden}.hero-main:after{content:"";position:absolute;right:-110px;top:-100px;width:340px;height:340px;border:52px solid rgba(255,255,255,.12);border-radius:50%}.hero-main h1{position:relative;margin:0;font-size:clamp(1.8rem,3vw,3.25rem);line-height:1.02;letter-spacing:-.03em;max-width:780px}.hero-main p{position:relative;margin:12px 0 0;color:#dceafe;line-height:1.55;max-width:720px}.tags{position:relative;display:flex;gap:8px;flex-wrap:wrap}.tag{display:inline-flex;align-items:center;min-height:28px;border-radius:999px;background:rgba(255,255,255,.15);color:#fff;font-weight:850;font-size:.78rem;padding:0 10px}
+    .panel{background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}.pad{padding:18px}.panel h2,.panel h3{margin:0}.panel p{color:var(--muted);line-height:1.55}.eyebrow{margin:0 0 7px;color:#155eef;font-size:.72rem;font-weight:950;letter-spacing:.1em;text-transform:uppercase}.kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.kpi{border:1px solid var(--line);border-radius:10px;background:#fbfdff;padding:12px}.kpi span{display:block;color:var(--muted);font-size:.75rem;font-weight:800}.kpi strong{display:block;margin-top:6px;font-size:1.4rem}
+    .build{display:grid;grid-template-columns:360px minmax(0,1fr)340px;gap:16px;align-items:start}.section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:13px}.section-head p{margin:4px 0 0}.form{display:grid;gap:11px}label{display:grid;gap:6px;color:#344054;font-weight:850}.two-fields{display:grid;grid-template-columns:1fr 1fr;gap:10px}input,select,textarea{width:100%;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);padding:10px 11px;outline:0}textarea{min-height:110px;resize:vertical}input:focus,select:focus,textarea:focus{border-color:#84adff;box-shadow:0 0 0 3px rgba(21,94,239,.12)}
+    .step-tabs{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--line)}.step-tabs button{min-height:48px;border:0;border-right:1px solid var(--line);background:#fff;color:#475467;font-weight:900}.step-tabs button:last-child{border-right:0}.step-tabs button.active{background:#edf4ff;color:#155eef}.screen{min-height:610px;padding:18px}.doc{min-height:520px;border:1px solid var(--line);border-radius:10px;background:#fff;white-space:pre-wrap;padding:22px 24px;line-height:1.68;font-family:Georgia,"Times New Roman",serif;font-size:1rem}.doc:empty:before{content:"Generate a proposal to preview the client-ready document.";color:#98a2b3;font-family:Inter,ui-sans-serif,system-ui}
+    .status{display:inline-flex;align-items:center;min-height:26px;border-radius:999px;background:#edf4ff;color:#1849a9;font-size:.76rem;font-weight:900;padding:0 9px}.status.green{background:#eaf6f1;color:var(--green)}.status.amber{background:#fff4e5;color:var(--amber)}.status.red{background:#fff1f0;color:var(--red)}.pricing{display:grid;gap:12px}.quote-line{display:grid;grid-template-columns:1fr 110px 34px;gap:8px;align-items:center}.quote-card{border:1px solid var(--line);border-radius:10px;padding:14px;background:#fbfdff}.quote-total{display:flex;justify-content:space-between;gap:12px;border-top:1px solid var(--line);padding-top:12px;margin-top:12px;font-size:1.2rem;font-weight:950}.portal{display:grid;gap:12px}.portal-card{border:1px solid var(--line);border-radius:10px;padding:14px;background:#fbfdff}.portal-card strong{display:block;margin-bottom:5px}.portal-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.mini{border:1px solid var(--line);border-radius:10px;background:#fff;padding:12px;text-align:left}.mini strong{display:block}.mini span{display:block;color:var(--muted);font-size:.82rem;margin-top:4px}
+    .assistant{display:grid;gap:12px}.score{display:grid;grid-template-columns:86px 1fr;gap:12px;align-items:center}.ring{width:86px;height:86px;border-radius:50%;background:conic-gradient(#0f766e 0 92%,#e7edf5 92%);display:grid;place-items:center}.ring span{width:66px;height:66px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:1.35rem;font-weight:950}.checklist{display:grid;gap:8px}.check{display:flex;gap:8px;color:#344054}.dot{width:18px;height:18px;border-radius:50%;background:#ecfdf3;color:var(--green);display:grid;place-items:center;font-size:.8rem;font-weight:950;flex:0 0 auto}
+    .lower{display:grid;grid-template-columns:minmax(0,1fr)340px;gap:16px}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse}th,td{border-bottom:1px solid var(--line);padding:11px;text-align:left;white-space:nowrap}th{color:var(--muted);font-size:.72rem;text-transform:uppercase;letter-spacing:.05em}tr:hover td{background:#f8fafc}.stage{display:inline-flex;border-radius:999px;background:#edf4ff;color:#1849a9;font-size:.76rem;font-weight:900;padding:4px 8px}.stage.sent{background:#eaf6f1;color:var(--green)}.stage.review{background:#fff4e5;color:var(--amber)}.activity{display:grid;gap:9px}.event{border:1px solid var(--line);border-radius:9px;background:#fff;padding:10px}.event strong{display:block}.event span{display:block;margin-top:3px;color:var(--muted);font-size:.82rem}.toast{position:fixed;right:18px;bottom:18px;background:#101828;color:#fff;border-radius:10px;padding:12px 14px;font-weight:850;box-shadow:var(--shadow);opacity:0;transform:translateY(10px);transition:.2s;z-index:50}.toast.show{opacity:1;transform:translateY(0)}
+    @media(max-width:1240px){.build{grid-template-columns:360px minmax(0,1fr)}.assistant{grid-column:1/-1;grid-template-columns:repeat(3,1fr)}}@media(max-width:980px){.app{grid-template-columns:1fr}.sidebar{position:static;height:auto}.hero,.build,.lower{grid-template-columns:1fr}.assistant{grid-template-columns:1fr}.screen{min-height:0}.doc{min-height:420px}}@media(max-width:640px){.top{height:auto;align-items:flex-start;flex-direction:column;padding:14px}.workspace{padding:12px}.two-fields,.kpis,.portal-actions,.step-tabs{grid-template-columns:1fr}.quote-line{grid-template-columns:1fr 1fr 34px}.hero-main{min-height:285px}}
+  </style>
 </head>
 <body>
-  <div id="root"></div>
+  <section class="app">
+    <aside class="sidebar">
+      <div class="brand"><div class="logo">NX</div><div><strong>Nexii Proposal Studio</strong><span>AI proposal system</span></div></div>
+      <nav class="nav">
+        <button class="active" data-scroll="build">Build & Preview</button>
+        <button data-scroll="pricing">Pricing</button>
+        <button data-scroll="portal">Client Portal</button>
+        <button data-scroll="pipeline">Pipeline</button>
+      </nav>
+      <a class="hub" href="../../index.html#catalog">Back to Demo Hub</a>
+      <div class="demo-note"><strong>What you can demo</strong>Fill the intake, generate a proposal, calculate pricing, approve it, preview the client portal, queue a send, and watch the pipeline update.</div>
+    </aside>
 
-  <script type="text/babel">
-    const { useEffect, useState } = React;
-    const DEMO_MODE = true;
-    const PUBLIC_SITE_URL = "https://n3xiisal3z-prop0z4l.vercel.app";
-    const LOCAL_N8N_BASE_URL = "http://localhost:5670";
-    const isLocalHost = ["localhost", "127.0.0.1"].includes(window.location.hostname);
-    const APP_ENDPOINT = isLocalHost
-      ? `${LOCAL_N8N_BASE_URL}/webhook/nexii-tech-proposal`
-      : "/api/proposal";
-    const STATS_ENDPOINT = isLocalHost
-      ? `${LOCAL_N8N_BASE_URL}/webhook/nexii-tech-stats`
-      : "/api/stats";
-    const CLIENTS_ENDPOINT = isLocalHost
-      ? "/clients.php"
-      : "/api/clients";
+    <main>
+      <header class="top">
+        <div class="title"><strong>AI Proposal Builder</strong><span>Client intake, AI draft, pricing, approval, portal preview, and sales tracking.</span></div>
+        <div class="actions"><button class="btn" id="resetBtn">Reset Demo</button><button class="btn primary" id="generateTop">Generate Proposal</button></div>
+      </header>
 
-    const iconPaths = {
-      Send: <><path d="m22 2-7 20-4-9-9-4Z" /><path d="M22 2 11 13" /></>,
-      Database: <><ellipse cx="12" cy="5" rx="9" ry="3" /><path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5" /><path d="M3 12c0 1.7 4 3 9 3s9-1.3 9-3" /></>,
-      Sparkles: <><path d="m12 3-1.9 5.8L4 11l6.1 2.2L12 19l1.9-5.8L20 11l-6.1-2.2Z" /></>,
-      Mail: <><rect width="20" height="16" x="2" y="4" rx="2" /><path d="m22 7-10 6L2 7" /></>,
-      Copy: <><rect width="14" height="14" x="8" y="8" rx="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" /></>,
-      Check: <path d="M20 6 9 17l-5-5" />,
-      Settings: <><path d="M12.2 2h-.4a2 2 0 0 0-2 2v.2a2 2 0 0 1-1 1.7l-.4.2a2 2 0 0 1-2 0l-.2-.1a2 2 0 0 0-2.7.7l-.2.3a2 2 0 0 0 .7 2.7l.2.1a2 2 0 0 1 1 1.7v.5a2 2 0 0 1-1 1.7l-.2.1a2 2 0 0 0-.7 2.7l.2.3a2 2 0 0 0 2.7.7l.2-.1a2 2 0 0 1 2 0l.4.2a2 2 0 0 1 1 1.7v.2a2 2 0 0 0 2 2h.4a2 2 0 0 0 2-2v-.2a2 2 0 0 1 1-1.7l.4-.2a2 2 0 0 1 2 0l.2.1a2 2 0 0 0 2.7-.7l.2-.3a2 2 0 0 0-.7-2.7l-.2-.1a2 2 0 0 1-1-1.7v-.5a2 2 0 0 1 1-1.7l.2-.1a2 2 0 0 0 .7-2.7l-.2-.3a2 2 0 0 0-2.7-.7l-.2.1a2 2 0 0 1-2 0l-.4-.2a2 2 0 0 1-1-1.7V4a2 2 0 0 0-2-2Z" /><circle cx="12" cy="12" r="3" /></>,
-      LayoutDashboard: <><rect width="7" height="9" x="3" y="3" rx="1" /><rect width="7" height="5" x="14" y="3" rx="1" /><rect width="7" height="9" x="14" y="12" rx="1" /><rect width="7" height="5" x="3" y="16" rx="1" /></>,
-      Code: <><path d="m16 18 6-6-6-6" /><path d="m8 6-6 6 6 6" /></>,
-      Bot: <><path d="M12 8V4H8" /><rect width="16" height="12" x="4" y="8" rx="2" /><path d="M2 14h2" /><path d="M20 14h2" /><path d="M15 13v2" /><path d="M9 13v2" /></>,
-      UserCheck: <><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="m16 11 2 2 4-4" /></>
-    };
-
-    function Icon({ name, size = 16, className = "" }) {
-      return (
-        <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-          {iconPaths[name]}
-        </svg>
-      );
-    }
-
-    const Card = ({ className, children }) => (
-      <div className={`bg-white rounded-xl border border-gray-200 shadow-sm ${className || ""}`}>{children}</div>
-    );
-
-    const CardContent = ({ className, children }) => (
-      <div className={`p-6 ${className || ""}`}>{children}</div>
-    );
-
-    const Button = ({ children, onClick, variant = "default", className = "", disabled = false, size = "default", title }) => {
-      const baseStyle = "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50";
-      const variants = {
-        default: "bg-black text-white hover:bg-gray-800",
-        outline: "border border-gray-200 bg-white hover:bg-gray-100 hover:text-gray-900",
-        ghost: "hover:bg-gray-100 hover:text-gray-900",
-        secondary: "bg-gray-100 text-gray-900 hover:bg-gray-100/80"
-      };
-      const sizes = {
-        default: "h-10 px-4 py-2",
-        sm: "h-9 rounded-md px-3",
-        lg: "h-11 rounded-md px-8",
-        icon: "h-10 w-10"
-      };
-
-      return (
-        <button onClick={onClick} disabled={disabled} title={title} className={`${baseStyle} ${variants[variant]} ${sizes[size]} ${className}`}>
-          {children}
-        </button>
-      );
-    };
-
-    const Input = ({ value, onChange, placeholder, className = "", type = "text" }) => (
-      <input type={type} value={value} onChange={onChange} placeholder={placeholder} className={`flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 disabled:cursor-not-allowed disabled:opacity-50 ${className}`} />
-    );
-
-    const Label = ({ children, className = "" }) => (
-      <label className={`text-sm font-medium leading-none ${className}`}>{children}</label>
-    );
-
-    const Textarea = ({ value, onChange, placeholder, className = "" }) => (
-      <textarea value={value} onChange={onChange} placeholder={placeholder} className={`flex min-h-[80px] w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 disabled:cursor-not-allowed disabled:opacity-50 ${className}`} />
-    );
-
-    const Badge = ({ children, className = "" }) => (
-      <div className={`inline-flex items-center rounded-full border border-gray-200 px-2.5 py-0.5 text-xs font-semibold ${className}`}>{children}</div>
-    );
-
-    const CATEGORIES_DATA = {
-      Core: ["Restaurant", "Real Estate", "Clinic", "E-commerce", "Construction", "Logistics", "Education", "Finance"],
-      "Gov/Public": ["Government", "School", "University", "NGO", "Religious", "Community"],
-      "Energy/Ind": ["Solar", "Manufacturing", "Warehousing", "Recycling", "Mining", "Oil & Gas"],
-      "Food/Hosp": ["Fast Food", "Cafe", "Bar/Nightclub", "Hotel", "Catering", "Bakery", "Food Truck"],
-      Health: ["Dental", "Pharmacy", "Gym/Fitness", "Spa/Salon", "Veterinary", "Hospital", "Therapy", "Chiro"],
-      Retail: ["Clothing", "Grocery", "Jewelry", "Furniture", "Electronics", "Auto Dealer", "Convenience"],
-      "Prof. Svcs": ["Law Firm", "Accounting", "Insurance", "Marketing", "Consulting", "Architecture", "Engineering"],
-      Trades: ["Plumbing", "HVAC", "Landscaping", "Cleaning", "Moving", "Pest Control", "Electrician", "Roofing", "Painting"],
-      Auto: ["Auto Repair", "Car Wash", "Parking", "Taxi/Rideshare", "Courier"],
-      Leisure: ["Travel", "Events", "Photography", "Gaming", "Cinema", "Museum", "Library"]
-    };
-
-    const ALL_CATEGORIES = Object.values(CATEGORIES_DATA).flat();
-
-    function createEmptyStats() {
-      return ALL_CATEGORIES.reduce((accumulator, category) => {
-        accumulator[category] = 0;
-        return accumulator;
-      }, {});
-    }
-
-    const N8N_WORKFLOW_JSON = {
-      name: "Nexii Tech AI Proposal Automation",
-      nodes: [
-        {
-          parameters: {
-            path: "nexii-tech-proposal",
-            responseMode: "onReceived",
-            responseData: "firstEntryJson",
-            responseCode: 200,
-            responseBody: "={ success: true, message: \"Proposal automation started. Check MySQL and Telegram for completion.\" }",
-            options: {
-              allowedOrigins: "https://n3xiisal3z-prop0z4l.vercel.app"
-            }
-          },
-          name: "Webhook",
-          type: "n8n-nodes-base.webhook",
-          typeVersion: 1,
-          position: [250, 300],
-          webhookId: "nexii-tech-proposal"
-        },
-        {
-          parameters: {
-            operation: "executeQuery",
-            query: "INSERT INTO nexii_leads (email, company, category, notes, referrer, created_at) VALUES (?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE category = VALUES(category), notes = VALUES(notes), referrer = VALUES(referrer), updated_at = CURRENT_TIMESTAMP",
-            options: {
-              queryReplacement: "={{ [$json.body.email, $json.body.company, $json.body.category, $json.body.notes, $json.body.referrer, $json.body.submittedAt || $now] }}"
-            }
-          },
-          name: "MySQL Leads",
-          type: "n8n-nodes-base.mySql",
-          typeVersion: 4.4,
-          position: [450, 300],
-          credentials: { mySql: { id: "YOUR_MYSQL_CRED_ID", name: "MySQL account" } }
-        },
-        {
-          parameters: {
-            model: "gemini-1.5-flash-latest",
-            prompt: "=You are a professional Sales Consultant from Nexii Tech Automations.\\n\\nWrite a concise, formal business outreach EMAIL BODY ONLY for a potential client.\\n\\nClient Information:\\n- Company Name: {{ $json.body.company }}\\n- Industry: {{ $json.body.category }}\\n- Website: {{ $json.body.website || 'Not provided' }}\\n- Business Needs / Admin Notes: {{ $json.body.notes || 'No notes provided' }}\\n\\nContext:\\nThis is cold outreach. The client did not contact us first.\\n\\nRules:\\n- Start exactly with: Dear {{ $json.body.company }},\\n- Use only the company name in the greeting.\\n- Do not include a subject line, markdown, placeholders, bullet points, or headings.\\n- Write only the email body.\\n- Use simple, clear business English.\\n- Avoid deep or fancy words such as bespoke, tailored, foster, empower, optimize, leverage, comprehensive, sophisticated, strategic, seamless, robust, maximize, and personalized.\\n- Prefer plain words like build, improve, fix, manage, help, and set up.\\n- Explicitly mention the business needs from the notes in paragraph 1.\\n- In paragraph 2, directly connect those needs to Nexii Tech services that solve them.\\n- If the notes mention booking, mention booking system or booking website improvements.\\n- If the notes mention website, mention website improvement or website redevelopment.\\n- If the notes mention marketing, translate that into services we actually offer such as website optimization, lead capture flows, CRM follow-up automation, inquiry handling, and conversion-focused automation. Do not claim we offer general marketing agency services.\\n- Do not write generic industry statements unless they support the specific notes.\\n\\nLength:\\n- Maximum 3 short paragraphs.\\n- Each paragraph must have 2 sentences only.\\n- Total length must be 110 to 150 words.\\n\\nContent:\\nParagraph 1: Introduce Nexii Tech Automations and reference the exact business needs from the notes.\\nParagraph 2: Explain how Nexii Tech can build or improve the client's system using only relevant services from website development, CRM or management systems, booking systems, inquiry handling, and automation solutions.\\nParagraph 3: Invite them to a short discussion or demo with a confident but non-pushy closing.\\n\\nEnd with:\\n\\nSincerely,\\nNexii Tech Automations",
-            options: {}
-          },
-          name: "Gemini AI",
-          type: "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
-          typeVersion: 1,
-          position: [650, 300],
-          credentials: { googleGeminiApi: { id: "YOUR_GEMINI_CRED_ID", name: "Google Gemini API" } }
-        },
-        {
-          parameters: {
-            fromEmail: "proposals@nexiitech.com",
-            toEmail: "={{ $json.body.email }}",
-            subject: "=Proposal for {{ $json.body.company }} - Nexii Tech Automation",
-            html: "=<h1>Proposal for {{ $json.body.company }}</h1><p>Hello,</p><p>Please find your custom automation proposal below:</p><hr>{{ $json.output }}<hr><p>Best regards,<br>Nexii Tech Team</p>",
-            options: {}
-          },
-          name: "Send Telegram",
-          type: "n8n-nodes-base.httpRequest",
-          typeVersion: 4.2,
-          position: [850, 300],
-          credentials: {}
-        }
-      ],
-      connections: {
-        Webhook: { main: [[{ node: "MySQL Leads", type: "main", index: 0 }]] },
-        "MySQL Leads": { main: [[{ node: "Gemini AI", type: "main", index: 0 }]] },
-        "Gemini AI": { main: [[{ node: "Send Telegram", type: "main", index: 0 }]] }
-      },
-      pinData: {}
-    };
-
-    function NexiiTechAutomationPortal() {
-      const [form, setForm] = useState({ email: "", category: "", company: "", website: "", notes: "", referrer: "" });
-      const [loading, setLoading] = useState(false);
-      const [result, setResult] = useState(null);
-      const [previewContent, setPreviewContent] = useState("");
-      const [activeRequest, setActiveRequest] = useState("send");
-      const [copied, setCopied] = useState(false);
-      const [draftCopied, setDraftCopied] = useState(false);
-      const [stats, setStats] = useState(createEmptyStats);
-      const [totalSent, setTotalSent] = useState(0);
-      const [statsStatus, setStatsStatus] = useState("Connecting to live activity...");
-      const [clients, setClients] = useState([]);
-      const [clientsStatus, setClientsStatus] = useState("Loading MySQL client list...");
-      const allCategories = ALL_CATEGORIES;
-      const telegramDraft = previewContent
-        ? [
-            "NEXII TECH PROPOSAL",
-            `Company: ${form.company || "-"}`,
-            `Client Email: ${form.email || "-"}`,
-            `Category: ${form.category || "-"}`,
-            `Website: ${form.website || "-"}`,
-            `Sales Owner: ${form.referrer || "-"}`,
-            "",
-            previewContent
-          ].join("\n")
-        : "";
-
-      const demoClients = [
-        {
-          id: 1,
-          company: "Santos Dental Clinic",
-          email: "owner@santosdental.example",
-          category: "Dental",
-          referrer: "Maria Sales",
-          latest_status: "draft sent",
-          latest_event_type: "proposal_preview",
-          last_activity_at: "May 12, 2026"
-        },
-        {
-          id: 2,
-          company: "Green Bowl Cafe",
-          email: "hello@greenbowl.example",
-          category: "Cafe",
-          referrer: "APM Demo",
-          latest_status: "tracked",
-          latest_event_type: "lead_created",
-          last_activity_at: "May 11, 2026"
-        },
-        {
-          id: 3,
-          company: "Mabuhay Realty Group",
-          email: "sales@mabuhayrealty.example",
-          category: "Real Estate",
-          referrer: "Nexii Team",
-          latest_status: "follow-up",
-          latest_event_type: "telegram_draft",
-          last_activity_at: "May 10, 2026"
-        }
-      ];
-
-      const buildDemoProposal = (payload) => {
-        const needText = payload.notes || "website improvement, inquiry handling, and client follow-up automation";
-        return [
-          `Dear ${payload.company || "Business Owner"},`,
-          "",
-          `Nexii Tech Automations helps businesses improve daily work through websites, CRM workflows, booking systems, inquiry handling, and automation. Based on your notes, the main opportunity is ${needText}.`,
-          "",
-          `For a ${payload.category} business, we can set up a clearer website flow, capture leads in one place, and create follow-up steps so your team can respond faster and manage requests with less manual work.`,
-          "",
-          "We would be glad to show a short demo and map the best setup for your team.",
-          "",
-          "Sincerely,",
-          "Nexii Tech Automations"
-        ].join("\n");
-      };
-
-      useEffect(() => {
-        let cancelled = false;
-
-        const loadStats = async () => {
-          if (DEMO_MODE) {
-            const nextCounts = createEmptyStats();
-            nextCounts.Restaurant = 4;
-            nextCounts["Real Estate"] = 3;
-            nextCounts.Clinic = 5;
-            nextCounts.Cafe = 2;
-            nextCounts.Dental = 2;
-            nextCounts.Logistics = 1;
-            setStats(nextCounts);
-            setTotalSent(17);
-            setStatsStatus("Demo activity loaded from sample proposal history");
-            return;
-          }
-
-          try {
-            const response = await fetch(STATS_ENDPOINT, {
-              method: "GET",
-              cache: "no-store"
-            });
-            const data = await response.json().catch(() => ({}));
-
-            if (!response.ok) {
-              throw new Error(data.message || `Request failed with status ${response.status}`);
-            }
-
-            if (cancelled) {
-              return;
-            }
-
-            const nextCounts = createEmptyStats();
-            Object.entries(data.counts || {}).forEach(([category, count]) => {
-              if (Object.prototype.hasOwnProperty.call(nextCounts, category)) {
-                nextCounts[category] = Number(count) || 0;
-              }
-            });
-
-            setStats(nextCounts);
-            setTotalSent(Number(data.totalSent) || 0);
-            setStatsStatus(data.message || (isLocalHost ? "Live activity connected to local n8n" : "Live activity connected"));
-          } catch (error) {
-            if (cancelled) {
-              return;
-            }
-
-            setStats(createEmptyStats());
-            setTotalSent(0);
-            setStatsStatus(`Waiting for live stats: ${error.message}`);
-          }
-        };
-
-        loadStats();
-        const intervalId = window.setInterval(loadStats, 10000);
-
-        return () => {
-          cancelled = true;
-          window.clearInterval(intervalId);
-        };
-      }, []);
-
-      useEffect(() => {
-        let cancelled = false;
-
-        const loadClients = async () => {
-          if (DEMO_MODE) {
-            setClients(demoClients);
-            setClientsStatus("Demo MySQL client list loaded");
-            return;
-          }
-
-          try {
-            const response = await fetch(CLIENTS_ENDPOINT, {
-              method: "GET",
-              cache: "no-store"
-            });
-            const data = await response.json().catch(() => ({}));
-
-            if (!response.ok) {
-              throw new Error(data.message || `Request failed with status ${response.status}`);
-            }
-
-            if (cancelled) {
-              return;
-            }
-
-            setClients(Array.isArray(data.clients) ? data.clients : []);
-            setClientsStatus(data.message || "Client monitor loaded");
-          } catch (error) {
-            if (cancelled) {
-              return;
-            }
-
-            setClients([]);
-            setClientsStatus(`Client monitor unavailable: ${error.message}`);
-          }
-        };
-
-        loadClients();
-        const intervalId = window.setInterval(loadClients, 10000);
-
-        return () => {
-          cancelled = true;
-          window.clearInterval(intervalId);
-        };
-      }, []);
-
-      const submitLead = async (mode = "send") => {
-        if (!form.email || !form.category || !form.referrer) {
-          alert("Please fill in Client Email, Category, and Sales Owner / Referrer");
-          return;
-        }
-
-        setLoading(true);
-        setActiveRequest(mode);
-        setResult(null);
-
-        try {
-          const payload = {
-            email: form.email,
-            category: form.category,
-            company: form.company,
-            website: form.website,
-            notes: form.notes,
-            referrer: form.referrer,
-            mode,
-            source: "NEXII TECH AUTOMATION Website",
-            submittedAt: new Date().toISOString()
-          };
-
-          if (DEMO_MODE) {
-            await new Promise((resolve) => window.setTimeout(resolve, 450));
-            const generated = buildDemoProposal(payload);
-            setPreviewContent(generated);
-            setTotalSent((current) => mode === "send" ? current + 1 : current);
-            setStats((current) => ({
-              ...current,
-              [payload.category]: (current[payload.category] || 0) + 1
-            }));
-            setClients((current) => [
-              {
-                id: Date.now(),
-                company: payload.company || "New Demo Lead",
-                email: payload.email,
-                category: payload.category,
-                referrer: payload.referrer,
-                latest_status: mode === "preview" ? "preview ready" : "telegram queued",
-                latest_event_type: mode === "preview" ? "proposal_preview" : "telegram_send",
-                last_activity_at: "Just now"
-              },
-              ...current
-            ]);
-            setClientsStatus("Demo client list updated");
-            setResult({
-              success: true,
-              message: mode === "preview" ? "Demo Telegram draft generated." : "Demo proposal queued to Telegram.",
-              data: { payload, proposalContent: generated }
-            });
-            setLoading(false);
-            return;
-          }
-
-          const requestOptions = {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify(payload)
-          };
-
-          const res = await fetch(APP_ENDPOINT, requestOptions);
-          const data = await res.json().catch(() => ({}));
-          if (!res.ok) {
-            throw new Error(data.message || `Request failed with status ${res.status}`);
-          }
-
-          const upstreamData = data.upstream || data;
-          if (upstreamData.proposalContent) {
-            setPreviewContent(upstreamData.proposalContent);
-          }
-
-          setResult({
-            success: true,
-            message: data.message || (mode === "preview"
-              ? "Telegram draft generated successfully."
-              : (isLocalHost ? "Proposal triggered successfully on local n8n!" : "Proposal triggered successfully!")),
-            data
-          });
-        } catch (error) {
-          setResult({ success: false, message: `Error: ${error.message}. Check console.` });
-        }
-
-        setLoading(false);
-      };
-
-      const copyToClipboard = () => {
-        navigator.clipboard.writeText(JSON.stringify(N8N_WORKFLOW_JSON, null, 2));
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-      };
-
-      const copyTelegramDraft = () => {
-        if (!telegramDraft) {
-          return;
-        }
-        navigator.clipboard.writeText(telegramDraft);
-        setDraftCopied(true);
-        setTimeout(() => setDraftCopied(false), 2000);
-      };
-
-      return (
-        <div className="min-h-screen bg-gray-50 p-4 md:p-6 font-sans text-gray-900">
-          <div className="max-w-[1600px] mx-auto grid lg:grid-cols-12 gap-4 min-h-[calc(100vh-48px)]">
-            <div className="lg:col-span-7 flex flex-col h-full">
-              <Card className="rounded-2xl shadow-xl border-0 ring-1 ring-gray-200 flex flex-col h-full overflow-hidden">
-                <CardContent className="p-6 space-y-5 flex-1 overflow-y-auto">
-                  <div className="space-y-4 border-b pb-4">
-                    <div className="flex justify-between items-start gap-3">
-                      <div>
-                        <Badge className="mb-2 bg-blue-50 text-blue-700 border-blue-100">NEXII TECH AUTOMATION</Badge>
-                        <h1 className="text-2xl font-bold tracking-tight">AI Proposal Portal</h1>
-                        <p className="text-sm text-gray-500 mt-1">Sales reps use this page only. The automation and live activity both come from your private server through secure relay routes.</p>
-                      </div>
-                      <div className="flex flex-col items-end gap-2">
-                        <a href="../../index.html#catalog" className="inline-flex h-9 items-center rounded-md border border-gray-200 bg-white px-3 text-xs font-semibold text-gray-700 shadow-sm hover:bg-gray-50">Demo Hub</a>
-                        <Badge className="bg-emerald-50 text-emerald-700 border-emerald-100">{DEMO_MODE ? "Demo Mode Ready" : "Live Link Ready"}</Badge>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-5">
-                    <div className="rounded-xl border border-blue-100 bg-blue-50 p-3 text-xs text-blue-800">
-                      {DEMO_MODE ? "Demo mode is active. Form actions generate sample drafts and update the dashboard without requiring private backend access." : <>Shared access link: <a href={PUBLIC_SITE_URL} className="font-semibold underline underline-offset-2">n3xiisal3z-prop0z4l.vercel.app</a></>}
-                    </div>
-
-                      <div className="grid md:grid-cols-2 gap-4">
-                        <div className="space-y-1.5">
-                          <Label>Client Email</Label>
-                          <Input value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="businessowner@company.com" />
-                        </div>
-                        <div className="space-y-1.5">
-                          <Label>Company Name</Label>
-                          <Input value={form.company} onChange={(e) => setForm({ ...form, company: e.target.value })} placeholder="Company Name" />
-                        </div>
-                      </div>
-
-                      <div className="space-y-1.5">
-                        <Label>Company Website</Label>
-                        <Input value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })} placeholder="https://company.com" />
-                      </div>
-
-                      <div className="space-y-1.5 bg-yellow-50 p-3 rounded-lg border border-yellow-100">
-                        <Label className="text-yellow-800 flex items-center gap-2 text-xs">
-                          <Icon name="UserCheck" size={12} className="w-3 h-3" />
-                          Sales Owner / Referrer
-                        </Label>
-                        <Input value={form.referrer} onChange={(e) => setForm({ ...form, referrer: e.target.value })} placeholder="Enter the salesperson name or owner ID" className="bg-white border-yellow-200 focus-visible:ring-yellow-500 h-9 text-xs" />
-                        <p className="text-[10px] text-yellow-700">* Required. This becomes the owner of the lead in MySQL. Other sales users will be blocked from re-sending the same client.</p>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label>Category of Business</Label>
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-x-4 gap-y-3">
-                          {Object.entries(CATEGORIES_DATA).map(([group, items]) => (
-                            <div key={group} className="space-y-1.5">
-                              <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-wider border-b border-gray-100 pb-1 mb-1">{group}</h4>
-                              <div className="grid grid-cols-2 gap-1.5">
-                                {items.map((item) => (
-                                  <Button key={item} variant={form.category === item ? "default" : "outline"} onClick={() => setForm({ ...form, category: item })} className="text-[10px] justify-center h-7 px-1 whitespace-nowrap overflow-hidden text-ellipsis" title={item}>
-                                    {item}
-                                  </Button>
-                                ))}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="space-y-1.5">
-                        <Label>Business Needs / Notes</Label>
-                        <Textarea value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} placeholder="Internal sales observation only. Example: No website yet, may need online ordering or booking improvements." className="min-h-[70px]" />
-                        <p className="text-[10px] text-gray-500">These notes are internal sales input. The email will frame them as a question or an offer, not as a confirmed client request.</p>
-                      </div>
-
-                      <div className="rounded-xl border border-gray-200 bg-gray-50 p-3 text-xs text-gray-600">
-                        <p className="font-semibold text-gray-800">Automation Route</p>
-                        <p className="mt-1 font-mono">{DEMO_MODE ? "Static demo route - no private webhook required" : APP_ENDPOINT}</p>
-                        <p className="mt-1">
-                          {DEMO_MODE
-                            ? "This publishable demo simulates the n8n, MySQL, Gemini, and Telegram handoff for client presentations."
-                            : isLocalHost
-                            ? "Local mode is active. This page sends requests directly to your local n8n instance."
-                            : "This page sends requests to Vercel, and Vercel forwards them to your private n8n webhook."}
-                        </p>
-                        <p className="mt-1">
-                          {DEMO_MODE
-                            ? <>Demo route: <span className="font-mono">proposal-preview -&gt; activity -&gt; client monitor</span></>
-                            : isLocalHost
-                            ? <>Local n8n route: <span className="font-mono">{APP_ENDPOINT}</span></>
-                            : <>Live activity uses <span className="font-mono">{STATS_ENDPOINT}</span> the same way.</>}
-                        </p>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
-                        <Button className="w-full h-10 text-sm font-semibold shadow-md" variant="outline" onClick={() => submitLead("preview")} disabled={loading}>
-                          {loading && activeRequest === "preview" ? "Generating Draft..." : <span className="flex items-center gap-2"><Icon name="Sparkles" size={14} /> Preview Telegram Draft</span>}
-                        </Button>
-                        <Button className="w-full h-10 text-sm font-semibold shadow-md" onClick={() => submitLead("send")} disabled={loading}>
-                          {loading && activeRequest === "send" ? "Sending..." : <span className="flex items-center gap-2"><Icon name="Send" size={14} /> Send To Telegram</span>}
-                        </Button>
-                      </div>
-
-                      {result && (
-                        <div className={`rounded-xl border p-3 text-xs overflow-hidden ${result.success ? "bg-green-50 border-green-200 text-green-800" : "bg-red-50 border-red-200 text-red-800"}`}>
-                          <strong>{result.success ? "Success:" : "Error:"}</strong> {result.message}
-                        </div>
-                      )}
-
-                      {previewContent && (
-                        <div className="rounded-xl border border-gray-200 bg-white p-4">
-                          <div className="flex items-center justify-between gap-3 mb-3">
-                            <div>
-                              <p className="text-sm font-semibold text-gray-900">Telegram Message Preview</p>
-                              <p className="text-[10px] text-gray-500">This is the message the sender can copy and paste from Telegram.</p>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Button size="sm" variant="secondary" onClick={copyTelegramDraft} className="bg-white shadow-sm border border-gray-200">
-                                {draftCopied ? <Icon name="Check" size={14} className="mr-1 text-green-600" /> : <Icon name="Copy" size={14} className="mr-1" />}
-                                {draftCopied ? "Copied!" : "Copy Draft"}
-                              </Button>
-                              <Badge className="bg-slate-50 text-slate-700 border-slate-200">Preview Ready</Badge>
-                            </div>
-                          </div>
-                          <div className="rounded-lg border border-blue-200 bg-blue-50 p-3 text-xs text-blue-900 whitespace-pre-wrap leading-5 mb-3">
-                            {telegramDraft}
-                          </div>
-                          <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm text-gray-800 whitespace-pre-wrap leading-6">
-                            {previewContent}
-                          </div>
-                        </div>
-                      )}
-                  </div>
-                </CardContent>
-              </Card>
+      <div class="workspace">
+        <section class="hero">
+          <div class="hero-main">
+            <div>
+              <h1>Demo the full proposal workflow, not just a static AI text box.</h1>
+              <p>This shows what you can build for clients: a branded sales workspace that turns inquiry notes into a proposal, pricing plan, approval flow, and client portal preview.</p>
             </div>
-
-            <div className="lg:col-span-5 flex flex-col gap-4 h-full">
-              <Card className="rounded-2xl shadow-lg border-0 ring-1 ring-gray-200 overflow-hidden flex flex-col flex-1">
-                <div className="bg-gray-900 p-3 text-white flex justify-between items-center shrink-0">
-                  <div>
-                    <h3 className="font-semibold flex items-center gap-2 text-sm"><Icon name="Sparkles" size={16} className="text-green-400" /> Today's Activity</h3>
-                    <p className="text-[10px] text-gray-400">{statsStatus}</p>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-xl font-bold font-mono leading-none">{totalSent}</div>
-                    <div className="text-[9px] text-gray-400 uppercase tracking-wider">Total Sent</div>
-                  </div>
-                </div>
-
-                <div className="p-3 bg-white flex-1 overflow-hidden flex flex-col">
-                  <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-5 xl:grid-cols-6 gap-2 overflow-y-auto pr-1">
-                    {allCategories.map((cat) => {
-                      const count = stats[cat] || 0;
-                      const hasActivity = count > 0;
-                      return (
-                        <div key={cat} className={`flex flex-col items-center justify-center p-1.5 rounded-md border text-center transition-all ${hasActivity ? "bg-green-50 border-green-100 shadow-sm" : "bg-gray-50 border-gray-100 opacity-60 grayscale"}`}>
-                          <span className={`text-base font-bold font-mono leading-none mb-0.5 ${hasActivity ? "text-green-700" : "text-gray-400"}`}>{count}</span>
-                          <span className="text-[9px] font-medium text-gray-600 truncate w-full px-0.5" title={cat}>{cat}</span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </Card>
-
-              <Card className="rounded-2xl shadow-lg border-0 ring-1 ring-gray-200 overflow-hidden flex flex-col flex-1">
-                <div className="bg-white p-3 border-b border-gray-200 shrink-0">
-                  <h3 className="font-semibold flex items-center gap-2 text-sm text-gray-900"><Icon name="Database" size={16} className="text-blue-600" /> Existing Clients</h3>
-                  <p className="text-[10px] text-gray-500 mt-1">{clientsStatus}</p>
-                </div>
-                <div className="p-3 bg-white flex-1 overflow-auto">
-                  {clients.length === 0 ? (
-                    <div className="rounded-lg border border-dashed border-gray-200 bg-gray-50 p-4 text-xs text-gray-500">
-                      No clients in MySQL yet.
-                    </div>
-                  ) : (
-                    <div className="space-y-2">
-                      {clients.map((client) => (
-                        <div key={`${client.id}-${client.email}`} className="rounded-lg border border-gray-200 bg-gray-50 p-3">
-                          <div className="flex items-start justify-between gap-3">
-                            <div className="min-w-0">
-                              <p className="text-sm font-semibold text-gray-900 truncate">{client.company || "Unknown Company"}</p>
-                              <p className="text-[11px] text-gray-600 truncate">{client.email || "-"}</p>
-                            </div>
-                            <Badge className="bg-white text-slate-700 border-slate-200">{client.latest_status || client.ownership_status || "tracked"}</Badge>
-                          </div>
-                          <div className="grid grid-cols-2 gap-2 mt-3 text-[10px] text-gray-600">
-                            <div><span className="font-semibold text-gray-800">Category:</span> {client.category || "-"}</div>
-                            <div><span className="font-semibold text-gray-800">Owner:</span> {client.referrer || "-"}</div>
-                            <div><span className="font-semibold text-gray-800">Last Event:</span> {client.latest_event_type || "-"}</div>
-                            <div><span className="font-semibold text-gray-800">Last Activity:</span> {client.last_activity_at || client.updated_at || client.created_at || "-"}</div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </Card>
-
-              <Card className="rounded-2xl shadow-lg border-0 ring-1 ring-gray-200 shrink-0">
-                <CardContent className="p-4">
-                  <div className="grid grid-cols-3 gap-4">
-                    <div className="flex items-start gap-2">
-                      <div className="p-1.5 bg-blue-50 rounded text-blue-600 shrink-0"><Icon name="Database" size={16} /></div>
-                      <div><h3 className="font-semibold text-gray-900 text-xs">MySQL</h3><p className="text-[10px] text-gray-500 mt-0.5">Stores lead, sender, and message history privately.</p></div>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <div className="p-1.5 bg-purple-50 rounded text-purple-600 shrink-0"><Icon name="Sparkles" size={16} /></div>
-                      <div><h3 className="font-semibold text-gray-900 text-xs">Gemini AI</h3><p className="text-[10px] text-gray-500 mt-0.5">Generates proposal. <span className="text-red-400 italic">Ignores referrer.</span></p></div>
-                    </div>
-                    <div className="flex items-start gap-2">
-                      <div className="p-1.5 bg-green-50 rounded text-green-600 shrink-0"><Icon name="Send" size={16} /></div>
-                      <div><h3 className="font-semibold text-gray-900 text-xs">Telegram Draft</h3><p className="text-[10px] text-gray-500 mt-0.5">Sender receives a ready-to-copy message.</p></div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="rounded-2xl shadow-lg border-0 ring-1 ring-gray-200 overflow-hidden shrink-0">
-                <CardContent className="p-3">
-                  <div className="grid grid-cols-2 gap-3 text-[10px] font-mono mb-3">
-                    <div className="bg-blue-50 p-2 rounded border border-blue-100 text-blue-800">
-                      <strong className="block mb-1 text-blue-900 text-xs">From Sales Link:</strong>
-                      email, category, company, notes
-                    </div>
-                    <div className="bg-yellow-50 p-2 rounded border border-yellow-100 text-yellow-800">
-                      <strong className="block mb-1 text-yellow-900 text-xs">Tracked on Server:</strong>
-                      all above + <span className="font-bold bg-yellow-200 px-1 rounded">referrer</span>
-                    </div>
-                  </div>
-                  <div className="relative group">
-                    <div className="absolute right-2 top-2 z-10">
-                      <Button size="sm" variant="secondary" onClick={copyToClipboard} className="bg-white shadow-sm border border-gray-200">
-                        {copied ? <Icon name="Check" size={14} className="mr-1 text-green-600" /> : <Icon name="Copy" size={14} className="mr-1" />}
-                        {copied ? "Copied!" : "Copy Workflow JSON"}
-                      </Button>
-                    </div>
-                    <pre className="bg-gray-900 text-gray-300 p-4 rounded-xl text-xs overflow-auto max-h-[260px] font-mono border border-gray-700">
-                      {JSON.stringify(N8N_WORKFLOW_JSON, null, 2)}
-                    </pre>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+            <div class="tags"><span class="tag">AI Draft</span><span class="tag">Pricing Calculator</span><span class="tag">Approval Workflow</span><span class="tag">Client Portal</span></div>
           </div>
-        </div>
-      );
-    }
+          <aside class="panel pad">
+            <p class="eyebrow">Live Demo Metrics</p>
+            <div class="kpis">
+              <div class="kpi"><span>Proposal Value</span><strong id="metricValue">PHP 145K</strong></div>
+              <div class="kpi"><span>Fit Score</span><strong id="metricScore">92%</strong></div>
+              <div class="kpi"><span>Pipeline Deals</span><strong id="openDeals">6</strong></div>
+              <div class="kpi"><span>Follow-ups</span><strong id="followups">9</strong></div>
+            </div>
+          </aside>
+        </section>
 
-    ReactDOM.createRoot(document.getElementById("root")).render(<NexiiTechAutomationPortal />);
+        <section class="build" id="build">
+          <section class="panel pad">
+            <div class="section-head"><div><p class="eyebrow">Step 1</p><h2>Client intake</h2><p>Use this during discovery calls.</p></div></div>
+            <form class="form" id="proposalForm">
+              <label>Company<input name="company" value="Santos Dental Clinic"></label>
+              <div class="two-fields">
+                <label>Contact<input name="contact" value="Dr. Mia Santos"></label>
+                <label>Industry<select name="industry"><option>Healthcare</option><option>Real Estate</option><option>Construction</option><option>Hospitality</option><option>Retail</option><option>Professional Services</option></select></label>
+              </div>
+              <label>Main Goal<select name="need"><option>Booking and inquiry system</option><option>CRM follow-up automation</option><option>Website redesign</option><option>Operations dashboard</option><option>Payment and billing workflow</option></select></label>
+              <div class="two-fields">
+                <label>Timeline<select name="timeline"><option>3 to 6 weeks</option><option>6 to 10 weeks</option><option>10 to 14 weeks</option><option>Phased rollout</option></select></label>
+                <label>Package<select name="package"><option>Growth</option><option>Starter</option><option>Business</option><option>Enterprise</option></select></label>
+              </div>
+              <label>Discovery Notes<textarea name="notes">The clinic wants patients to book appointments online, reduce missed inquiries, and give staff one place to manage appointment requests.</textarea></label>
+              <button class="btn primary" type="submit">Generate AI Proposal</button>
+            </form>
+          </section>
+
+          <section class="panel">
+            <div class="step-tabs">
+              <button class="active" data-view="proposal">Proposal</button>
+              <button data-view="pricing">Pricing</button>
+              <button data-view="portal">Portal</button>
+              <button data-view="workflow">Workflow</button>
+            </div>
+            <div class="screen">
+              <div id="proposalView">
+                <div class="section-head"><div><p class="eyebrow">Step 2</p><h2>Client-ready proposal</h2></div><span class="status" id="approvalStatus">Draft ready</span></div>
+                <article class="doc" id="proposalPreview"></article>
+                <div class="actions" style="margin-top:12px"><button class="btn dark" id="approveBtn">Approve Draft</button><button class="btn" id="copyBtn">Copy</button><button class="btn teal" id="sendBtn">Queue Demo Send</button><button class="btn" id="downloadBtn">Download</button></div>
+              </div>
+              <div id="pricingView" hidden>
+                <div class="section-head"><div><p class="eyebrow">Step 3</p><h2>Pricing calculator</h2><p>Turn scope choices into a clear investment range.</p></div><button class="btn primary" id="addLineBtn">Add Line</button></div>
+                <div class="pricing" id="pricingLines"></div>
+              </div>
+              <div id="portalView" hidden>
+                <div class="section-head"><div><p class="eyebrow">Step 4</p><h2>Client portal preview</h2><p>This is what the prospect can receive after approval.</p></div><span class="status green">Portal ready</span></div>
+                <div class="portal" id="portalContent"></div>
+              </div>
+              <div id="workflowView" hidden>
+                <div class="section-head"><div><p class="eyebrow">Step 5</p><h2>Workflow automation</h2><p>Simulated follow-up steps for the demo.</p></div></div>
+                <div class="portal-actions">
+                  <button class="mini" data-workflow="Create CRM Deal"><strong>Create CRM Deal</strong><span>Adds the prospect to the pipeline.</span></button>
+                  <button class="mini" data-workflow="Assign Follow-up"><strong>Assign Follow-up</strong><span>Creates a sales task.</span></button>
+                  <button class="mini" data-workflow="Prepare Contract"><strong>Prepare Contract</strong><span>Moves approved proposal forward.</span></button>
+                </div>
+                <div class="activity" id="workflowLog" style="margin-top:14px"></div>
+              </div>
+            </div>
+          </section>
+
+          <aside class="assistant">
+            <div class="panel pad">
+              <p class="eyebrow">AI Readiness</p>
+              <div class="score"><div class="ring"><span id="fitScore">92</span></div><div><h3>Strong fit</h3><p id="angleText">Lead with missed inquiries and appointment control, then show the staff dashboard.</p></div></div>
+            </div>
+            <div class="panel pad">
+              <p class="eyebrow">Demo Checklist</p>
+              <div class="checklist" id="checklist"></div>
+            </div>
+            <div class="panel pad">
+              <p class="eyebrow">Client Objection</p>
+              <h3 id="objectionTitle">“Will this replace our current process?”</h3>
+              <p id="objectionAnswer">No. The first version can improve the existing process, then we can add more automation once the team is comfortable.</p>
+            </div>
+          </aside>
+        </section>
+
+        <section class="lower" id="pipeline">
+          <div class="panel">
+            <div class="pad"><p class="eyebrow">Sales Pipeline</p><h2>Proposal queue</h2></div>
+            <div class="table-wrap"><table><thead><tr><th>Company</th><th>Industry</th><th>Value</th><th>Stage</th><th>Action</th></tr></thead><tbody id="pipelineRows"></tbody></table></div>
+          </div>
+          <aside class="panel pad">
+            <p class="eyebrow">Activity</p>
+            <h2>Timeline</h2>
+            <div class="activity" id="activityList"></div>
+          </aside>
+        </section>
+      </div>
+    </main>
+  </section>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const form=document.querySelector("#proposalForm"),preview=document.querySelector("#proposalPreview"),toast=document.querySelector("#toast");
+    const packagePrices={Starter:85000,Growth:145000,Business:260000,Enterprise:480000};
+    const angleMap={
+      "Booking and inquiry system":"Lead with missed inquiries and appointment control, then show the staff dashboard.",
+      "CRM follow-up automation":"Lead with faster response time, organized contacts, and automatic reminders.",
+      "Website redesign":"Lead with trust, mobile speed, better service pages, and conversion-focused inquiry forms.",
+      "Operations dashboard":"Lead with management visibility, team accountability, and fewer manual reports.",
+      "Payment and billing workflow":"Lead with faster collection, fewer billing errors, and cleaner finance tracking."
+    };
+    const objectionMap={
+      "Booking and inquiry system":["“Can it match our booking rules?”","Yes. The booking flow can include staff schedules, service duration, unavailable dates, and manual approval."],
+      "CRM follow-up automation":["“Will our team forget to update it?”","The system can create reminders, status changes, and daily follow-up queues so staff know what to do next."],
+      "Website redesign":["“Will this still look like our brand?”","Yes. The design can use the client’s colors, services, photos, and voice while improving conversion."],
+      "Operations dashboard":["“Will managers see live data?”","Yes. Dashboards can show role-based views for owners, managers, and staff with the metrics they need."],
+      "Payment and billing workflow":["“Can we keep manual checking?”","Yes. The workflow can include approval steps before anything is marked paid or completed."]
+    };
+    const activity=["Workspace opened","Sample opportunity loaded","AI proposal engine ready"],workflow=[];
+    let quoteLines=[
+      {name:"Client intake and website flow",amount:45000},
+      {name:"Admin dashboard and CRM records",amount:55000},
+      {name:"Automation and follow-up workflow",amount:45000}
+    ];
+    const basePipeline=[
+      ["Santos Dental Clinic","Healthcare",145000,"Review"],
+      ["APM Realty","Real Estate",220000,"Sent"],
+      ["Northbay Construction","Construction",310000,"Draft"],
+      ["Harbor Cafe Group","Hospitality",125000,"Follow-up"],
+      ["Prime Legal Office","Professional Services",180000,"Sent"]
+    ];
+    function fmt(n){return new Intl.NumberFormat("en-PH",{style:"currency",currency:"PHP",maximumFractionDigits:0}).format(n)}
+    function notify(msg){toast.textContent=msg;toast.classList.add("show");setTimeout(()=>toast.classList.remove("show"),2100)}
+    function now(){return new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})}
+    function addActivity(msg){activity.unshift(msg);renderActivity();renderChecklist()}
+    function data(){return Object.fromEntries(new FormData(form).entries())}
+    function quoteTotal(){return quoteLines.reduce((sum,line)=>sum+Number(line.amount||0),0)}
+    function makeProposal(d){
+      return `Proposal for ${d.company}
+
+Prepared for: ${d.contact}
+Recommended package: ${d.package}
+Estimated investment: ${fmt(quoteTotal())}
+Estimated timeline: ${d.timeline}
+
+Overview
+Based on your goal for ${d.need.toLowerCase()}, Nexii Tech can build a practical system that helps your team handle requests faster, reduce manual follow-up, and keep client information organized in one place.
+
+Recommended Solution
+We recommend a client-facing intake flow, a staff dashboard, CRM-style records, automated follow-up reminders, and simple reporting for management. The first version will focus on the most important workflow so your team can use it quickly and improve it over time.
+
+Included Scope
+- Discovery and workflow planning
+- Interface design for client and staff screens
+- Website or intake flow setup
+- Admin dashboard and records management
+- Automation for reminders and status updates
+- Testing, launch support, and team walkthrough
+
+Expected Result
+Your team will have a cleaner process from inquiry to completion. Staff can see what needs attention, managers can track progress, and clients get a more professional experience.
+
+Next Step
+We recommend a short approval meeting to confirm the screens, user roles, content, and launch priorities before moving into the build phase.`;
+    }
+    function generate(){
+      const d=data();
+      if(packagePrices[d.package]){
+        quoteLines[0].amount=Math.round(packagePrices[d.package]*.31);
+        quoteLines[1].amount=Math.round(packagePrices[d.package]*.38);
+        quoteLines[2].amount=packagePrices[d.package]-quoteLines[0].amount-quoteLines[1].amount;
+      }
+      preview.textContent=makeProposal(d);
+      document.querySelector("#approvalStatus").textContent="Draft ready";
+      document.querySelector("#approvalStatus").className="status";
+      document.querySelector("#metricValue").textContent=fmt(quoteTotal()).replace(".00","");
+      document.querySelector("#angleText").textContent=angleMap[d.need]||"Lead with the business problem, then show the workflow improvement.";
+      const objection=objectionMap[d.need]||objectionMap["Booking and inquiry system"];
+      document.querySelector("#objectionTitle").textContent=objection[0];
+      document.querySelector("#objectionAnswer").textContent=objection[1];
+      addActivity(`Generated proposal for ${d.company}`);
+      renderPricing();renderPortal();renderPipeline();notify("Proposal generated");
+    }
+    function renderPricing(){
+      const box=document.querySelector("#pricingLines");
+      box.innerHTML=quoteLines.map((line,i)=>`<div class="quote-line"><input value="${line.name}" data-line-name="${i}"><input type="number" value="${line.amount}" data-line-amount="${i}"><button class="btn red small" data-remove-line="${i}">×</button></div>`).join("")+`<div class="quote-card"><div class="quote-total"><span>Total Project Estimate</span><span>${fmt(quoteTotal())}</span></div><p>Use this as a presentation estimate. Final pricing can be adjusted after scope approval.</p></div>`;
+      document.querySelectorAll("[data-line-name]").forEach(input=>input.addEventListener("input",()=>{quoteLines[Number(input.dataset.lineName)].name=input.value;renderPortal()}));
+      document.querySelectorAll("[data-line-amount]").forEach(input=>input.addEventListener("input",()=>{quoteLines[Number(input.dataset.lineAmount)].amount=Number(input.value||0);document.querySelector("#metricValue").textContent=fmt(quoteTotal()).replace(".00","");preview.textContent=makeProposal(data());renderPricing();renderPortal()}));
+      document.querySelectorAll("[data-remove-line]").forEach(btn=>btn.addEventListener("click",()=>{quoteLines.splice(Number(btn.dataset.removeLine),1);addActivity("Pricing line removed");renderPricing();renderPortal();preview.textContent=makeProposal(data())}));
+    }
+    function renderPortal(){
+      const d=data();
+      document.querySelector("#portalContent").innerHTML=`
+        <div class="portal-card"><strong>${d.company} Proposal Portal</strong><p>Prepared for ${d.contact}. Package: ${d.package}. Estimated investment: ${fmt(quoteTotal())}.</p></div>
+        <div class="portal-actions">
+          <button class="mini" data-portal-action="Viewed proposal"><strong>View Proposal</strong><span>Client opens the proposal document.</span></button>
+          <button class="mini" data-portal-action="Requested changes"><strong>Request Changes</strong><span>Client asks for scope revisions.</span></button>
+          <button class="mini" data-portal-action="Approved proposal"><strong>Approve Proposal</strong><span>Client marks the proposal approved.</span></button>
+        </div>
+        <div class="portal-card"><strong>Included modules</strong><p>${quoteLines.map(line=>line.name).join(" • ")}</p></div>`;
+      document.querySelectorAll("[data-portal-action]").forEach(btn=>btn.addEventListener("click",()=>{addActivity(`Client portal: ${btn.dataset.portalAction}`);notify(btn.dataset.portalAction)}));
+    }
+    function renderPipeline(){
+      const d=data(),rows=[...basePipeline,[d.company,d.industry,quoteTotal(),"Draft"]];
+      document.querySelector("#pipelineRows").innerHTML=rows.map((r,i)=>`<tr><td><strong>${r[0]}</strong></td><td>${r[1]}</td><td>${fmt(r[2])}</td><td><span class="stage ${r[3]==="Sent"?"sent":r[3]==="Review"?"review":""}">${r[3]}</span></td><td><button class="btn small" data-load="${i}">Open</button></td></tr>`).join("");
+      document.querySelector("#openDeals").textContent=rows.length;
+      document.querySelectorAll("[data-load]").forEach(btn=>btn.addEventListener("click",()=>{const r=rows[Number(btn.dataset.load)];form.company.value=r[0];form.industry.value=r[1];generate();document.querySelector("#build").scrollIntoView({behavior:"smooth"})}));
+    }
+    function renderActivity(){document.querySelector("#activityList").innerHTML=activity.slice(0,7).map(item=>`<div class="event"><strong>${item}</strong><span>${now()}</span></div>`).join("")}
+    function renderWorkflow(){document.querySelector("#workflowLog").innerHTML=(workflow.length?workflow:["No workflow actions yet."]).map(item=>`<div class="event"><strong>${item}</strong><span>${now()}</span></div>`).join("")}
+    function renderChecklist(){
+      const items=["Client intake completed","AI draft generated","Pricing estimate ready",document.querySelector("#approvalStatus")?.textContent==="Approved"?"Proposal approved":"Awaiting approval"];
+      document.querySelector("#checklist").innerHTML=items.map((item,i)=>`<div class="check"><span class="dot">${i<3||item==="Proposal approved"?"✓":"!"}</span><span>${item}</span></div>`).join("");
+    }
+    function showView(name){
+      ["proposal","pricing","portal","workflow"].forEach(view=>document.querySelector(`#${view}View`).hidden=view!==name);
+      document.querySelectorAll("[data-view]").forEach(btn=>btn.classList.toggle("active",btn.dataset.view===name));
+      if(name==="pricing")renderPricing();
+      if(name==="portal")renderPortal();
+      if(name==="workflow")renderWorkflow();
+    }
+    form.addEventListener("submit",e=>{e.preventDefault();generate();showView("proposal")});
+    document.querySelector("#generateTop").addEventListener("click",()=>{generate();showView("proposal");document.querySelector("#build").scrollIntoView({behavior:"smooth"})});
+    document.querySelector("#approveBtn").addEventListener("click",()=>{const s=document.querySelector("#approvalStatus");s.textContent="Approved";s.className="status green";addActivity("Proposal approved");renderChecklist();notify("Proposal approved")});
+    document.querySelector("#copyBtn").addEventListener("click",async()=>{try{await navigator.clipboard.writeText(preview.textContent);notify("Proposal copied")}catch(e){notify("Copy is blocked in this browser")};addActivity("Proposal copied")});
+    document.querySelector("#sendBtn").addEventListener("click",()=>{document.querySelector("#followups").textContent=Number(document.querySelector("#followups").textContent)+1;addActivity("Demo send queued");notify("Demo send queued")});
+    document.querySelector("#downloadBtn").addEventListener("click",()=>{const blob=new Blob([preview.textContent],{type:"text/plain"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="nexii-proposal-demo.txt";a.click();URL.revokeObjectURL(url);addActivity("Proposal downloaded");notify("Proposal downloaded")});
+    document.querySelector("#addLineBtn").addEventListener("click",()=>{quoteLines.push({name:"Additional scope item",amount:25000});addActivity("Pricing line added");renderPricing();renderPortal();preview.textContent=makeProposal(data())});
+    document.querySelectorAll("[data-view]").forEach(btn=>btn.addEventListener("click",()=>showView(btn.dataset.view)));
+    document.querySelectorAll("[data-scroll]").forEach(btn=>btn.addEventListener("click",()=>{document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));btn.classList.add("active");const target=btn.dataset.scroll==="pricing"||btn.dataset.scroll==="portal"?"build":btn.dataset.scroll;document.querySelector("#"+target).scrollIntoView({behavior:"smooth"});if(btn.dataset.scroll==="pricing")showView("pricing");if(btn.dataset.scroll==="portal")showView("portal")}));
+    document.querySelectorAll("[data-workflow]").forEach(btn=>btn.addEventListener("click",()=>{workflow.unshift(btn.dataset.workflow);addActivity(`Workflow: ${btn.dataset.workflow}`);renderWorkflow();notify(`${btn.dataset.workflow} completed`)}));
+    document.querySelector("#resetBtn").addEventListener("click",()=>{quoteLines=[{name:"Client intake and website flow",amount:45000},{name:"Admin dashboard and CRM records",amount:55000},{name:"Automation and follow-up workflow",amount:45000}];form.reset();form.company.value="Santos Dental Clinic";form.contact.value="Dr. Mia Santos";form.notes.value="The clinic wants patients to book appointments online, reduce missed inquiries, and give staff one place to manage appointment requests.";generate();showView("proposal");notify("Demo reset")});
+    generate();renderActivity();renderWorkflow();renderChecklist();
   </script>
 </body>
 </html>

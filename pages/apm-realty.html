@@ -1,88 +1,444 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Real Estate Website Template</title>
-    <link rel="stylesheet" href="demo-pages.css">
-  </head>
-  <body data-demo="realty">
-    <main class="page-shell">
-      <nav class="demo-nav" aria-label="Demo navigation">
-        <a class="brand" href="../index.html"><span class="brand-mark">NX</span><span>Demo Hub</span></a>
-        <div class="demo-links" aria-label="Page sections">
-          <a href="#search">Search</a>
-          <a href="#listings">Listings</a>
-          <a href="#calculator">Calculator</a>
-          <a href="#tour">Tour</a>
-        </div>
-        <a class="back-link" href="../index.html#catalog">Back to dashboard</a>
-      </nav>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>APM Realty Website Demo</title>
+  <style>
+    :root{--bg:#f6f8fb;--panel:#fff;--ink:#141b24;--muted:#657386;--line:#d9e1ea;--brand:#8a5a18;--brand2:#1f2937;--green:#047857;--blue:#1d4ed8;--red:#b42318;--shadow:0 18px 46px rgba(20,27,36,.1)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}.hidden{display:none!important}
+    .site-nav{height:68px;display:flex;align-items:center;gap:18px;justify-content:space-between;padding:0 clamp(18px,4vw,56px);background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}.brand{display:flex;align-items:center;gap:10px;font-weight:950}.mark{width:40px;height:40px;border-radius:8px;background:var(--brand);color:#fff;display:grid;place-items:center}.nav-links{display:flex;gap:10px;flex-wrap:wrap}.nav-links a{font-weight:850;color:#334155;padding:8px 10px;border-radius:8px}.nav-links a:hover{background:#f1f5f9}.admin-mode .nav-links{display:none}.nav-actions{display:flex;gap:8px;align-items:center}.btn{min-height:38px;border:1px solid var(--line);border-radius:8px;background:#fff;color:#334155;font-weight:900;padding:0 13px;display:inline-flex;align-items:center;justify-content:center;gap:7px}.btn:hover{background:#f8fafc}.btn.primary{background:var(--brand2);border-color:var(--brand2);color:#fff}.btn.gold{background:var(--brand);border-color:var(--brand);color:#fff}.btn.small{min-height:30px;font-size:.82rem;padding:0 9px}.btn.danger{background:#fff1f0;border-color:#ffd3ce;color:var(--red)}
+    .hero{min-height:620px;display:grid;align-items:end;padding:clamp(22px,5vw,64px);background:linear-gradient(180deg,rgba(14,18,24,.06),rgba(14,18,24,.86)),url("https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1800&q=82") center/cover;color:#fff}.hero-inner{max-width:1180px;width:100%;margin:0 auto}.eyebrow{display:block;color:#facc15;font-size:.74rem;font-weight:950;letter-spacing:.1em;text-transform:uppercase}.hero h1{margin:8px 0 12px;font-size:clamp(2.5rem,6vw,5.8rem);line-height:.96;letter-spacing:-.04em;max-width:980px}.hero p{max-width:720px;color:rgba(255,255,255,.86);line-height:1.65;font-size:1.06rem}.search-panel{margin-top:24px;background:#fff;color:var(--ink);border-radius:12px;padding:14px;box-shadow:var(--shadow);display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr auto;gap:10px;align-items:end}.field{display:grid;gap:6px}.field label{font-size:.74rem;color:var(--muted);font-weight:900;text-transform:uppercase;letter-spacing:.05em}input,select,textarea{width:100%;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);padding:10px 11px;outline:0}textarea{min-height:92px;resize:vertical}input:focus,select:focus,textarea:focus{border-color:#c79443;box-shadow:0 0 0 3px rgba(138,90,24,.12)}
+    #listings,#calculator,#inquiry,#configure{scroll-margin-top:88px}.wrap{width:min(1220px,calc(100% - 32px));margin:0 auto;padding:28px 0 54px;display:grid;gap:22px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.stat{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px;box-shadow:var(--shadow)}.stat span{display:block;color:var(--muted);font-size:.78rem;font-weight:850}.stat strong{display:block;margin-top:6px;font-size:1.55rem}
+    .section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:18px}.section-head h2{margin:0;font-size:clamp(1.5rem,3vw,2.5rem)}.section-head p{margin:4px 0 0;color:var(--muted);line-height:1.5}.layout{display:grid;grid-template-columns:minmax(0,1fr)380px;gap:22px;align-items:start}.panel{background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}.pad{padding:20px}.feature-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.feature-card{background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:18px}.feature-card strong{display:block;margin-bottom:6px}.feature-card p{margin:0;color:var(--muted);line-height:1.45}.feature-card button{margin-top:12px}.band{margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);padding:54px max(24px,calc((100vw - 1220px)/2));background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.band.alt{background:#eef3f8}.community-grid,.process-grid,.testimonial-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.community-card,.process-card,.testimonial-card{border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:var(--shadow);overflow:hidden}.community-photo{height:230px;background:var(--image) center/cover}.community-card div,.process-card,.testimonial-card{padding:18px}.community-card h3,.process-card h3,.testimonial-card h3{margin:0 0 8px}.community-card p,.process-card p,.testimonial-card p{margin:0;color:var(--muted);line-height:1.55}.agent-strip{display:grid;grid-template-columns:minmax(0,1fr)380px;gap:22px;align-items:center;border-radius:14px;background:linear-gradient(135deg,#1f2937,#8a5a18);color:#fff;padding:30px;box-shadow:var(--shadow)}.agent-strip p{color:rgba(255,255,255,.82);line-height:1.6}.agent-card{border:1px solid rgba(255,255,255,.18);border-radius:12px;background:rgba(255,255,255,.12);padding:18px}.site-footer{margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);background:#111827;color:#d1d5db;padding:34px max(24px,calc((100vw - 1220px)/2));display:grid;grid-template-columns:1fr auto;gap:18px}.site-footer strong{color:#fff}.site-footer p{margin:6px 0 0;color:#9ca3af}
+    .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.chip{min-height:34px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#334155;font-weight:900;padding:0 12px}.chip.active{background:var(--brand2);border-color:var(--brand2);color:#fff}.listings{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.card{border:1px solid var(--line);border-radius:12px;background:#fff;overflow:hidden}.photo{height:210px;background:var(--image) center/cover;position:relative}.badge{position:absolute;left:12px;top:12px;min-height:28px;border-radius:999px;background:rgba(17,24,39,.86);color:#fff;font-weight:900;font-size:.78rem;padding:6px 10px}.save{position:absolute;right:12px;top:12px;width:38px;height:38px;border-radius:50%;border:0;background:#fff;color:#334155;font-size:1.15rem}.save.active{background:#fee2e2;color:#b42318}.card-body{padding:14px}.price{font-size:1.35rem;font-weight:950}.meta{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.pill{display:inline-flex;align-items:center;min-height:26px;border-radius:999px;background:#f1f5f9;color:#334155;font-size:.78rem;font-weight:850;padding:0 9px}.card h3{margin:8px 0 5px}.card p{margin:0;color:var(--muted);line-height:1.45}.card-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}
+    .side-stack{display:grid;gap:14px;position:sticky;top:86px}.calculator output{display:block;margin-top:10px;border-radius:10px;background:#f8fafc;border:1px solid var(--line);padding:12px;font-weight:950}.lead-output,.buyer-confirmation{white-space:pre-wrap;border:1px solid var(--line);border-radius:10px;background:#f8fafc;padding:12px;color:#334155;line-height:1.5}.buyer-confirmation{display:none;background:#ecfdf3;border-color:#bbf7d0;color:#065f46;font-weight:850}.buyer-confirmation.show{display:block}.calendar-box{border:1px solid var(--line);border-radius:10px;background:#f8fafc;padding:10px}.calendar-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}.calendar-top strong{font-size:.92rem}.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.day-name{color:var(--muted);font-size:.68rem;font-weight:950;text-align:center;text-transform:uppercase}.day-btn{min-height:42px;border:1px solid var(--line);border-radius:8px;background:#fff;color:#334155;font-weight:900}.day-btn:hover:not(:disabled){border-color:var(--brand);box-shadow:0 0 0 3px rgba(138,90,24,.1)}.day-btn.selected{background:var(--brand);border-color:var(--brand);color:#fff}.day-btn.blocked{background:#f1f5f9;color:#98a2b3;text-decoration:line-through;cursor:not-allowed}.availability-note{margin:8px 0 0;color:var(--muted);font-size:.84rem;line-height:1.4}.availability-note.warn{color:var(--red);font-weight:850}.saved-list{display:grid;gap:8px}.saved-item{border:1px solid var(--line);border-radius:9px;padding:10px;background:#fff}.saved-item strong{display:block}.saved-item span{color:var(--muted);font-size:.86rem}.config-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.swatches{display:flex;gap:8px}.swatch{width:34px;height:34px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px var(--line)}.swatch[data-color="#8a5a18"]{background:#8a5a18}.swatch[data-color="#0f766e"]{background:#0f766e}.swatch[data-color="#1d4ed8"]{background:#1d4ed8}.swatch[data-color="#be123c"]{background:#be123c}
+    .admin-page{display:none;width:min(1280px,calc(100% - 32px));margin:0 auto;padding:28px 0 54px}.admin-mode .hero,.admin-mode .wrap{display:none}.admin-mode .admin-page{display:grid;gap:18px}.admin-hero{border-radius:12px;background:linear-gradient(135deg,#111827,#334155);color:#fff;padding:24px;box-shadow:var(--shadow)}.admin-hero h1{margin:6px 0 8px;font-size:clamp(2rem,4vw,3.6rem);line-height:1}.admin-hero p{max-width:760px;color:#d8e0ec;line-height:1.6}.admin-grid{display:grid;grid-template-columns:minmax(0,1fr)360px;gap:18px;align-items:start}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse}th,td{border-bottom:1px solid var(--line);padding:11px;text-align:left;white-space:nowrap}th{color:var(--muted);font-size:.74rem;text-transform:uppercase;letter-spacing:.05em}.status{display:inline-flex;align-items:center;min-height:26px;border-radius:999px;background:#eef2ff;color:var(--blue);font-size:.78rem;font-weight:900;padding:0 9px}.status.confirmed{background:#ecfdf3;color:var(--green)}.status.cancelled{background:#fff1f0;color:var(--red)}.status.hidden-status{background:#f1f5f9;color:#64748b}.agent-load,.schedule-list{display:grid;gap:10px}.load-card,.schedule-item{border:1px solid var(--line);border-radius:10px;background:#fff;padding:12px}.load-card strong,.schedule-item strong{display:flex;justify-content:space-between;gap:10px}.schedule-item span{display:block;color:var(--muted);font-size:.86rem;margin-top:4px}.meter{height:8px;border-radius:999px;background:#eef2f7;overflow:hidden;margin-top:9px}.meter span{display:block;height:100%;background:var(--brand);width:var(--load)}.drawer{position:fixed;inset:0;display:none;z-index:40}.drawer.open{display:block}.shade{position:absolute;inset:0;background:rgba(15,23,42,.52)}.drawer-panel{position:absolute;right:0;top:0;height:100%;width:min(520px,100%);background:#fff;box-shadow:-20px 0 50px rgba(15,23,42,.22);padding:20px;overflow:auto}.drawer-image{height:280px;border-radius:12px;background:var(--image) center/cover}.toast{position:fixed;right:18px;bottom:18px;background:#111827;color:#fff;border-radius:10px;padding:12px 14px;font-weight:850;box-shadow:var(--shadow);opacity:0;transform:translateY(10px);transition:.2s;z-index:50}.toast.show{opacity:1;transform:translateY(0)}
+    @media(max-width:1050px){.search-panel,.layout,.config-grid,.admin-grid,.feature-grid,.community-grid,.process-grid,.testimonial-grid,.agent-strip{grid-template-columns:1fr}.listings,.stats{grid-template-columns:repeat(2,1fr)}.side-stack{position:static}.nav-links{display:none}}@media(max-width:640px){.site-nav{height:auto;align-items:flex-start;flex-direction:column;padding:14px 16px}.nav-actions{width:100%;justify-content:space-between;flex-wrap:wrap}.hero{min-height:680px}.listings,.stats{grid-template-columns:1fr}.wrap,.admin-page{width:min(100% - 24px,1220px)}.band{padding-block:34px}.site-footer{grid-template-columns:1fr}.hero h1{font-size:3rem}}
+  </style>
+</head>
+<body>
+  <nav class="site-nav">
+    <a class="brand" href="#home"><span class="mark" id="brandMark">AP</span><span id="brandName">APM Realty</span></a>
+    <div class="nav-links"><a href="#listings">Listings</a><a href="#calculator">Calculator</a><a href="#inquiry">Inquire</a><a href="#configure">Configure</a></div>
+    <div class="nav-actions"><a class="btn" href="../index.html#catalog">Demo Hub</a><button class="btn" id="modeToggle">Admin Side</button><button class="btn primary" id="openSaved">Saved <span id="savedCount">0</span></button></div>
+  </nav>
 
-      <section class="template-hero realty-hero">
-        <div>
-          <span class="eyebrow">Real estate website</span>
-          <h1>APM Realty Property Finder</h1>
-          <p>Static real estate template with property filtering, featured listings, payment estimate, and tour request form.</p>
-          <a class="primary-btn" href="#search">Find a property</a>
-        </div>
-      </section>
+  <header class="hero" id="home">
+    <div class="hero-inner">
+      <span class="eyebrow">Real Estate Website Demo</span>
+      <h1 id="heroTitle">Find the right property for your next move.</h1>
+      <p id="heroCopy">A client-ready real estate frontpage with live filters, listing previews, saved homes, tour requests, and a mortgage estimate built into the experience.</p>
+      <form class="search-panel" id="heroSearch">
+        <div class="field"><label>Location or project</label><input name="query" placeholder="Makati, Tagaytay, Alabang"></div>
+        <div class="field"><label>Property type</label><select name="type"><option>Any</option><option>Condo</option><option>House</option><option>Lot</option></select></div>
+        <div class="field"><label>Budget</label><select name="budget"><option value="999999999">Any budget</option><option value="5000000">Up to PHP 5M</option><option value="9000000">Up to PHP 9M</option><option value="15000000">Up to PHP 15M</option></select></div>
+        <div class="field"><label>Bedrooms</label><select name="beds"><option value="0">Any</option><option value="1">1+</option><option value="2">2+</option><option value="3">3+</option><option value="4">4+</option></select></div>
+        <button class="btn gold" type="submit">Search</button>
+      </form>
+    </div>
+  </header>
 
-      <section class="panel" id="search">
-        <div class="panel-top">
-          <div>
-            <span class="panel-label">Property search</span>
-            <h2>Filter available listings</h2>
-          </div>
-          <div class="segmented">
-            <button class="active" type="button" data-realty-type="All">All</button>
-            <button type="button" data-realty-type="Condo">Condo</button>
-            <button type="button" data-realty-type="House">House</button>
-            <button type="button" data-realty-type="Lot">Lot</button>
-          </div>
-        </div>
-        <div class="form-grid">
-          <input id="realtySearch" placeholder="Search location or project" value="">
-        </div>
-      </section>
+  <main class="wrap">
+    <section class="stats">
+      <article class="stat"><span>Active Listings</span><strong id="statListings">6</strong></article>
+      <article class="stat"><span>Saved Homes</span><strong id="statSaved">0</strong></article>
+      <article class="stat"><span>Average Price</span><strong id="statAverage">PHP 8.7M</strong></article>
+      <article class="stat"><span>Tour Requests</span><strong id="statLeads">0</strong></article>
+    </section>
 
-      <section class="layout-grid">
-        <article class="panel" id="listings">
-          <span class="panel-label">Listings</span>
-          <h2>Featured properties</h2>
-          <div class="workspace-grid" id="realtyListings"></div>
+    <section>
+      <div class="section-head">
+        <div><span class="eyebrow">User Side Features</span><h2>Buyer website tools</h2><p>These are the public-facing tools buyers use before the admin team receives the request.</p></div>
+      </div>
+      <div class="feature-grid">
+        <article class="feature-card"><strong>Search listings</strong><p>Buyers filter by location, property type, budget, and bedrooms.</p><button class="btn small" data-user-jump="#listings">Try search</button></article>
+        <article class="feature-card"><strong>Save properties</strong><p>Shortlist homes and open the saved list without leaving the page.</p><button class="btn small" id="featureSaved">Open saved</button></article>
+        <article class="feature-card"><strong>Estimate payments</strong><p>Show monthly payment estimates using price, down payment, term, and rate.</p><button class="btn small" data-user-jump="#calculator">Use calculator</button></article>
+        <article class="feature-card"><strong>Book a viewing</strong><p>Choose an agent and an available calendar date before submitting.</p><button class="btn small" data-user-jump="#inquiry">Request viewing</button></article>
+      </div>
+    </section>
+
+    <section class="layout">
+      <div>
+        <div class="section-head" id="listings">
+          <div><span class="eyebrow">Property Search</span><h2>Featured listings</h2><p>Click into listings, save homes, and request a viewing like a real buyer.</p></div>
+          <button class="btn" id="resetFilters">Reset filters</button>
+        </div>
+        <div class="toolbar" id="typeChips">
+          <button class="chip active" data-type="Any">All</button><button class="chip" data-type="Condo">Condo</button><button class="chip" data-type="House">House</button><button class="chip" data-type="Lot">Lot</button>
+        </div>
+        <div class="listings" id="listingGrid"></div>
+      </div>
+
+      <aside class="side-stack">
+        <article class="panel pad calculator" id="calculator">
+          <span class="eyebrow">Mortgage Estimate</span>
+          <h2>Payment calculator</h2>
+          <form class="form" id="calcForm">
+            <div class="field"><label>Property price</label><input name="price" type="number" value="6500000"></div>
+            <div class="field"><label>Down payment</label><input name="down" type="number" value="1300000"></div>
+            <div class="field"><label>Term years</label><input name="years" type="number" value="15"></div>
+            <div class="field"><label>Annual rate %</label><input name="rate" type="number" step="0.1" value="7.2"></div>
+            <button class="btn primary" type="submit">Calculate</button>
+          </form>
+          <output id="paymentOutput">Estimated monthly: PHP 47,338</output>
         </article>
 
-        <aside>
-          <article class="panel" id="calculator">
-            <span class="panel-label">Payment calculator</span>
-            <h2>Estimate monthly payment</h2>
-            <form class="form-grid" id="realtyCalc">
-              <input name="price" type="number" value="6500000">
-              <input name="down" type="number" value="1300000">
-              <input name="years" type="number" value="15">
-              <button class="primary-btn" type="submit">Calculate</button>
-            </form>
-            <p id="realtyPayment">Estimated monthly payment: PHP 41,111</p>
-          </article>
-          <article class="panel" id="tour">
-            <span class="panel-label">Tour request</span>
-            <h2>Schedule a viewing</h2>
-            <form class="form-grid" id="realtyTour">
-              <input name="name" placeholder="Buyer name" value="Angela Cruz">
-              <input name="phone" placeholder="Phone" value="+63 917 555 1234">
-              <select name="property" id="realtyTourProperty"></select>
-              <button class="primary-btn" type="submit">Request tour</button>
-            </form>
-          </article>
-          <article class="panel output-panel">
-            <span class="panel-label">Lead preview</span>
-            <h2>Latest inquiry</h2>
-            <div class="proposal-output" id="realtyOutput">No tour request yet.</div>
-          </article>
-        </aside>
-      </section>
-    </main>
-    <script src="demo-pages.js"></script>
-  </body>
+        <article class="panel pad" id="inquiry">
+          <span class="eyebrow">Buyer Inquiry</span>
+          <h2>Request a viewing</h2>
+          <form class="form" id="leadForm">
+            <div class="field"><label>Name</label><input name="name" value="Angela Cruz"></div>
+            <div class="field"><label>Phone</label><input name="phone" value="+63 917 555 1234"></div>
+            <div class="field"><label>Property</label><select name="property" id="propertySelect"></select></div>
+            <div class="field"><label>Assigned agent</label><select name="agent" id="agentSelect"></select></div>
+            <div class="field">
+              <label>Viewing calendar</label>
+              <input type="hidden" name="viewingDate" id="viewingDate">
+              <div class="calendar-box">
+                <div class="calendar-top"><strong id="calendarMonth">Available dates</strong><span class="pill" id="agentScheduleCount">0 booked</span></div>
+                <div class="calendar-grid" id="viewingCalendar"></div>
+                <p class="availability-note" id="availabilityNote">Select an available date for the assigned agent.</p>
+              </div>
+            </div>
+            <div class="field"><label>Message</label><textarea name="message">I would like to schedule a viewing this weekend.</textarea></div>
+            <button class="btn gold" type="submit">Submit inquiry</button>
+          </form>
+        </article>
+
+        <div class="buyer-confirmation" id="buyerConfirmation">Your viewing request has been submitted. Our team will contact you shortly to confirm the schedule.</div>
+      </aside>
+    </section>
+
+    <section class="band alt">
+      <div class="section-head">
+        <div><span class="eyebrow">Featured Communities</span><h2>Explore neighborhoods buyers ask about most</h2><p>Static content sections make the page feel like a complete real estate website, while the listing tools remain interactive.</p></div>
+      </div>
+      <div class="community-grid">
+        <article class="community-card"><div class="community-photo" style="--image:url('https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=900&q=80')"></div><div><h3>Makati and BGC</h3><p>High-rise living near business districts, schools, retail, and dining destinations.</p></div></article>
+        <article class="community-card"><div class="community-photo" style="--image:url('https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=900&q=80')"></div><div><h3>Alabang and Cavite</h3><p>Family-focused homes with larger spaces, village amenities, and suburban access.</p></div></article>
+        <article class="community-card"><div class="community-photo" style="--image:url('https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=900&q=80')"></div><div><h3>Tagaytay and Leisure Lots</h3><p>Vacation homes, weekend lots, and investment properties outside the city.</p></div></article>
+      </div>
+    </section>
+
+    <section class="band">
+      <div class="section-head">
+        <div><span class="eyebrow">Buyer Journey</span><h2>From search to scheduled viewing</h2><p>This is the client-facing story: buyers search, compare, save, calculate, and request a viewing without needing staff intervention first.</p></div>
+      </div>
+      <div class="process-grid">
+        <article class="process-card"><h3>1. Search and compare</h3><p>Buyers narrow down available properties by budget, type, location, and bedrooms.</p></article>
+        <article class="process-card"><h3>2. Save and estimate</h3><p>They shortlist properties and calculate estimated monthly payments before contacting the team.</p></article>
+        <article class="process-card"><h3>3. Request a viewing</h3><p>The viewing calendar blocks unavailable agent dates and sends clean records to admin.</p></article>
+      </div>
+    </section>
+
+    <section class="agent-strip">
+      <div>
+        <span class="eyebrow">Talk to an agent</span>
+        <h2>Need help choosing the right property?</h2>
+        <p>Clients can use this section as a stronger call-to-action area for consultations, property matching, financing guidance, or priority viewings.</p>
+        <button class="btn gold" data-user-jump="#inquiry">Schedule a viewing</button>
+      </div>
+      <aside class="agent-card">
+        <strong>APM Realty Advisory Desk</strong>
+        <p>Available Monday to Saturday<br>Metro Manila, Cavite, Tagaytay</p>
+        <p>Response time: within 1 business day</p>
+      </aside>
+    </section>
+
+    <section class="band alt">
+      <div class="section-head">
+        <div><span class="eyebrow">Client Trust</span><h2>What buyers want to know</h2><p>Trust-building content helps the static page feel like a finished public website.</p></div>
+      </div>
+      <div class="testimonial-grid">
+        <article class="testimonial-card"><h3>Clear property choices</h3><p>“The listings were easy to compare, and the payment estimate helped us decide what to view first.”</p></article>
+        <article class="testimonial-card"><h3>Faster viewing schedule</h3><p>“We picked a property, selected a date, and the team confirmed the next steps quickly.”</p></article>
+        <article class="testimonial-card"><h3>Helpful agent support</h3><p>“The agent already knew which property we wanted and our preferred schedule.”</p></article>
+      </div>
+    </section>
+
+    <section class="panel pad" id="configure">
+      <div class="section-head">
+        <div><span class="eyebrow">Client Configuration</span><h2>Configure this frontpage live</h2><p>Use this to show clients how the same template can adapt to their brand, market, and headline.</p></div>
+        <button class="btn primary" id="applyConfig">Apply changes</button>
+      </div>
+      <div class="config-grid">
+        <div class="field"><label>Brand name</label><input id="configBrand" value="APM Realty"></div>
+        <div class="field"><label>Hero headline</label><input id="configTitle" value="Find the right property for your next move."></div>
+        <div class="field"><label>Primary market</label><select id="configMarket"><option>Metro Manila</option><option>Tagaytay</option><option>Cavite</option><option>Batangas</option></select></div>
+        <div class="field"><label>Brand color</label><div class="swatches"><button class="swatch" data-color="#8a5a18" title="Gold"></button><button class="swatch" data-color="#0f766e" title="Teal"></button><button class="swatch" data-color="#1d4ed8" title="Blue"></button><button class="swatch" data-color="#be123c" title="Rose"></button></div></div>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <div><strong id="footerBrand">APM Realty</strong><p>Static real estate website demo with buyer tools, admin workflow, listing management, and scheduling logic.</p></div>
+      <a class="btn" href="#home">Back to top</a>
+    </footer>
+  </main>
+
+  <section class="admin-page" id="adminPage">
+    <header class="admin-hero">
+      <span class="eyebrow">Admin Side</span>
+      <h1>Realty operations dashboard</h1>
+      <p>Review buyer inquiries, confirm viewing schedules, monitor agent workload, and manage submitted leads from the client-facing website.</p>
+    </header>
+
+    <section class="stats">
+      <article class="stat"><span>Total Leads</span><strong id="adminTotalLeads">0</strong></article>
+      <article class="stat"><span>Pending Review</span><strong id="adminPending">0</strong></article>
+      <article class="stat"><span>Confirmed Tours</span><strong id="adminConfirmed">0</strong></article>
+      <article class="stat"><span>Booked Dates</span><strong id="adminBooked">0</strong></article>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <div><span class="eyebrow">Admin Side Features</span><h2>Back-office controls</h2><p>These are the operational tools clients can use after buyers submit inquiries.</p></div>
+      </div>
+      <div class="feature-grid">
+        <article class="feature-card"><strong>Lead review</strong><p>Confirm or cancel buyer viewing requests from one queue.</p></article>
+        <article class="feature-card"><strong>Schedule board</strong><p>See upcoming bookings grouped by agent and date.</p></article>
+        <article class="feature-card"><strong>Listing manager</strong><p>Publish or hide listings from the public website.</p></article>
+        <article class="feature-card"><strong>Agent workload</strong><p>Monitor how many appointments each agent is handling.</p></article>
+      </div>
+    </section>
+
+    <section class="admin-grid">
+      <article class="panel">
+        <div class="pad section-head">
+          <div><span class="eyebrow">Lead Management</span><h2>Viewing requests</h2><p>New buyer submissions from the public side appear here.</p></div>
+          <button class="btn gold" id="seedLead">Add sample lead</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Buyer</th><th>Property</th><th>Agent</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="adminLeadRows"></tbody>
+          </table>
+        </div>
+      </article>
+
+      <aside class="side-stack">
+        <article class="panel pad">
+          <span class="eyebrow">Agent Schedule</span>
+          <h2>Workload</h2>
+          <div class="agent-load" id="agentLoad"></div>
+        </article>
+        <article class="panel pad">
+          <span class="eyebrow">Today’s Admin Note</span>
+          <h2>Demo workflow</h2>
+          <div class="lead-output" id="adminNote">Submit a viewing request on the user side, then switch here to confirm or cancel it.</div>
+        </article>
+      </aside>
+    </section>
+
+    <section class="admin-grid">
+      <article class="panel">
+        <div class="pad section-head">
+          <div><span class="eyebrow">Listing Manager</span><h2>Public website inventory</h2><p>Admin controls decide what buyers can see on the user side.</p></div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Property</th><th>Type</th><th>Price</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="adminListingRows"></tbody>
+          </table>
+        </div>
+      </article>
+
+      <aside class="panel pad">
+        <span class="eyebrow">Schedule Board</span>
+        <h2>Upcoming viewings</h2>
+        <div class="schedule-list" id="adminSchedule"></div>
+      </aside>
+    </section>
+  </section>
+
+  <section class="drawer" id="drawer">
+    <div class="shade" data-close></div>
+    <aside class="drawer-panel">
+      <button class="btn" data-close>Close</button>
+      <div id="drawerContent"></div>
+    </aside>
+  </section>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const money=new Intl.NumberFormat("en-PH",{style:"currency",currency:"PHP",maximumFractionDigits:0});
+    const listings=[
+      {id:1,type:"Condo",title:"Makati Skyline Residence",location:"Makati CBD",price:6500000,beds:2,baths:2,size:"68 sqm",tag:"Ready for occupancy",image:"https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=1200&q=80",desc:"Modern condo near offices, malls, and major transport routes."},
+      {id:2,type:"House",title:"Alabang Family Villa",location:"Alabang",price:14500000,beds:4,baths:3,size:"260 sqm",tag:"Premium",image:"https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80",desc:"Spacious family home with garden, parking, and flexible office space."},
+      {id:3,type:"Lot",title:"Tagaytay Ridge Lot",location:"Tagaytay",price:4800000,beds:0,baths:0,size:"420 sqm",tag:"Investment",image:"https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80",desc:"Scenic residential lot suitable for a vacation home or rental property."},
+      {id:4,type:"Condo",title:"BGC Executive Suite",location:"Bonifacio Global City",price:9200000,beds:1,baths:1,size:"54 sqm",tag:"High demand",image:"https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1200&q=80",desc:"Compact executive unit near business centers and lifestyle destinations."},
+      {id:5,type:"House",title:"Cavite Courtyard Home",location:"Cavite",price:7200000,beds:3,baths:2,size:"180 sqm",tag:"Family-ready",image:"https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=1200&q=80",desc:"Move-in ready house with outdoor space and access to main roads."},
+      {id:6,type:"Condo",title:"Pasig Riverfront Condo",location:"Pasig",price:5600000,beds:2,baths:1,size:"61 sqm",tag:"Best value",image:"https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1200&q=80",desc:"Bright riverfront unit with strong rental potential and amenities."}
+    ];
+    const agents=[
+      {id:"maria",name:"Maria Lopez"},
+      {id:"ben",name:"Ben Santos"},
+      {id:"carlo",name:"Carlo Reyes"}
+    ];
+    const dateKey=date=>date.toISOString().slice(0,10);
+    const addDays=(days)=>{const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()+days);return dateKey(d)};
+    const schedules=[
+      {agent:"maria",date:addDays(1),client:"Ramon Uy",property:4},
+      {agent:"maria",date:addDays(4),client:"Claire Tan",property:2},
+      {agent:"ben",date:addDays(2),client:"Nina Cruz",property:1},
+      {agent:"ben",date:addDays(6),client:"Owen Lim",property:5},
+      {agent:"carlo",date:addDays(3),client:"Lara Dizon",property:3}
+    ];
+    let filters={query:"",type:"Any",budget:999999999,beds:0},saved=new Set(),published=new Set(listings.map(item=>item.id)),leads=0,brandColor="#8a5a18",selectedViewingDate="",adminMode=false;
+    let inquiries=[
+      {id:1,name:"Mara Villanueva",phone:"+63 918 222 7190",property:4,agent:"maria",date:addDays(1),message:"Interested in a weekday viewing.",status:"Pending"},
+      {id:2,name:"Paolo Reyes",phone:"+63 915 441 8821",property:5,agent:"ben",date:addDays(6),message:"Looking for a family home near schools.",status:"Confirmed"}
+    ];
+    const qs=s=>document.querySelector(s),qsa=s=>[...document.querySelectorAll(s)];
+    function notify(msg){const t=qs("#toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2000)}
+    function publicListings(){return listings.filter(item=>published.has(item.id))}
+    function filtered(){return publicListings().filter(p=>(filters.type==="Any"||p.type===filters.type)&&p.price<=filters.budget&&p.beds>=filters.beds&&(`${p.title} ${p.location}`.toLowerCase().includes(filters.query.toLowerCase())))}
+    function renderListings(){
+      const data=filtered();
+      qs("#listingGrid").innerHTML=data.map(p=>`<article class="card"><div class="photo" style="--image:url('${p.image}')"><span class="badge">${p.tag}</span><button class="save ${saved.has(p.id)?"active":""}" data-save="${p.id}" title="Save property">♥</button></div><div class="card-body"><div class="price">${money.format(p.price)}</div><h3>${p.title}</h3><p>${p.location} • ${p.desc}</p><div class="meta"><span class="pill">${p.type}</span><span class="pill">${p.beds||"Lot"} beds</span><span class="pill">${p.baths} baths</span><span class="pill">${p.size}</span></div><div class="card-actions"><button class="btn small primary" data-view="${p.id}">View details</button><button class="btn small" data-tour="${p.id}">Request tour</button></div></div></article>`).join("")||`<article class="panel pad"><h2>No matching listings</h2><p>Try changing the filters or reset the search.</p></article>`;
+      qs("#statListings").textContent=data.length;
+      const avg=data.length?data.reduce((s,p)=>s+p.price,0)/data.length:0;qs("#statAverage").textContent=avg?money.format(avg).replace(".00",""):"-";
+      qsa("[data-save]").forEach(b=>b.onclick=()=>{const id=Number(b.dataset.save);saved.has(id)?saved.delete(id):saved.add(id);renderListings();renderSaved();notify(saved.has(id)?"Property saved":"Property removed")});
+      qsa("[data-view]").forEach(b=>b.onclick=()=>openDetails(Number(b.dataset.view)));
+      qsa("[data-tour]").forEach(b=>b.onclick=()=>{qs("#propertySelect").value=b.dataset.tour;qs("#inquiry").scrollIntoView({behavior:"smooth"});notify("Property selected for inquiry")});
+    }
+    function renderSaved(){qs("#savedCount").textContent=saved.size;qs("#statSaved").textContent=saved.size}
+    function renderSelect(){
+      qs("#propertySelect").innerHTML=publicListings().map(p=>`<option value="${p.id}">${p.title} - ${money.format(p.price)}</option>`).join("");
+      qs("#agentSelect").innerHTML=agents.map(agent=>`<option value="${agent.id}">${agent.name}</option>`).join("");
+    }
+    function selectedAgent(){return qs("#agentSelect").value||agents[0].id}
+    function agentName(id){return agents.find(agent=>agent.id===id)?.name||id}
+    function propertyName(id){return listings.find(item=>item.id===Number(id))?.title||"Selected property"}
+    function isBooked(agent,date){return schedules.find(item=>item.agent===agent&&item.date===date)}
+    function formatDateLabel(value){return new Date(`${value}T00:00:00`).toLocaleDateString("en-PH",{month:"short",day:"numeric",weekday:"short"})}
+    function renderCalendar(){
+      const agent=selectedAgent();
+      const booked=schedules.filter(item=>item.agent===agent);
+      const today=new Date();today.setHours(0,0,0,0);
+      qs("#calendarMonth").textContent=`${agentName(agent)} availability`;
+      qs("#agentScheduleCount").textContent=`${booked.length} booked`;
+      qs("#viewingCalendar").innerHTML=[
+        "Sun","Mon","Tue","Wed","Thu","Fri","Sat"
+      ].map(day=>`<div class="day-name">${day}</div>`).join("")+
+      Array.from({length:21},(_,index)=>{
+        const date=new Date(today);date.setDate(today.getDate()+index);
+        const key=dateKey(date),blocked=isBooked(agent,key),selected=selectedViewingDate===key;
+        return `<button class="day-btn ${blocked?"blocked":""} ${selected?"selected":""}" type="button" data-date="${key}" ${blocked?"disabled":""} title="${blocked?`Booked with ${blocked.client}`:"Available"}">${date.getDate()}</button>`;
+      }).join("");
+      qsa("[data-date]").forEach(button=>button.onclick=()=>{
+        selectedViewingDate=button.dataset.date;
+        qs("#viewingDate").value=selectedViewingDate;
+        qs("#availabilityNote").className="availability-note";
+        qs("#availabilityNote").textContent=`Selected ${formatDateLabel(selectedViewingDate)} with ${agentName(agent)}.`;
+        renderCalendar();
+      });
+      const selectedBlocked=selectedViewingDate&&isBooked(agent,selectedViewingDate);
+      if(selectedBlocked){
+        selectedViewingDate="";
+        qs("#viewingDate").value="";
+      }
+      if(!selectedViewingDate){
+        qs("#availabilityNote").className="availability-note";
+        qs("#availabilityNote").textContent=`Blocked dates are already booked by ${agentName(agent)} with another client.`;
+      }
+    }
+    function openDetails(id){const p=listings.find(x=>x.id===id);qs("#drawerContent").innerHTML=`<div class="drawer-image" style="--image:url('${p.image}')"></div><h2>${p.title}</h2><p>${p.location}</p><h3>${money.format(p.price)}</h3><div class="meta"><span class="pill">${p.type}</span><span class="pill">${p.beds||"Lot"} beds</span><span class="pill">${p.baths} baths</span><span class="pill">${p.size}</span></div><p>${p.desc}</p><div class="card-actions"><button class="btn primary" data-drawer-tour="${p.id}">Request viewing</button><button class="btn" data-drawer-save="${p.id}">${saved.has(p.id)?"Remove from saved":"Save property"}</button></div>`;qs("#drawer").classList.add("open");qs("[data-drawer-tour]").onclick=()=>{qs("#propertySelect").value=p.id;qs("#drawer").classList.remove("open");qs("#inquiry").scrollIntoView({behavior:"smooth"})};qs("[data-drawer-save]").onclick=()=>{saved.has(p.id)?saved.delete(p.id):saved.add(p.id);renderListings();renderSaved();openDetails(p.id)}}
+    qs("#heroSearch").onsubmit=e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.currentTarget).entries());filters={query:d.query,type:d.type,budget:Number(d.budget),beds:Number(d.beds)};qsa("[data-type]").forEach(c=>c.classList.toggle("active",c.dataset.type===filters.type||filters.type==="Any"&&c.dataset.type==="Any"));renderListings();qs("#listings").scrollIntoView({behavior:"smooth"})};
+    qsa("[data-type]").forEach(c=>c.onclick=()=>{filters.type=c.dataset.type;qsa("[data-type]").forEach(x=>x.classList.remove("active"));c.classList.add("active");renderListings()});
+    qs("#resetFilters").onclick=()=>{filters={query:"",type:"Any",budget:999999999,beds:0};qs("#heroSearch").reset();qsa("[data-type]").forEach(c=>c.classList.toggle("active",c.dataset.type==="Any"));renderListings();notify("Filters reset")};
+    qs("#calcForm").onsubmit=e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.currentTarget).entries()),loan=Number(d.price)-Number(d.down),months=Number(d.years)*12,rate=Number(d.rate)/100/12,pay=loan*(rate*Math.pow(1+rate,months))/(Math.pow(1+rate,months)-1);qs("#paymentOutput").textContent=`Estimated monthly: ${money.format(pay)}`};
+    qs("#agentSelect").onchange=()=>{selectedViewingDate="";qs("#viewingDate").value="";renderCalendar()};
+    qs("#leadForm").onsubmit=e=>{
+      e.preventDefault();
+      const d=Object.fromEntries(new FormData(e.currentTarget).entries()),p=listings.find(x=>x.id===Number(d.property)),conflict=isBooked(d.agent,d.viewingDate);
+      if(!d.viewingDate){
+        qs("#availabilityNote").className="availability-note warn";
+        qs("#availabilityNote").textContent="Please choose an available viewing date before submitting.";
+        notify("Choose an available viewing date");
+        return;
+      }
+      if(conflict){
+        qs("#availabilityNote").className="availability-note warn";
+        qs("#availabilityNote").textContent=`${agentName(d.agent)} is already booked with ${conflict.client} on ${formatDateLabel(d.viewingDate)}.`;
+        notify("Date blocked for this agent");
+        renderCalendar();
+        return;
+      }
+      schedules.push({agent:d.agent,date:d.viewingDate,client:d.name,property:Number(d.property)});
+      leads++;
+      qs("#statLeads").textContent=leads;
+      inquiries.unshift({id:Date.now(),name:d.name,phone:d.phone,property:Number(d.property),agent:d.agent,date:d.viewingDate,message:d.message,status:"Pending"});
+      qs("#buyerConfirmation").textContent=`Your viewing request has been submitted for ${p.title} on ${formatDateLabel(d.viewingDate)}. Our team will contact you shortly to confirm the schedule.`;
+      qs("#buyerConfirmation").classList.add("show");
+      selectedViewingDate="";
+      qs("#viewingDate").value="";
+      renderCalendar();
+      renderAdmin();
+      notify("Viewing scheduled");
+    };
+    qs("#openSaved").onclick=()=>{const rows=[...saved].map(id=>listings.find(p=>p.id===id));qs("#drawerContent").innerHTML=`<h2>Saved properties</h2><div class="saved-list">${rows.length?rows.map(p=>`<div class="saved-item"><strong>${p.title}</strong><span>${p.location} • ${money.format(p.price)}</span></div>`).join(""):"<p>No saved properties yet.</p>"}</div>`;qs("#drawer").classList.add("open")};
+    qsa("[data-close]").forEach(x=>x.onclick=()=>qs("#drawer").classList.remove("open"));
+    qsa(".swatch").forEach(s=>s.onclick=()=>{brandColor=s.dataset.color;document.documentElement.style.setProperty("--brand",brandColor);notify("Brand color updated")});
+    qs("#applyConfig").onclick=()=>{const brand=qs("#configBrand").value,title=qs("#configTitle").value,market=qs("#configMarket").value;qs("#brandName").textContent=brand;qs("#footerBrand").textContent=brand;qs("#brandMark").textContent=brand.split(/\s+/).map(w=>w[0]).join("").slice(0,2).toUpperCase();qs("#heroTitle").textContent=title;qs("#heroCopy").textContent=`A configurable real estate website for ${market}, with searchable listings, buyer inquiries, saved homes, and mortgage estimates ready for client demos.`;notify("Frontpage configured")};
+    qsa('.nav-links a[href^="#"]').forEach(link=>link.onclick=event=>{event.preventDefault();qs(link.getAttribute("href")).scrollIntoView({behavior:"smooth",block:"start"})});
+    qsa("[data-user-jump]").forEach(button=>button.onclick=()=>qs(button.dataset.userJump).scrollIntoView({behavior:"smooth",block:"start"}));
+    qs("#featureSaved").onclick=()=>qs("#openSaved").click();
+    function renderAdmin(){
+      const pending=inquiries.filter(item=>item.status==="Pending").length;
+      const confirmed=inquiries.filter(item=>item.status==="Confirmed").length;
+      qs("#adminTotalLeads").textContent=inquiries.length;
+      qs("#adminPending").textContent=pending;
+      qs("#adminConfirmed").textContent=confirmed;
+      qs("#adminBooked").textContent=schedules.length;
+      qs("#adminLeadRows").innerHTML=inquiries.map(item=>`<tr><td><strong>${item.name}</strong><br><span style="color:var(--muted)">${item.phone}</span></td><td>${propertyName(item.property)}</td><td>${agentName(item.agent)}</td><td>${formatDateLabel(item.date)}</td><td><span class="status ${item.status==="Confirmed"?"confirmed":item.status==="Cancelled"?"cancelled":""}">${item.status}</span></td><td><button class="btn small" data-confirm="${item.id}">Confirm</button><button class="btn small danger" data-cancel="${item.id}">Cancel</button></td></tr>`).join("")||`<tr><td colspan="6">No viewing requests yet.</td></tr>`;
+      qsa("[data-confirm]").forEach(button=>button.onclick=()=>updateInquiry(Number(button.dataset.confirm),"Confirmed"));
+      qsa("[data-cancel]").forEach(button=>button.onclick=()=>updateInquiry(Number(button.dataset.cancel),"Cancelled"));
+      qs("#agentLoad").innerHTML=agents.map(agent=>{
+        const count=schedules.filter(item=>item.agent===agent.id).length;
+        const leadCount=inquiries.filter(item=>item.agent===agent.id&&item.status!=="Cancelled").length;
+        return `<div class="load-card"><strong>${agent.name}<span>${count} booked</span></strong><div class="meter" style="--load:${Math.min(count*18,100)}%"><span></span></div><p style="margin:8px 0 0;color:var(--muted)">${leadCount} active lead${leadCount===1?"":"s"}</p></div>`;
+      }).join("");
+      qs("#adminListingRows").innerHTML=listings.map(item=>`<tr><td><strong>${item.title}</strong><br><span style="color:var(--muted)">${item.location}</span></td><td>${item.type}</td><td>${money.format(item.price)}</td><td><span class="status ${published.has(item.id)?"confirmed":"hidden-status"}">${published.has(item.id)?"Published":"Hidden"}</span></td><td><button class="btn small" data-toggle-listing="${item.id}">${published.has(item.id)?"Hide":"Publish"}</button><button class="btn small" data-admin-view="${item.id}">Preview</button></td></tr>`).join("");
+      qsa("[data-toggle-listing]").forEach(button=>button.onclick=()=>toggleListing(Number(button.dataset.toggleListing)));
+      qsa("[data-admin-view]").forEach(button=>button.onclick=()=>openDetails(Number(button.dataset.adminView)));
+      qs("#adminSchedule").innerHTML=schedules.slice().sort((a,b)=>a.date.localeCompare(b.date)).map(item=>`<div class="schedule-item"><strong>${formatDateLabel(item.date)}<span>${agentName(item.agent)}</span></strong><span>${item.client} · ${propertyName(item.property)}</span></div>`).join("");
+    }
+    function toggleListing(id){
+      published.has(id)?published.delete(id):published.add(id);
+      saved.delete(id);
+      renderSelect();
+      renderListings();
+      renderSaved();
+      renderAdmin();
+      notify(published.has(id)?"Listing published":"Listing hidden from user side");
+    }
+    function updateInquiry(id,status){
+      const item=inquiries.find(row=>row.id===id);
+      if(!item)return;
+      item.status=status;
+      qs("#adminNote").textContent=`${item.name}'s viewing for ${propertyName(item.property)} is now ${status.toLowerCase()}.`;
+      renderAdmin();
+      notify(`Lead ${status.toLowerCase()}`);
+    }
+    qs("#modeToggle").onclick=()=>{
+      adminMode=!adminMode;
+      document.body.classList.toggle("admin-mode",adminMode);
+      qs("#modeToggle").textContent=adminMode?"User Side":"Admin Side";
+      qs("#openSaved").classList.toggle("hidden",adminMode);
+      renderAdmin();
+      window.scrollTo({top:0,behavior:"smooth"});
+    };
+    qs("#seedLead").onclick=()=>{
+      const date=addDays(8);
+      schedules.push({agent:"carlo",date,client:"Jessa Morales",property:2});
+      inquiries.unshift({id:Date.now(),name:"Jessa Morales",phone:"+63 917 303 8820",property:2,agent:"carlo",date,message:"Please confirm available weekend viewing.",status:"Pending"});
+      renderCalendar();
+      renderAdmin();
+      notify("Sample admin lead added");
+    };
+    renderSelect();renderCalendar();renderListings();renderSaved();renderAdmin();qs("#calcForm").dispatchEvent(new Event("submit"));
+  </script>
+</body>
 </html>
