@@ -30,21 +30,6 @@ const demos = [
     icon: "BH"
   },
   {
-    title: "Resort Management System Demo",
-    client: "Resorts, glamping sites, and private villas",
-    industry: "Hospitality",
-    status: "Template",
-    audience: "client",
-    type: "Resort BSM / PMS",
-    url: "",
-    pageUrl: "pages/resort-management.html",
-    summary: "Full resort management template with guest booking, room inventory, housekeeping readiness, add-ons, payments, reservation admin, and operations dashboard.",
-    tags: ["Resort", "Bookings", "Housekeeping", "PMS", "Amenities"],
-    color: "#0f766e",
-    image: "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?auto=format&fit=crop&w=1200&q=80",
-    icon: "RS"
-  },
-  {
     title: "APMCB Website",
     client: "APMCB",
     industry: "Corporate",
