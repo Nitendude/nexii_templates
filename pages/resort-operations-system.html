@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Beemo Resort Booking System Demo</title>
+    <link rel="stylesheet" href="demo-pages.css">
+  </head>
+  <body data-demo="resort-ops" class="booking-system-demo">
+    <main class="booking-demo-shell">
+      <nav class="demo-nav booking-demo-nav" aria-label="Demo navigation">
+        <a class="brand" href="../index.html"><span class="brand-mark">NX</span><span>Demo Hub</span></a>
+        <div class="demo-links" aria-label="Page sections">
+          <a href="#booking">Booking</a>
+          <a href="#rooms">Rooms</a>
+          <a href="#payment">Payment</a>
+          <a href="#admin">Admin</a>
+        </div>
+        <a class="back-link" href="../index.html#catalog">Back to dashboard</a>
+      </nav>
+
+      <section class="booking-demo-container">
+        <header class="booking-demo-header">
+          <div class="booking-header-content">
+            <img class="booking-demo-logo" src="resort-assets/beemos-logo.png" alt="Beemo's Hidden Patch">
+            <div>
+              <p class="booking-kicker">Beemo's Hidden Patch</p>
+              <h1>Reserve Your Escape</h1>
+              <p>A clear demo of the actual booking system: dates, stay type, rooms, guest count, proof of payment, confirmation, and admin review in one flow.</p>
+            </div>
+          </div>
+          <div class="booking-header-stats" aria-label="Booking highlights">
+            <div><strong id="resortPendingHero">4</strong><span>Pending review</span></div>
+            <div><strong id="resortRoomsHero">18</strong><span>Rooms available</span></div>
+            <div><strong>5</strong><span>Guest pages</span></div>
+          </div>
+        </header>
+
+        <div class="booking-demo-tabs" aria-label="Booking steps">
+          <a class="active" href="#booking">Booking</a>
+          <a href="#rooms">Rooms</a>
+          <a href="#payment">Payment</a>
+          <a href="#admin">Admin Approval</a>
+        </div>
+
+        <section class="booking-demo-body" id="booking">
+          <div class="booking-main-flow">
+            <article class="booking-form-section">
+              <div class="booking-section-header">
+                <span class="booking-section-icon">1</span>
+                <div>
+                  <h2>Stay Details</h2>
+                  <p>Match the real guest booking form before showing the admin workflow.</p>
+                </div>
+              </div>
+
+              <form id="resortBookingForm" class="booking-demo-form">
+                <div class="booking-input-grid">
+                  <label>Guest name<input name="guest" value="Mika Santos"></label>
+                  <label>Mobile number<input name="phone" value="0917 555 0188"></label>
+                  <label>Arrival date<input name="date" type="date" value="2026-06-18"></label>
+                  <label>Stay type
+                    <select name="stay">
+                      <option value="Overnight" data-rate="6200">Overnight stay - PHP 6,200</option>
+                      <option value="Day Tour" data-rate="1800">Day tour - PHP 1,800</option>
+                      <option value="Event Package" data-rate="28000">Event package - PHP 28,000</option>
+                    </select>
+                  </label>
+                </div>
+
+                <div class="guest-count-demo" aria-label="Guest count">
+                  <span>Guests</span>
+                  <button type="button" data-guest-minus>-</button>
+                  <strong id="resortGuestCount">4</strong>
+                  <button type="button" data-guest-plus>+</button>
+                  <input name="guests" type="hidden" value="4">
+                </div>
+
+                <div class="booking-checks">
+                  <label><input type="checkbox" name="restaurant" checked> Include cafe or restaurant note</label>
+                  <label><input type="checkbox" name="event"> Add event coordinator review</label>
+                </div>
+
+                <button class="booking-submit" type="submit">Send to Admin Review</button>
+              </form>
+            </article>
+
+            <article class="booking-form-section" id="rooms">
+              <div class="booking-section-header">
+                <span class="booking-section-icon">2</span>
+                <div>
+                  <h2>Select Room or Package</h2>
+                  <p>Room cards use the same resort-photo style guests see while booking.</p>
+                </div>
+              </div>
+
+              <div class="booking-room-grid" id="resortRoomCards">
+                <button class="booking-room-card selected" type="button" data-room="Cabana Room 5" data-rate="6200">
+                  <img src="resort-assets/Cabana5.jpg" alt="Cabana Room 5">
+                  <span class="room-check">✓</span>
+                  <strong>Cabana Room 5</strong>
+                  <em>PHP 6,200</em>
+                  <small>Good for couples or small families with pool access.</small>
+                </button>
+                <button class="booking-room-card" type="button" data-room="Honey Bee Loft House" data-rate="9800">
+                  <img src="resort-assets/HoneyBee-outside.jpg" alt="Honey Bee Loft House">
+                  <span class="room-check">✓</span>
+                  <strong>Honey Bee Loft House</strong>
+                  <em>PHP 9,800</em>
+                  <small>Large loft stay with extra beds and group amenities.</small>
+                </button>
+                <button class="booking-room-card" type="button" data-room="King Bee Barkada House" data-rate="12500">
+                  <img src="resort-assets/KingBee-ouside.jpg" alt="King Bee Barkada House">
+                  <span class="room-check">✓</span>
+                  <strong>King Bee Barkada House</strong>
+                  <em>PHP 12,500</em>
+                  <small>For groups, reunions, and weekend barkada bookings.</small>
+                </button>
+                <button class="booking-room-card" type="button" data-room="Poolside Event Area" data-rate="28000">
+                  <img src="resort-assets/Event3.jpg" alt="Poolside Event Area">
+                  <span class="room-check">✓</span>
+                  <strong>Poolside Event Area</strong>
+                  <em>PHP 28,000</em>
+                  <small>Private event setup for birthdays and intimate receptions.</small>
+                </button>
+              </div>
+            </article>
+          </div>
+
+          <aside class="booking-summary-column">
+            <article class="booking-summary-card">
+              <h2>Booking Summary</h2>
+              <div id="resortGuestSummary"></div>
+            </article>
+
+            <article class="booking-payment-card" id="payment">
+              <div class="booking-section-header compact">
+                <span class="booking-section-icon">3</span>
+                <div>
+                  <h2>Payment Proof</h2>
+                  <p>Shows the QR and upload step used before approval.</p>
+                </div>
+              </div>
+              <div class="payment-demo-grid">
+                <div class="payment-option-demo active">GCash</div>
+                <div class="payment-option-demo">BDO</div>
+              </div>
+              <img class="payment-qr-demo" src="resort-assets/gcash-qr.png" alt="GCash QR code">
+              <label class="proof-upload-demo">Proof of payment uploaded</label>
+            </article>
+          </aside>
+        </section>
+
+        <section class="booking-admin-demo" id="admin">
+          <article class="booking-form-section">
+            <div class="booking-section-header">
+              <span class="booking-section-icon">4</span>
+              <div>
+                <h2>Admin Booking Approval</h2>
+                <p>Use these buttons during a demo to show approval, invoice, and confirmation states changing live.</p>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="table booking-admin-table">
+                <thead>
+                  <tr><th>Reference</th><th>Guest</th><th>Request</th><th>Status</th><th>Action</th></tr>
+                </thead>
+                <tbody id="resortBookingRows"></tbody>
+              </table>
+            </div>
+            <div class="split-actions">
+              <button class="ghost-btn" type="button" data-load-resort-sample>Load sample event</button>
+              <button class="ghost-btn" type="button" data-add-resort-booking>Add walk-in booking</button>
+            </div>
+          </article>
+
+          <article class="booking-form-section">
+            <div class="booking-section-header">
+              <span class="booking-section-icon">5</span>
+              <div>
+                <h2>Public Guest Pages</h2>
+                <p>Admin can keep QR pages, amenities, facilities, event packages, and cafe links updated.</p>
+              </div>
+            </div>
+            <select class="compact-input" id="resortPageFilter" aria-label="Public page filter">
+              <option>All</option>
+              <option>Guest</option>
+              <option>Sales</option>
+              <option>Operations</option>
+            </select>
+            <div class="workspace-grid booking-public-pages" id="resortPublicPages"></div>
+          </article>
+        </section>
+
+        <section class="booking-activity-demo">
+          <div>
+            <h2>Recent Activity</h2>
+            <p>Live-looking notes make it easy to explain what just happened.</p>
+          </div>
+          <div class="activity-list" id="resortActivity"></div>
+        </section>
+      </section>
+    </main>
+    <script src="demo-pages.js"></script>
+  </body>
+</html>

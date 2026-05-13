@@ -446,6 +446,150 @@ Status: Available for demo confirmation.`;
   renderSummary(Object.fromEntries(new FormData(qs("#bookingForm")).entries()));
 }
 
+function initResortOps() {
+  let selectedRoom = {
+    name: "Cabana Room 5",
+    rate: 6200
+  };
+  let bookings = [
+    ["BHP-2401", "Mika Santos", "Overnight - Cabana Room 5", "Pending"],
+    ["BHP-2402", "Ramos Family", "Day Tour - 12 guests", "Proof Uploaded"],
+    ["BHP-2403", "Ari Events", "Event Package - Poolside", "Invoice Draft"],
+    ["BHP-2404", "Nina Cruz", "Overnight - Loft House", "Confirmed"]
+  ];
+  const publicPages = [
+    ["Rooms and Amenities", "Guest", "Room cards, amenity images, booking CTA, and shareable links."],
+    ["Resort Amenities", "Guest", "Pools, courts, recreation, dining, parking, and guest inclusions."],
+    ["Facilities and Services", "Operations", "Policies, check-in rules, pet notes, housekeeping, and safety details."],
+    ["Event Packages and Rates", "Sales", "Birthdays, weddings, private events, inclusions, and inquiry links."],
+    ["Cafe and Restaurant", "Sales", "Menu links, dining highlights, cafe photos, and social page routing."]
+  ];
+  const logs = [
+    ["System ready", "Guest, admin, and public page modules loaded"],
+    ["Room settings active", "Availability and stay times are admin controlled"]
+  ];
+
+  function renderSummary(data) {
+    const option = qs("#resortBookingForm select[name='stay']").selectedOptions[0];
+    const base = Math.max(Number(option.dataset.rate), selectedRoom.rate);
+    const guests = Number(data.guests);
+    const addOns = (data.restaurant ? 450 * guests : 0) + (data.event ? 3500 : 0);
+    const total = base + addOns;
+    qs("#resortGuestSummary").innerHTML = `
+      <div class="booking-summary-row"><span>Reference</span><strong>BHP-${Math.floor(3000 + Math.random() * 6000)}</strong></div>
+      <div class="booking-summary-row"><span>Guest</span><strong>${data.guest}</strong></div>
+      <div class="booking-summary-row"><span>Stay</span><strong>${data.stay}</strong></div>
+      <div class="booking-summary-row"><span>Room</span><strong>${selectedRoom.name}</strong></div>
+      <div class="booking-summary-row"><span>Arrival</span><strong>${data.date}</strong></div>
+      <div class="booking-summary-row"><span>Guests</span><strong>${guests}</strong></div>
+      <div class="booking-summary-row"><span>Notes</span><strong>${data.restaurant ? "Cafe note" : "No dining note"}${data.event ? " + coordinator" : ""}</strong></div>
+      <div class="booking-summary-row booking-total-row"><span>Total</span><strong>${money.format(total)}</strong></div>
+    `;
+  }
+
+  function renderRows() {
+    qs("#resortBookingRows").innerHTML = bookings.map((booking, index) => `
+      <tr>
+        <td>${booking[0]}</td>
+        <td>${booking[1]}</td>
+        <td>${booking[2]}</td>
+        <td>${statusBadge(booking[3])}</td>
+        <td>
+          <button class="action-btn" type="button" data-resort-approve="${index}">Approve</button>
+          <button class="action-btn" type="button" data-resort-invoice="${index}">Invoice</button>
+        </td>
+      </tr>
+    `).join("");
+    const pending = bookings.filter((booking) => !["Confirmed", "Invoice Sent"].includes(booking[3])).length;
+    qs("#resortPendingHero").textContent = pending;
+    qs("#resortConfirmations").textContent = bookings.filter((booking) => booking[3] === "Confirmed").length;
+    qs("#resortBookings").textContent = bookings.length + 8;
+  }
+
+  function renderPages() {
+    const filter = qs("#resortPageFilter").value;
+    qs("#resortPublicPages").innerHTML = publicPages
+      .filter((page) => filter === "All" || page[1] === filter)
+      .map((page) => `<article class="workspace-card"><strong>${page[0]}</strong><span>${page[2]}</span></article>`)
+      .join("");
+  }
+
+  function renderLogs() {
+    qs("#resortActivity").innerHTML = logs.slice(-7).reverse().map((item) => activity(item[0], item[1])).join("");
+  }
+
+  qs("#resortBookingForm").addEventListener("submit", (event) => {
+    event.preventDefault();
+    const data = Object.fromEntries(new FormData(event.currentTarget).entries());
+    bookings.unshift([`BHP-${Math.floor(3000 + Math.random() * 6000)}`, data.guest, `${data.stay} - ${selectedRoom.name}`, "Pending"]);
+    logs.push(["Booking sent to admin", `${data.guest} is waiting for review`]);
+    renderSummary(data);
+    renderRows();
+    renderLogs();
+  });
+
+  qsa("[data-room]").forEach((button) => {
+    button.addEventListener("click", () => {
+      qsa("[data-room]").forEach((item) => item.classList.remove("selected"));
+      button.classList.add("selected");
+      selectedRoom = {
+        name: button.dataset.room,
+        rate: Number(button.dataset.rate)
+      };
+      renderSummary(Object.fromEntries(new FormData(qs("#resortBookingForm")).entries()));
+      logs.push(["Room selection changed", selectedRoom.name]);
+      renderLogs();
+    });
+  });
+
+  qs("[data-guest-minus]").addEventListener("click", () => {
+    const input = qs("#resortBookingForm input[name='guests']");
+    input.value = Math.max(1, Number(input.value) - 1);
+    qs("#resortGuestCount").textContent = input.value;
+    renderSummary(Object.fromEntries(new FormData(qs("#resortBookingForm")).entries()));
+  });
+
+  qs("[data-guest-plus]").addEventListener("click", () => {
+    const input = qs("#resortBookingForm input[name='guests']");
+    input.value = Number(input.value) + 1;
+    qs("#resortGuestCount").textContent = input.value;
+    renderSummary(Object.fromEntries(new FormData(qs("#resortBookingForm")).entries()));
+  });
+
+  qs("[data-load-resort-sample]").addEventListener("click", () => {
+    bookings.unshift(["BHP-2501", "Corporate Outing", "Event Package - Poolside Event Area", "Proof Uploaded"]);
+    qs("#resortRevenue").textContent = "PHP 124k";
+    qs("#resortRoomsHero").textContent = "17";
+    logs.push(["Sample booking loaded", "Corporate outing added with uploaded proof"]);
+    renderRows();
+    renderLogs();
+  });
+
+  qs("[data-add-resort-booking]").addEventListener("click", () => {
+    bookings.push(["BHP-2502", "Walk-in Guest", "Day Tour - 5 guests", "Pending"]);
+    logs.push(["Walk-in booking added", "Admin entered a same-day request"]);
+    renderRows();
+    renderLogs();
+  });
+
+  qs("#resortBookingRows").addEventListener("click", (event) => {
+    const approve = event.target.closest("[data-resort-approve]");
+    const invoice = event.target.closest("[data-resort-invoice]");
+    if (!approve && !invoice) return;
+    const index = Number((approve || invoice).dataset[approve ? "resortApprove" : "resortInvoice"]);
+    bookings[index][3] = approve ? "Confirmed" : "Invoice Sent";
+    logs.push([`${bookings[index][0]} ${bookings[index][3].toLowerCase()}`, bookings[index][1]]);
+    renderRows();
+    renderLogs();
+  });
+
+  qs("#resortPageFilter").addEventListener("change", renderPages);
+  renderSummary(Object.fromEntries(new FormData(qs("#resortBookingForm")).entries()));
+  renderRows();
+  renderPages();
+  renderLogs();
+}
+
 function initCorporate() {
   const projects = [
     ["Commercial Office Fit-out", "Commercial", "Corporate office renovation with phased delivery and documentation."],
@@ -534,6 +678,7 @@ Status: New buyer lead ready for agent follow-up.`;
 
 const demo = document.body.dataset.demo;
 if (demo === "booking") initBooking();
+if (demo === "resort-ops") initResortOps();
 if (demo === "corporate") initCorporate();
 if (demo === "realty") initRealty();
 if (demo === "operations") initOperations();

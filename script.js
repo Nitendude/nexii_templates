@@ -15,34 +15,19 @@ const demos = [
     icon: "BSM"
   },
   {
-    title: "Beemo's Hidden Patch Booking",
-    client: "Beemo's Hidden Patch",
+    title: "Resort Booking and Operations Suite",
+    client: "Resorts, events venues, and hospitality teams",
     industry: "Hospitality",
     status: "Template",
     audience: "client",
-    type: "Booking System",
+    type: "Booking + Admin System",
     url: "",
-    pageUrl: "pages/beemo-booking.html",
-    summary: "Guest-facing resort booking flow with stay dates, accommodation selection, guest details, payment upload, amenities, policies, and booking summary.",
-    tags: ["Booking", "Resort", "Payments", "Amenities"],
-    color: "#0f766e",
-    image: "https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=1200&q=80",
-    icon: "BH"
-  },
-  {
-    title: "APMCB Website",
-    client: "APMCB",
-    industry: "Corporate",
-    status: "Template",
-    audience: "client",
-    type: "Website",
-    url: "",
-    pageUrl: "pages/apmcb-corporate.html",
-    summary: "Published company website that can be used as proof of completed public-facing web work and live-domain deployment.",
-    tags: ["Corporate", "Live site", "Brand"],
-    color: "#2563eb",
-    image: "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1200&q=80",
-    icon: "AP"
+    pageUrl: "pages/resort-operations-system.html",
+    summary: "Full resort operations demo with guest booking, room availability, payment proof, invoice actions, admin approvals, public page editing, QR guest links, events, cafe content, and reporting.",
+    tags: ["Resort", "Admin approvals", "Invoices", "QR pages", "Events"],
+    color: "#0f4c5c",
+    image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80",
+    icon: "RS"
   },
   {
     title: "APM Realty Website Demo",
