@@ -50,7 +50,7 @@ const demos = [
     industry: "Operations",
     status: "Demo Page",
     audience: "internal",
-    type: "Laravel System",
+    type: "Static HTML/JS System",
     url: "",
     pageUrl: "pages/apm-operations.html",
     summary: "Working BSM demo with employee records, approvals, cash advances, billing documents, job orders, client CRM, support tickets, and audit controls.",

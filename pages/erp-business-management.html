@@ -189,7 +189,7 @@ select{cursor:pointer;padding-right:26px;appearance:none;background-image:url("d
 /* Buttons */
 .btn{font-family:'IBM Plex Sans',sans-serif;font-size:12px;font-weight:500;padding:5px 12px;height:30px;border:1px solid var(--border-strong);background:var(--bg);color:var(--text-primary);cursor:pointer;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;transition:background 0.1s}
 .btn:hover{background:var(--surface-2)}
-.btn.busy{opacity:.72;pointer-events:none}
+.btn.busy{opacity:.72}
 .btn.flash{box-shadow:0 0 0 2px rgba(29,78,216,.18)}
 .btn-primary{background:var(--accent);color:#fff;border-color:var(--accent)}
 .btn-primary:hover{background:var(--accent-hover)}
@@ -304,6 +304,33 @@ tbody td.amt{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:50
 .import-preview .empty-state{padding:28px 18px}
 .import-preview table{min-width:640px}
 .import-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.erp-menu{padding:18px 20px;border-bottom:1px solid var(--border);background:#fff}
+body.dark .erp-menu{background:var(--bg)}
+.erp-source{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;font-size:11px;color:var(--text-tertiary)}
+.erp-source strong{font-size:12px;color:var(--text-secondary);font-weight:600}
+.erp-tiles{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:18px}
+.erp-tile{width:150px;min-height:82px;background:#050505;color:#fff;border:none;padding:12px;display:flex;align-items:flex-start;gap:10px;text-align:left;cursor:pointer}
+.erp-tile:hover{background:#1f2937}
+.erp-icon{font-size:22px;line-height:1}.erp-tile span:last-child{font-size:14px;font-weight:600;line-height:1.05}
+.erp-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:26px}
+.erp-col h3{font-size:22px;font-weight:400;color:var(--text-primary);margin:0 0 10px}
+.erp-col ul{list-style:none;margin:0 0 18px;padding:0;display:grid;gap:9px}
+.erp-col li{font-size:15px;color:var(--text-primary);cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.erp-col li:hover{color:var(--accent);text-decoration:underline}
+.erp-star{color:#f5b400;margin-right:4px}
+.erp-more{border-top:1px solid var(--border);margin-top:8px;padding-top:10px;text-align:center;color:var(--text-secondary);font-size:14px}
+.report-shell{border-bottom:1px solid var(--border);background:var(--bg)}
+.report-toolbar{display:flex;gap:14px;align-items:center;padding:10px 20px;border-bottom:1px solid var(--border);background:var(--surface)}
+.report-tool{border:none;background:transparent;color:var(--text-secondary);font-size:11px;font-weight:600;text-transform:uppercase;cursor:pointer}
+.report-tool:hover{color:var(--accent)}
+.report-form{padding:14px 20px;border-bottom:1px solid var(--border);background:var(--surface)}
+.report-template{display:grid;grid-template-columns:90px minmax(220px,1fr);gap:8px 12px;align-items:center;max-width:560px;margin-bottom:12px}
+.report-tabs{display:flex;gap:22px;border-bottom:1px solid var(--border);margin-top:8px}
+.report-tab{padding:10px 0 9px;font-size:11px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;cursor:pointer;border-bottom:2px solid transparent}
+.report-tab.active{color:var(--text-primary);border-bottom-color:var(--accent)}
+.report-params{display:flex;flex-wrap:wrap;gap:12px;align-items:end;padding-top:12px}
+.report-field{display:grid;gap:5px}.report-field label{font-size:11px;color:var(--text-secondary);font-weight:600}.report-field input,.report-field select{height:30px;border:1px solid var(--border-strong);background:var(--bg);padding:0 8px;color:var(--text-primary)}
+.report-output{padding:16px 20px}.report-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}.report-kpi{border:1px solid var(--border);background:var(--surface);padding:12px}.report-kpi span{font-size:10px;color:var(--text-secondary);text-transform:uppercase}.report-kpi strong{display:block;margin-top:5px;font-size:18px;color:var(--text-primary);font-family:'IBM Plex Mono',monospace}
 .modal-overlay{position:fixed;inset:0;z-index:150;background:rgba(15,23,42,.46);display:none;align-items:center;justify-content:center;padding:24px}
 .modal-overlay.open{display:flex}
 .migration-modal{width:min(1120px,calc(100vw - 48px));max-height:calc(100vh - 48px);overflow:auto;background:var(--bg);border:1px solid var(--border-strong);box-shadow:0 24px 70px rgba(15,23,42,.28)}
@@ -349,7 +376,7 @@ body.dark .login-right{background:var(--bg)}
 body.dark .login-demo-note,body.dark .lm-tag,body.dark .tag{background:var(--surface);border-color:var(--border-strong)}
 body.dark #coa-list .sub-header{background:var(--bg)!important}
 body.dark .badge-delivered{color:var(--status-approved-text);background:var(--status-approved-bg);border-color:#166534}
-@media(max-width:1280px){:root{--sidebar-w:200px}.kpi-grid{grid-template-columns:repeat(3,1fr)}.cf-grid{grid-template-columns:repeat(2,1fr)}.payroll-summary,.migration-card-grid{grid-template-columns:repeat(2,1fr)}.migration-grid{grid-template-columns:1fr}}
+@media(max-width:1280px){:root{--sidebar-w:200px}.kpi-grid{grid-template-columns:repeat(3,1fr)}.cf-grid{grid-template-columns:repeat(2,1fr)}.payroll-summary,.migration-card-grid,.report-kpis{grid-template-columns:repeat(2,1fr)}.migration-grid{grid-template-columns:1fr}.erp-grid{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
@@ -378,16 +405,45 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
     <div class="login-form-title">Team Login</div>
     <div class="login-form-sub">Enter your credentials to access the system.</div>
     <label class="login-label">Username</label>
-    <input class="login-input" type="text" id="l-user" value="operations.admin" placeholder="e.g. operations.admin" onkeydown="if(event.key==='Enter')doLogin()">
+    <input class="login-input" type="text" id="l-user" value="operations.admin" placeholder="e.g. operations.admin" onkeydown="if(event.key==='Enter')quickLogin(event)">
     <label class="login-label">Password</label>
-    <input class="login-input" type="password" id="l-pass" value="demo" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    <input class="login-input" type="password" id="l-pass" value="demo" placeholder="••••••••" onkeydown="if(event.key==='Enter')quickLogin(event)">
     <div class="login-error" id="l-err">Invalid username or password. Please try again.</div>
-    <button class="login-btn" onclick="doLogin()">Sign In</button>
+    <button class="login-btn" id="login-submit" type="button" onclick="return quickLogin(event)">Sign In</button>
     <div class="login-demo-note">
       <strong>Demo credentials:</strong> pre-filled for client demos — just click Sign In.
     </div>
   </div>
 </div>
+
+<script>
+function quickLogin(event){
+  if(event&&event.preventDefault)event.preventDefault();
+  const user=document.getElementById('l-user');
+  const pass=document.getElementById('l-pass');
+  const err=document.getElementById('l-err');
+  if(!user||!pass)return false;
+  if(!user.value.trim()||!pass.value.trim()){
+    if(err)err.style.display='block';
+    return false;
+  }
+  if(err)err.style.display='none';
+  const login=document.getElementById('login-screen');
+  const app=document.getElementById('app');
+  if(login)login.style.display='none';
+  if(app)app.style.display='flex';
+  const name=user.value.trim();
+  const av=document.getElementById('sb-av');
+  const sbName=document.getElementById('sb-name');
+  if(av)av.textContent=(name.split(/[.\s_-]+/).filter(Boolean).map(w=>w[0].toUpperCase()).join('').substring(0,2)||'ST');
+  if(sbName)sbName.textContent=name.charAt(0).toUpperCase()+name.slice(1);
+  try{if(typeof safeInitializeDemo==='function')safeInitializeDemo()}catch(e){console.error(e)}
+  try{if(typeof nav==='function')nav('dashboard')}catch(e){console.error(e)}
+  try{if(typeof showToast==='function')showToast('Signed in to NEXII BSM Demo')}catch(e){}
+  return false;
+}
+window.quickLogin=quickLogin;
+</script>
 
 <!-- ===== APP ===== -->
 <div id="app">
@@ -442,6 +498,10 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
           <li><a onclick="nav('inventory')" id="nav-inventory">
             <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="3" width="14" height="2" rx="0.5"/><rect x="1" y="7" width="14" height="2" rx="0.5"/><rect x="1" y="11" width="14" height="2" rx="0.5"/></svg>
             Inventory
+          </a></li>
+          <li><a onclick="nav('equipment')" id="nav-equipment">
+            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M3 3h10v4H3zM2 9h12v4H2z"/><circle cx="5" cy="13" r="1"/><circle cx="11" cy="13" r="1"/></svg>
+            Equipment
           </a></li>
         </ul>
       </div>
@@ -567,6 +627,27 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
           </div>
         </div>
         <div class="table-footer"><span class="table-count" id="inv-ft"></span><div style="display:flex;gap:8px"><button class="btn btn-sm">&#8592; Prev</button><button class="btn btn-sm">Next &#8594;</button></div></div>
+      </div>
+
+      <!-- ===== EQUIPMENT ===== -->
+      <div class="module" id="mod-equipment">
+        <div class="page-header">
+          <div><div class="page-title">Equipment</div><div class="page-sub">Service contracts, units, manufacturers, and warranty coverage</div></div>
+          <div class="page-actions"><button class="btn btn-sm" onclick="openMigrationModal('equipment')">Import</button><button class="btn btn-sm" onclick="exportCsv('equipment')">Export</button><button class="btn btn-sm btn-primary">+ Add Equipment</button></div>
+        </div>
+        <div class="ctrl-bar">
+          <div class="search-wrap"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10 10l3.5 3.5"/></svg><input type="search" id="eq-q" placeholder="Search equipment, contract, serial..." oninput="filterEquipment()"></div>
+          <select id="eq-status" onchange="filterEquipment()"><option value="">All Statuses</option><option>Active</option><option>Under Service</option><option>Warranty</option></select>
+          <div class="ctrl-bar-label" id="eq-count">0 equipment records</div>
+        </div>
+        <div class="table-container">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Equipment ID</th><th>Contract</th><th>Model</th><th>Serial No.</th><th>Customer</th><th>Schedule</th><th>Status</th></tr></thead>
+              <tbody id="eq-tb"></tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
       <!-- ===== SALES ORDERS ===== -->
@@ -840,6 +921,55 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
         <div class="table-footer"><span class="table-count" id="payroll-count">0 payroll records</span><div style="display:flex;gap:8px"><button class="btn btn-sm" onclick="markPayrollReviewed()">Mark Reviewed</button><button class="btn btn-sm" onclick="refreshPayroll()">Refresh Live</button></div></div>
       </div>
 
+      <!-- ===== GENERATED REPORT: FINANCING OR/CR ===== -->
+      <div class="module" id="mod-transmittal">
+        <div class="page-header">
+          <div><div class="page-title">Other Financing OR/CR Transmittal</div><div class="page-sub">Generated from external financing-bank data inside the BSM demo</div></div>
+          <div class="page-actions"><button class="btn btn-sm" onclick="nav('receivables')">Back to Receivables</button><button class="btn btn-sm btn-primary" onclick="runTransmittalReport()">Run Report</button></div>
+        </div>
+        <div class="report-shell">
+          <div class="report-toolbar">
+            <button class="report-tool" onclick="runTransmittalReport()">Run Report</button>
+            <button class="report-tool" onclick="saveTransmittalTemplate()">Save Template</button>
+            <button class="report-tool" onclick="removeTransmittalTemplate()">Remove Template</button>
+            <button class="report-tool" onclick="scheduleTransmittalTemplate()">Schedule Template</button>
+            <button class="report-tool" onclick="exportTransmittalXlsx()">Export XLSX</button>
+          </div>
+          <div class="report-form">
+            <div class="report-template">
+              <label>Template</label>
+              <input id="tr-template" value="Default bank transmittal">
+              <label></label>
+              <div><label style="font-size:11px;color:var(--text-secondary)"><input type="checkbox" id="tr-default" checked> Default</label> <label style="font-size:11px;color:var(--text-secondary);margin-left:12px"><input type="checkbox" id="tr-shared"> Shared</label></div>
+            </div>
+            <div class="report-tabs">
+              <div class="report-tab active">Report Parameters</div>
+              <div class="report-tab" onclick="showToast('Additional sort and filters ready')">Additional Sort and Filters</div>
+              <div class="report-tab" onclick="showToast('Print and email settings ready')">Print and Email Settings</div>
+            </div>
+            <div class="report-params">
+              <div class="report-field"><label>* Transmittal Date</label><input type="date" id="tr-date" value="2026-05-14"></div>
+              <div class="report-field"><label>* Financing Bank</label><select id="tr-bank" onchange="runTransmittalReport()"><option>SUBMIT LEASING &amp; FINANCE CO.</option><option>BPI MS FINANCE</option><option>BDO AUTO LOAN</option><option>METROBANK FINANCING</option><option>PSBANK AUTO LOAN</option></select></div>
+              <div class="report-field"><label>Source System</label><select id="tr-source"><option>Financing Bank Portal</option><option>Legacy Loan Database</option><option>Dealer OR/CR Transmittal</option></select></div>
+            </div>
+          </div>
+          <div class="report-output">
+            <div class="report-kpis">
+              <div class="report-kpi"><span>Records Generated</span><strong id="tr-count">0</strong></div>
+              <div class="report-kpi"><span>Total Financing Amount</span><strong id="tr-total">₱0</strong></div>
+              <div class="report-kpi"><span>Bank</span><strong id="tr-bank-kpi" style="font-size:13px">-</strong></div>
+              <div class="report-kpi"><span>Last Run</span><strong id="tr-run" style="font-size:13px">Not run</strong></div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Transmittal No.</th><th>OR/CR No.</th><th>Customer</th><th>Unit</th><th>Financing Bank</th><th>Amount</th><th>Release Date</th><th>Status</th></tr></thead>
+                <tbody id="tr-tb"><tr><td colspan="8" style="text-align:center;padding:32px;color:var(--text-tertiary)">Choose parameters, then run the report.</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- ===== BRANCHES ===== -->
       <div class="module" id="mod-branches">
         <div class="page-header">
@@ -919,6 +1049,53 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
 </div>
 
 <script>
+(function(){
+  const titles={dashboard:['Dashboard','Overview'],sales:['Sales Orders','Transactions'],receivables:['Receivables','Installment Accounts'],customers:['Customers','Customer Records'],purchases:['Purchase Orders','Procurement'],payables:['Payables','Accounts Payable'],inventory:['Inventory','Motor Units'],equipment:['Equipment','Service Management'],cashfund:['Cash Fund Management','Finance'],banking:['Banking','Bank Accounts & Transactions'],gl:['General Ledger','Finance'],timeexp:['Time & Expenses','HR & Admin'],payroll:['Payroll Management','HR & Admin'],branches:['Branch Directory','Administration'],transmittal:['Other Financing OR/CR Transmittal','Generated Reports']};
+  function emergencyToast(message){
+    let toast=document.getElementById('toast');
+    if(!toast){toast=document.createElement('div');toast.id='toast';toast.className='toast';document.body.appendChild(toast)}
+    toast.textContent=message;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2200);
+  }
+  function emergencyPanel(title,body){
+    const overlay=document.getElementById('sp-overlay'),panel=document.getElementById('side-panel');
+    document.getElementById('sp-title').textContent=title;
+    document.getElementById('sp-body').innerHTML=body||'<div class="sp-section"><div class="sp-section-label">Demo Action</div><div class="sp-row"><span class="sp-key">Status</span><span class="sp-val">Completed</span></div></div>';
+    overlay?.classList.add('open');setTimeout(()=>panel?.classList.add('open'),10);
+  }
+  function emergencyNav(id){
+    document.querySelectorAll('.sb-nav a').forEach(a=>a.classList.remove('active'));
+    document.getElementById('nav-'+id)?.classList.add('active');
+    document.querySelectorAll('.module').forEach(m=>m.classList.remove('active'));
+    document.getElementById('mod-'+id)?.classList.add('active');
+    const meta=titles[id]||[id,id];
+    const title=document.getElementById('tb-title'),page=document.getElementById('tb-page');
+    if(title)title.textContent=meta[0];if(page)page.textContent=meta[1];
+  }
+  function emergencyAction(text){
+    const label=(text||'Action').replace(/\s+/g,' ').trim();
+    if(/import/i.test(label)){if(typeof window.openMigrationModal==='function')window.openMigrationModal();else emergencyPanel('Import / Export');return}
+    if(/export|print|xlsx/i.test(label)){emergencyToast(label+' generated');return}
+    if(/new order/i.test(label)&&typeof window.addDemoOrder==='function'){window.addDemoOrder();return}
+    if(/add unit|stock item/i.test(label)&&typeof window.addDemoUnit==='function'){window.addDemoUnit();return}
+    if(/customer/i.test(label)&&typeof window.addDemoCustomer==='function'){window.addDemoCustomer();return}
+    if(/purchase/i.test(label)&&typeof window.addDemoPO==='function'){window.addDemoPO();return}
+    if(/payment/i.test(label)&&typeof window.recordDemoPayment==='function'){window.recordDemoPayment();return}
+    if(/journal/i.test(label)&&typeof window.addDemoJournalEntry==='function'){window.addDemoJournalEntry();return}
+    if(/equipment/i.test(label)&&typeof window.addDemoEquipment==='function'){window.addDemoEquipment();return}
+    emergencyPanel(label,'<div class="sp-section"><div class="sp-section-label">Functional Demo</div><div class="sp-row"><span class="sp-key">Action</span><span class="sp-val">'+label+'</span></div><div class="sp-row"><span class="sp-key">Status</span><span class="sp-val">Ready</span></div></div>');
+  }
+  document.addEventListener('click',function(event){
+    const navLink=event.target.closest&&event.target.closest('.sb-nav a[id^="nav-"]');
+    if(navLink){event.preventDefault();event.stopImmediatePropagation();const id=navLink.id.replace('nav-','');if(typeof window.nav==='function')window.nav(id);else emergencyNav(id);return}
+    const control=event.target.closest&&event.target.closest('button,.btn,.erp-tile,.erp-col li');
+    if(!control||control.id==='login-submit'||control.classList.contains('sp-close'))return;
+    event.preventDefault();event.stopImmediatePropagation();emergencyAction(control.textContent||control.getAttribute('title')||'Action');
+  },true);
+  window.emergencyNav=emergencyNav;
+})();
+</script>
+
+<script>
 // ===== DATA =====
 let invData = [];
 
@@ -985,6 +1162,7 @@ glData = Array.from({length:200},(_,i)=>{const so=soData[i%soData.length],ar=arD
 const employeeData = Array.from({length:90},(_,i)=>{const positions=['Branch Manager','Sales Agent','Finance Officer','Collector','Encoder','Inventory Clerk','Branch Cashier','Service Coordinator'];const status=i%23===0?'Absent':i%11===0?'Late':'Present';return {id:`EMP-${pad(i+1)}`,name:personName(390+i),position:positions[i%positions.length],branch:branchData[(i*9)%branchData.length].name,date:'May 12',timeIn:status==='Absent'?'—':i%11===0?'09:08 AM':'08:0'+(i%10)+' AM',timeOut:status==='Absent'||status==='Late'?'—':'05:'+pad(1+(i%49),2)+' PM',hours:status==='Absent'||status==='Late'?'—':(8.5+(i%10)/10).toFixed(2)+' hrs',status}});
 const payrollRates={'Branch Manager':48000,'Sales Agent':28000,'Finance Officer':36000,'Collector':26000,'Encoder':23000,'Inventory Clerk':24000,'Branch Cashier':25000,'Service Coordinator':27000};
 let payrollData = employeeData.map((e,i)=>{const basic=Math.round((payrollRates[e.position]||25000)/2);const overtime=(i%5)*550;const allowance=1200+(i%4)*350;const deductions=Math.round(basic*.085)+((i%6)*120);const status=i%13===0?'Draft':i%7===0?'Reviewed':i%5===0?'Approved':i%3===0?'Processing':'Released';return {no:`PAY-202605-${pad(i+1)}`,employeeId:e.id,employee:e.name,position:e.position,branch:e.branch,basic,overtime,allowance,deductions,net:basic+overtime+allowance-deductions,status,updated:dateShort(i)}});
+let equipmentData = Array.from({length:36},(_,i)=>{const unit=catalog[(i*4)%catalog.length];return {id:`EQ-2026-${pad(i+1,4)}`,contract:`SC-2026-${pad(900+i,4)}`,model:`${unit.brand} ${unit.model}`,serial:`SRV-${pad(40000+i*13,5)}`,customer:personName(710+i),schedule:dateLong(i+5),status:i%7===0?'Under Service':i%5===0?'Warranty':'Active'}});
 const migrationState={
   files:0,
   records:0,
@@ -1147,17 +1325,17 @@ function renderMigration(){
 }
 
 function migrationTypeForModule(id){
-  const map={dashboard:'inventory',inventory:'inventory',customers:'customers',sales:'sales',receivables:'receivables',purchases:'purchases',payables:'payables',cashfund:'cashfund',banking:'banking',timeexp:'timeexp',payroll:'payroll',branches:'branches',gl:'accounting'};
+  const map={dashboard:'inventory',inventory:'inventory',equipment:'equipment',customers:'customers',sales:'sales',receivables:'receivables',purchases:'purchases',payables:'payables',cashfund:'cashfund',banking:'banking',timeexp:'timeexp',payroll:'payroll',branches:'branches',gl:'accounting'};
   return map[id]||'inventory';
 }
 
 function exportTypeForModule(id){
-  const map={dashboard:'inventory',inventory:'inventory',customers:'customers',sales:'sales',receivables:'receivables',purchases:'purchases',payables:'payables',cashfund:'cashfund',banking:'banking',timeexp:'timeexp',payroll:'payroll',branches:'branches',gl:'accounting'};
+  const map={dashboard:'inventory',inventory:'inventory',equipment:'equipment',customers:'customers',sales:'sales',receivables:'receivables',purchases:'purchases',payables:'payables',cashfund:'cashfund',banking:'banking',timeexp:'timeexp',payroll:'payroll',branches:'branches',gl:'accounting'};
   return map[id]||'inventory';
 }
 
 function migrationLabel(type){
-  const labels={inventory:'Inventory CSV',customers:'Customers XLSX',accounting:'Accounting SQL',sales:'Sales Orders CSV',receivables:'Receivables CSV',purchases:'Purchase Orders CSV',payables:'Payables CSV',cashfund:'Cash Fund CSV',banking:'Banking CSV',timeexp:'Time & Expenses XLSX',payroll:'Payroll CSV',branches:'Branches CSV'};
+  const labels={inventory:'Inventory CSV',equipment:'Equipment CSV',customers:'Customers XLSX',accounting:'Accounting SQL',sales:'Sales Orders CSV',receivables:'Receivables CSV',purchases:'Purchase Orders CSV',payables:'Payables CSV',cashfund:'Cash Fund CSV',banking:'Banking CSV',timeexp:'Time & Expenses XLSX',payroll:'Payroll CSV',branches:'Branches CSV'};
   return labels[type]||'Inventory CSV';
 }
 
@@ -1210,6 +1388,7 @@ function previewLegacyFile(input){
 function loadLegacySample(type){
   const samples={
     inventory:{name:'old_inventory_master.csv',records:1248,mapping:[['unit_code','Unit ID','Mapped'],['motor_model','Model','Mapped'],['engine_number','Engine No.','Mapped'],['dealer_branch','Branch','Mapped'],['unit_srp','SRP','Mapped']]},
+    equipment:{name:'old_equipment_contracts.csv',records:36,mapping:[['equipment_code','Equipment ID','Mapped'],['contract_ref','Service Contract','Mapped'],['serial_number','Serial No.','Mapped'],['customer_name','Customer','Mapped'],['service_status','Status','Mapped']]},
     customers:{name:'legacy_customer_accounts.xlsx',records:360,mapping:[['customer_code','Customer ID','Mapped'],['full_name','Full Name','Mapped'],['mobile_no','Contact No.','Mapped'],['home_address','Address','Mapped'],['account_state','Account Status','Needs Review']]},
     accounting:{name:'old_accounting_ledger.sql',records:200,mapping:[['journal_ref','Ref No.','Mapped'],['posting_date','Date','Mapped'],['coa_account','Account','Mapped'],['debit_amount','Debit','Mapped'],['credit_amount','Credit','Mapped']]},
     sales:{name:'old_sales_orders.csv',records:420,mapping:[['sales_ref','SO No.','Mapped'],['customer_name','Customer','Mapped'],['unit_model','Model','Mapped'],['payment_mode','Payment Mode','Mapped'],['order_status','Status','Mapped']]},
@@ -1337,6 +1516,16 @@ function simulateImport(){
     migrationState.imported.unshift(...inserted.map(r=>({module:'Time & Expenses',id:r.id,title:`${r.name} - ${r.position}`,destination:'Time & Expenses',status:r.status})));
     migrationLog('Import completed',`${inserted.length} attendance records added`);
     showToast('Imported attendance records now visible');
+  }else if(type==='equipment'){
+    inserted=[
+      {id:`EQ-IMP-${pad(equipmentData.length+1,4)}`,contract:`SC-IMP-${pad(1200+equipmentData.length,4)}`,model:'Imported Compressor Unit',serial:`SRV-IMP-${pad(8100+equipmentData.length,5)}`,customer:'Legacy Service Client',schedule:'May 30, 2026',status:'Warranty'},
+      {id:`EQ-IMP-${pad(equipmentData.length+2,4)}`,contract:`SC-IMP-${pad(1201+equipmentData.length,4)}`,model:'Imported Generator Set',serial:`SRV-IMP-${pad(8110+equipmentData.length,5)}`,customer:'Legacy Industrial Client',schedule:'June 3, 2026',status:'Active'}
+    ];
+    equipmentData.unshift(...inserted);
+    filterEquipment();
+    migrationState.imported.unshift(...inserted.map(r=>({module:'Equipment',id:r.id,title:`${r.model} - ${r.customer}`,destination:'Equipment',status:r.status})));
+    migrationLog('Import completed',`${inserted.length} equipment records added`);
+    showToast('Imported equipment now visible');
   }else if(type==='payroll'){
     const base=payrollData.length+1;
     inserted=[
@@ -1396,7 +1585,7 @@ function simulateImport(){
 }
 
 function clearImportFilters(type){
-  const ids=type==='customers'?['cust-q','cust-branch']:type==='accounting'?['gl-q','gl-type']:type==='sales'?['so-q','so-status','so-mode','so-branch']:type==='receivables'?['ar-q','ar-status','ar-branch']:type==='purchases'?['po-q','po-status','po-supplier']:type==='payables'?['ap-q','ap-status']:type==='payroll'?['payroll-q','payroll-branch','payroll-status']:['inv-q','inv-brand','inv-status','inv-branch'];
+  const ids=type==='customers'?['cust-q','cust-branch']:type==='accounting'?['gl-q','gl-type']:type==='sales'?['so-q','so-status','so-mode','so-branch']:type==='receivables'?['ar-q','ar-status','ar-branch']:type==='purchases'?['po-q','po-status','po-supplier']:type==='payables'?['ap-q','ap-status']:type==='equipment'?['eq-q','eq-status']:type==='payroll'?['payroll-q','payroll-branch','payroll-status']:['inv-q','inv-brand','inv-status','inv-branch'];
   ids.forEach(id=>{const el=document.getElementById(id);if(el)el.value=''});
 }
 
@@ -1438,6 +1627,7 @@ function exportCsv(type){
     cashfund:{name:'cash-fund-export.csv',rows:cashFundData.slice(0,120),headers:['date','branch','ref','desc','cashIn','cashOut','balance','recordedBy']},
     accounting:{name:'general-ledger-export.csv',rows:glData.slice(0,120),headers:['date','ref','account','desc','debit','credit','type']},
     timeexp:{name:'time-expenses-export.csv',rows:employeeData.slice(0,120),headers:['id','name','position','branch','date','timeIn','timeOut','hours','status']},
+    equipment:{name:'equipment-export.csv',rows:equipmentData.slice(0,120),headers:['id','contract','model','serial','customer','schedule','status']},
     payroll:{name:'payroll-export.csv',rows:payrollData.slice(0,120),headers:['no','employeeId','employee','position','branch','basic','overtime','allowance','deductions','net','status']},
     branches:{name:'branches-export.csv',rows:branchData.slice(0,120),headers:['name','region','address','manager','contact','inventory','sold','cashFund','status']},
     banking:{name:'banking-export.csv',rows:[...document.querySelectorAll('#bank-tb tr')].slice(0,120).map(row=>{const c=[...row.children].map(td=>td.textContent.trim());return {date:c[0],bank:c[1],ref:c[2],desc:c[3],debit:c[4],credit:c[5],balance:c[6],type:c[7]}}),headers:['date','bank','ref','desc','debit','credit','balance','type']}
@@ -1448,6 +1638,68 @@ function exportCsv(type){
   migrationLog('Export generated',`${source.name} downloaded with ${source.rows.length} sample records`);
   renderMigration();
   showToast(`${source.name} exported`);
+}
+
+let transmittalRows=[];
+function buildTransmittalRows(){
+  const banks=['SUBMIT LEASING & FINANCE CO.','BPI MS FINANCE','BDO AUTO LOAN','METROBANK FINANCING','PSBANK AUTO LOAN'];
+  return soData.filter(r=>r.mode==='Bank Financing'&&r.status!=='Cancelled').slice(0,160).map((r,i)=>{
+    const ar=arData[i%arData.length]||{};
+    const bank=banks[i%banks.length];
+    return {
+      transmittal:`TR-20260514-${pad(i+1,4)}`,
+      orcr:`ORCR-${pad(6000+i*7,6)}`,
+      customer:r.customer,
+      unit:r.model,
+      bank,
+      amount:r.srp-r.dp,
+      releaseDate:r.date,
+      account:ar.no||`AR-2026-${pad(900+i)}`,
+      status:i%9===0?'For Review':i%5===0?'Released':'Ready'
+    };
+  });
+}
+
+function runTransmittalReport(){
+  const bank=(document.getElementById('tr-bank')?.value||'SUBMIT LEASING & FINANCE CO.').replace('&amp;','&');
+  const date=document.getElementById('tr-date')?.value||'2026-05-14';
+  transmittalRows=buildTransmittalRows().filter(r=>r.bank===bank);
+  const total=transmittalRows.reduce((sum,r)=>sum+r.amount,0);
+  document.getElementById('tr-count').textContent=transmittalRows.length.toLocaleString();
+  document.getElementById('tr-total').textContent=`₱${fmt(total).replace('.00','')}`;
+  document.getElementById('tr-bank-kpi').textContent=bank;
+  document.getElementById('tr-run').textContent=new Date().toLocaleTimeString('en-PH',{hour:'2-digit',minute:'2-digit',hour12:true});
+  document.getElementById('tr-tb').innerHTML=transmittalRows.map(r=>`<tr>
+    <td class="mono">${r.transmittal}</td><td class="mono">${r.orcr}</td><td><strong>${r.customer}</strong><div class="dim mono" style="font-size:10px">${r.account}</div></td>
+    <td class="dim">${r.unit}</td><td>${r.bank}</td><td class="amt">₱${fmt(r.amount)}</td><td class="mono dim">${r.releaseDate.replace(', 2026','')}</td><td>${badge(r.status)}</td>
+  </tr>`).join('')||'<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--text-tertiary)">No records found for this financing bank.</td></tr>';
+  showToast(`${transmittalRows.length} financing bank records generated for ${date}`);
+}
+
+function exportTransmittalXlsx(){
+  if(!transmittalRows.length)runTransmittalReport();
+  const bank=(document.getElementById('tr-bank')?.value||'FINANCING').replace(/[^A-Z0-9]+/gi,'-').replace(/-$/,'');
+  const date=(document.getElementById('tr-date')?.value||'2026-05-14').replace(/-/g,'');
+  const headers=['transmittal','orcr','customer','unit','bank','amount','releaseDate','account','status'];
+  const html=`<html><head><meta charset="utf-8"></head><body><table><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr>${transmittalRows.map(r=>`<tr>${headers.map(h=>`<td>${csvEscape(r[h])}</td>`).join('')}</tr>`).join('')}</table></body></html>`;
+  downloadFile(`BILLING-ORCR-TRANSMITTAL-${bank}-${date}.xlsx`,html,'application/vnd.ms-excel;charset=utf-8');
+  showToast('Financing bank XLSX generated');
+}
+
+function saveTransmittalTemplate(){
+  const template=document.getElementById('tr-template')?.value||'Default bank transmittal';
+  showToast(`${template} saved`);
+}
+
+function removeTransmittalTemplate(){
+  document.getElementById('tr-template').value='';
+  showToast('Template removed');
+}
+
+function scheduleTransmittalTemplate(){
+  openActionPanel('Schedule Template',[
+    {label:'Schedule',rows:[['Report','Other Financing OR/CR Transmittal'],['Frequency','Every banking day, 5:00 PM'],['Delivery','Finance team email + XLSX folder'],['Status',badge('Active')]]}
+  ],'<button class="btn btn-sm btn-primary">Save Schedule</button><button class="btn btn-sm">Send Test Email</button>');
 }
 
 function exportMigrationReport(){
@@ -1479,12 +1731,60 @@ function exportMigrationReport(){
 
 function initializeDemo(){
   populateBranchSelects();
+  renderModuleLaunchpads();
   renderDashboard();
   renderCashFund();
   renderEmployees();
   renderPayroll();
+  filterEquipment();
   renderBranches();
   renderMigration();
+}
+
+const suiteMenus={
+  sales:{title:'Sales Orders',tiles:['New Sales Order','New Quote','New Payment','New Customer'],cols:[['Transactions',['★ Sales Orders','Invoices','Shipments']],['Profiles',['Customers','Sales Prices'], 'Processes',['Process Orders','Generate Intercompany Sales Orders','Process Shipments','Process Invoices and Memos','Create Transfer Orders','Print/Email Orders']],['Reports',['Sales Order Summary','Sales Order Details by Customer','Sales Order Details by Inventory','Shipment Summary','Daily Sales Profitability','Sales Profitability by Salesperson','Sales Profitability by Item Class']]]},
+  receivables:{title:'Receivables',tiles:['New Invoice','New Payment','Customer Details','New Customer'],cols:[['Transactions',['Invoices and Memos','Payments and Applications'], 'Profiles',['Customers','Credit Terms','Sales Prices'], 'Processes',['Release AR Documents','Print Invoices and Memos','Write Off Balances and Credits','Prepare Statements','Print Statements','Close Financial Periods']],['Inquiries',['Customer Details','Customer Summary','Statement History Summary'], 'Printed Forms',['Invoice/Memo','Other Financing OR/CR Transmittal']],['Reports',['Other Financing OR/CR Transmittal','AR Balance by GL Account','AR Balance by Customer','AR Aged Past Due','AR Aged Period Sensitive'], 'Profitability Analysis',['Sales Profitability Analysis','Daily Sales Profitability','Sales Profitability by Customer and Item','Sales Profitability by Item Class']]]},
+  purchases:{title:'Purchases',tiles:['New Purchase Order','New Purchase Receipt','New Purchase Request','New Vendor'],cols:[['Transactions',['Requests','Requisitions','Purchase Orders','Purchase Receipts','Landed Costs'], 'Profiles',['Vendors','Vendor Prices','Vendor Inventory'], 'Processes',['Create Purchase Orders','Print/Email Purchase Orders','Generate Intercompany Purchases']],['Printed Forms',['Item Request','Purchase Order','Purchase Receipt'], 'Reports',['Purchase Order Summary','Purchase Order Details by Vendor','Purchase Order Details by Inventory','Blanket Purchase Order Summary','Purchase Receipt and Billing','Purchase Accrual Details']],['Inquiries',['Vendor Details','Purchase Order History','Landed Cost Summary']]]},
+  payables:{title:'Payables',tiles:['New Bill','New Payment','Vendor Details','New Vendor'],cols:[['Transactions',['Bills and Adjustments','Checks and Payments'], 'Profiles',['Vendors','Credit Terms'], 'Processes',['Release AP Documents','Prepare Payments','Process Payments / Print Checks','Release Payments','Generate Intercompany Documents','Close Financial Periods']],['Inquiries',['Vendor Details','Vendor Summary']],['Reports',['AP Balance by GL Account','AP Balance by Vendor','AP Aging','AP Aged Period Sensitive']]]},
+  cashfund:{title:'Cash Fund Management',tiles:['Fund Transaction','Replenishment','Cash Advance','Request Payment'],cols:[['Transactions',['Fund Transaction','Replenishment','Fund Transaction','Replenishment','Cash Advance'], 'Profiles',['Funds','Funds']],['Processes',['Reclassify Cash Advances'], 'Inquiries',['ATPTFIM - Cash Advance'], 'Printed Forms',['Liquidation','Cash Advance Request Form','Fund Transaction Form','Fund Replenishment Form','Request For Payment'], 'Reports',['Cash Advance Monitoring Report']],['Preferences',['Employee Request Class','Cash Advance Preference','Fund Management Preference']]]},
+  banking:{title:'Banking',tiles:['New Cash Entry','New Transfer','New Deposit','Process Bank Records'],cols:[['Transactions',['Transactions','Funds Transfers','Reconciliation Statements'], 'Profiles',['Cash Accounts','Corporate Cards']],['Processes',['Import Bank Transactions','Process Bank Transactions','Release Cash Transactions','Close Financial Periods'], 'Inquiries',['Cash Account Details','Cash Flow Forecast']],['Reports',['Cash Account Summary','Cash Account Details','Reconciliation Statement','Cash Requirements']]]},
+  gl:{title:'General Ledger',tiles:['New Journal Entry','Account Summary','Account Details','Reclassify Journal Entries'],cols:[['Transactions',['Journal Transactions'], 'Profiles',['Master Financial Calendar','Allocations','Chart of Accounts','Subaccounts'], 'Processes',['Run Allocations','Reclassify Transactions','Import Consolidation Data','Manage Financial Periods'], 'Budgets',['Budgets']],['Inquiries',['Account Summary','Account Details'], 'Reports',['Trial Balance Summary','Transactions for Period','Transactions for Account']],['Financial Statements',['Balance Sheet','Balance Sheet - Comparative','Profit & Loss']]]},
+  timeexp:{title:'Time and Expenses',tiles:['New Expense Receipt','New Expense Claim','Employee Time Card'],cols:[['Tasks',['Tasks','Approvals','Events'], 'Email',['Incoming','Draft','Sent']],['Time Tracking',['Weekly Crew Time Entry','Employee Time Activities','Employee Time Cards','Release Time Activities'], 'Expense Claims',['Expense Claims','Expense Receipts']],['Reports',['Expense Claim Details']]]},
+  inventory:{title:'Inventory',tiles:['New Adjustment','New Transfer','New Kit Assembly','New Stock Item'],cols:[['Transactions',['Receipts','Issues','Adjustments','Transfers','Kit Assembly'], 'Profiles',['Stock Items','Item Warehouse Details','Non-Stock Items','Warehouses','Warehouse Buildings'], 'Physical Inventory',['Prepare Physical Count']],['Processes',['Release IN Documents','Close Financial Periods'], 'Inquiries',['Inventory Summary','Storage Summary','Inventory Allocation Details','Inventory Transactions by Account','★ Inventory Lot/Serial History','Inventory by Item Class','Dead Stock','Intercompany Goods in Transit']],['Reports',['Inventory Balance','Inventory Valuation','Inventory Register','Goods in Transit','Lot/Serial Numbers']]]},
+  equipment:{title:'Equipment',tiles:['New Service Contract','New Equipment'],cols:[['Profiles',['Service Contracts','★ Equipment','Manufacturers','Manufacturer Models'], 'Processes',['Run Service Contract Billing','Generate from Service Contracts','Process Service Contracts']],['Inquiries',['Service Contract Billing Batches','Contract Summary','Contract Schedule Summary','Contract Schedule Detail Summary','Model Equipment and Components']],['Reports',['Service Order Details by Contract','Appointment Details by Contract','Service Time Activity by Contract','Appointment Details by Target Equipment'], 'Preferences',['Equipment Management Preferences']]]}
+};
+
+function renderModuleLaunchpads(){
+  Object.keys(suiteMenus).forEach(id=>{
+    const mod=document.getElementById(`mod-${id}`);
+    if(!mod||mod.querySelector('.erp-menu'))return;
+    const menu=suiteMenus[id];
+    const el=document.createElement('div');
+    el.className='erp-menu';
+    el.innerHTML=`
+      <div class="erp-source"><strong>${menu.title}</strong><span>Generated from external ERP module map · visible inside this demo system</span></div>
+      <div class="erp-tiles">${menu.tiles.map(t=>`<button class="erp-tile" onclick="handleSuiteAction('${id}','${t.replace(/'/g,"\\'")}')"><span class="erp-icon">${tileIcon(t)}</span><span>${t}</span></button>`).join('')}</div>
+      <div class="erp-grid">${menu.cols.map(col=>`<div class="erp-col">${renderSuiteCol(id,col)}</div>`).join('')}</div>
+      <div class="erp-more">Show All⌄</div>`;
+    mod.querySelector('.page-header')?.after(el);
+  });
+}
+
+function tileIcon(text){
+  if(/payment|deposit|cash|account/i.test(text))return '$';
+  if(/transfer|reclassify/i.test(text))return '↔';
+  if(/vendor|customer/i.test(text))return '+•';
+  if(/equipment|stock|kit/i.test(text))return '+';
+  return '▣';
+}
+
+function renderSuiteCol(id,col){
+  let html='';
+  for(let i=0;i<col.length;i+=2){
+    const title=col[i],items=col[i+1]||[];
+    html+=`<h3>${title}</h3><ul>${items.map(item=>`<li onclick="handleSuiteLink('${id}','${String(item).replace(/★ /,'').replace(/'/g,"\\'")}','${title.replace(/'/g,"\\'")}')">${String(item).startsWith('★')?'<span class="erp-star">★</span>':''}${String(item).replace('★ ','')}</li>`).join('')}</ul>`;
+  }
+  return html;
 }
 
 function filterInv(){
@@ -1604,6 +1904,19 @@ function filterGL(){
   </tr>`).join('');
 }
 
+function filterEquipment(){
+  const q=(document.getElementById('eq-q')?.value||'').toLowerCase();
+  const st=document.getElementById('eq-status')?.value||'';
+  const rows=equipmentData.filter(r=>(!st||r.status===st)&&(!q||[r.id,r.contract,r.model,r.serial,r.customer].join(' ').toLowerCase().includes(q)));
+  const tb=document.getElementById('eq-tb');
+  if(!tb)return;
+  document.getElementById('eq-count').textContent=`${rows.length} equipment records`;
+  tb.innerHTML=rows.map(r=>`<tr class="row-link" onclick="openEquipmentPanel('${r.id}')">
+    <td class="mono">${r.id}</td><td class="mono">${r.contract}</td><td><strong>${r.model}</strong></td>
+    <td class="mono dim">${r.serial}</td><td>${r.customer}</td><td class="mono dim">${r.schedule.replace(', 2026','')}</td><td>${badge(r.status)}</td>
+  </tr>`).join('');
+}
+
 // ===== PANELS =====
 function openInvPanel(r){
   document.getElementById('sp-title').textContent=r.id+' — '+r.model;
@@ -1710,6 +2023,15 @@ function openPayrollPanel(no){
   openPanel();
 }
 
+function openEquipmentPanel(id){
+  const r=equipmentData.find(x=>x.id===id);
+  if(!r)return;
+  openActionPanel(r.id,[
+    {label:'Equipment',rows:[['Contract',r.contract,'mono'],['Model',r.model],['Serial No.',r.serial,'mono'],['Customer',r.customer],['Status',badge(r.status)]]},
+    {label:'Service Schedule',rows:[['Next Appointment',r.schedule,'mono'],['Billing Batch','SCB-2026-0514','mono'],['Coverage','Parts and labor']]}
+  ],'<button class="btn btn-sm btn-primary">Create Service Order</button><button class="btn btn-sm">Print Contract</button>');
+}
+
 // ===== PANEL CONTROL =====
 function openPanel(){
   document.getElementById('sp-overlay').classList.add('open');
@@ -1724,6 +2046,7 @@ function closePanel(){
 const navMeta={
   dashboard:{title:'Dashboard',page:'Overview'},
   inventory:{title:'Inventory',page:'Motor Units'},
+  equipment:{title:'Equipment',page:'Service Management'},
   sales:{title:'Sales Orders',page:'Transactions'},
   receivables:{title:'Receivables',page:'Installment Accounts'},
   customers:{title:'Customers',page:'Customer Records'},
@@ -1735,6 +2058,7 @@ const navMeta={
   timeexp:{title:'Time & Expenses',page:'HR & Admin'},
   payroll:{title:'Payroll Management',page:'HR & Admin'},
   branches:{title:'Branch Directory',page:'Administration'},
+  transmittal:{title:'Other Financing OR/CR Transmittal',page:'Generated Reports'},
 };
 function nav(id){
   document.querySelectorAll('.sb-nav a').forEach(a=>a.classList.remove('active'));
@@ -1773,9 +2097,9 @@ function showToast(msg){
 function flashButton(btn,label){
   if(!btn)return;
   const old=btn.textContent;
-  btn.classList.add('busy','flash');
+  btn.classList.add('flash');
   btn.textContent=label||'Working...';
-  setTimeout(()=>{btn.classList.remove('busy');btn.textContent=old;},520);
+  setTimeout(()=>{btn.textContent=old;},520);
   setTimeout(()=>btn.classList.remove('flash'),900);
 }
 
@@ -1896,6 +2220,46 @@ function addDemoBranch(){
   showToast('Demo branch added');
 }
 
+function addDemoEquipment(){
+  const r={id:`EQ-DEMO-${pad(equipmentData.length+1,4)}`,contract:`SC-DEMO-${pad(1000+equipmentData.length,4)}`,model:'Honda ADV 160 Service Unit',serial:`SRV-DEMO-${pad(7000+equipmentData.length,5)}`,customer:'Demo Client - Equipment Account',schedule:'May 29, 2026',status:'Active'};
+  equipmentData.unshift(r);filterEquipment();openEquipmentPanel(r.id);showToast('Demo equipment record added');
+}
+
+function handleSuiteAction(module,action){
+  const a=action.toLowerCase();
+  if(module==='sales'||a.includes('sales order')||a.includes('quote')){addDemoOrder();return}
+  if(module==='receivables'||a.includes('invoice')||a.includes('payment')&&module==='receivables'){recordDemoPayment();return}
+  if(module==='purchases'||a.includes('purchase')){addDemoPO();return}
+  if(module==='payables'||a.includes('bill')||a.includes('vendor')){recordDemoPayable();return}
+  if(module==='banking'||a.includes('cash')||a.includes('deposit')||a.includes('bank')){addDemoBankTransaction();return}
+  if(module==='gl'||a.includes('journal')||a.includes('account')){addDemoJournalEntry();return}
+  if(module==='timeexp'||a.includes('expense')||a.includes('time')){submitDemoExpense();return}
+  if(module==='cashfund'||a.includes('fund')||a.includes('advance')){addDemoFundTransfer();return}
+  if(module==='equipment'||a.includes('equipment')||a.includes('contract')){addDemoEquipment();return}
+  if(module==='inventory'||a.includes('stock')||a.includes('transfer')||a.includes('adjustment')){addDemoUnit();return}
+  showToast(`${action} opened`);
+}
+
+function handleSuiteLink(module,label,group){
+  if(/or\/cr|transmittal|financing/i.test(label)){
+    nav('transmittal');
+    runTransmittalReport();
+    return;
+  }
+  const isReport=/report|summary|balance|aging|valuation|register|profit|statement|details|history|forecast|analysis/i.test(label+' '+group);
+  if(isReport){
+    openActionPanel(label,[
+      {label:'Generated Report',rows:[['Source Module',suiteMenus[module]?.title||module],['Generated From','External ERP menu map'],['Rows','120 sample records'],['Status',badge('Active')]]},
+      {label:'Preview',rows:[['Period','May 2026'],['Branch','All Branches'],['Export','PDF / CSV available']]}
+    ],'<button class="btn btn-sm btn-primary">Export Report</button><button class="btn btn-sm">Print</button>');
+    return;
+  }
+  openActionPanel(label,[
+    {label:group,rows:[['Module',suiteMenus[module]?.title||module],['Screen',label],['Generated From','External ERP menu map'],['Status',badge('Active')]]},
+    {label:'Demo Behavior',rows:[['Action','Open screen preview'],['Records','Uses this module sample data'],['Access','Administrator']]}
+  ],'<button class="btn btn-sm btn-primary">Open Screen</button><button class="btn btn-sm">Add to Favorites</button>');
+}
+
 function manageAlerts(){
   openActionPanel('Alert Management',[
     {label:'Active Alerts',rows:[['Critical Stock','1 branch below threshold'],['Finance Alerts','2 payment issues'],['Receivables','6 accounts need follow-up'],['Next Action','Assign alert owners']]}
@@ -1944,8 +2308,8 @@ function updateOnePayroll(no,status){
 function exportPayroll(){
   exportCsv('payroll');
 }
-function liveAction(btn){
-  const label=(btn.textContent||'Action').trim().replace(/\s+/g,' ');
+function liveAction(btn,originalLabel){
+  const label=(originalLabel||btn.textContent||'Action').trim().replace(/\s+/g,' ');
   const clean=label.replace(/^[+]\s*/,'');
   const module=activeModuleId();
   if(label==='Refresh'){refreshCurrentModule();return}
@@ -1953,6 +2317,7 @@ function liveAction(btn){
   if(label.includes('View Full History')){showHistory('Cash Fund History');return}
   if(label==='Reconcile'){reconcileBank();return}
   if(label.includes('Add Unit')){addDemoUnit();return}
+  if(label.includes('Add Equipment')){addDemoEquipment();return}
   if(label.includes('New Order')){addDemoOrder();return}
   if(label.includes('Record Payment')){module==='payables'?recordDemoPayable():recordDemoPayment();return}
   if(label.includes('New Customer')){addDemoCustomer();return}
@@ -1979,6 +2344,7 @@ function liveAction(btn){
     return;
   }
   if(label.includes('Export')){
+    if(activeModuleId()==='transmittal'){exportTransmittalXlsx();return}
     downloadFile(`nexii-${clean.toLowerCase().replace(/[^a-z0-9]+/g,'-')}.txt`,`${clean}\nGenerated from NEXII BSM Demo on ${new Date().toLocaleString('en-PH')}`);
     showToast(`${clean} downloaded`);
     return;
@@ -2023,9 +2389,10 @@ if(document.addEventListener){
   document.addEventListener('click',e=>{
     const btn=e.target.closest?.('.btn');
     if(!btn||btn.closest('.sp-close'))return;
-    flashButton(btn);
+    const originalLabel=(btn.textContent||'Action').trim();
     if(btn.getAttribute('onclick'))return;
-    liveAction(btn);
+    flashButton(btn);
+    liveAction(btn,originalLabel);
   });
 }
 
@@ -2034,10 +2401,19 @@ function tick(){
   const now=new Date();
   document.getElementById('tb-clock').textContent=now.toLocaleString('en-PH',{weekday:'short',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit',hour12:true});
 }
+function safeInitializeDemo(){
+  try{
+    initializeDemo();
+    filterInv();filterSO();filterAR();filterCust();filterPO();filterAP();filterGL();filterPayroll();filterEquipment();
+  }catch(err){
+    console.error('Demo initialization failed:',err);
+    showToast('Demo loaded with one module still initializing');
+  }
+}
 initTheme();
 setInterval(tick,1000);tick();
-setInterval(()=>{if(document.getElementById('payroll-live'))renderPayroll()},15000);
-initializeDemo();
+setInterval(()=>{try{if(document.getElementById('payroll-live'))renderPayroll()}catch(err){console.error(err)}},15000);
+safeInitializeDemo();
 
 // ===== LOGIN =====
 function doLogin(){
@@ -2050,8 +2426,17 @@ function doLogin(){
   document.getElementById('sb-name').textContent=u.charAt(0).toUpperCase()+u.slice(1);
   document.getElementById('login-screen').style.display='none';
   document.getElementById('app').style.display='flex';
-  initializeDemo();
-  filterInv();filterSO();filterAR();filterCust();filterPO();filterAP();filterGL();filterPayroll();
+  safeInitializeDemo();
+  nav('dashboard');
+  showToast('Signed in to NEXII BSM Demo');
+}
+window.doLogin=doLogin;
+const loginSubmit=document.getElementById('login-submit');
+if(loginSubmit){
+  loginSubmit.addEventListener('click',event=>{
+    event.preventDefault();
+    doLogin();
+  });
 }
 function doLogout(){
   document.getElementById('login-screen').style.display='flex';
