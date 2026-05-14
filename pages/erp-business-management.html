@@ -304,6 +304,44 @@ tbody td.amt{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:50
 .import-preview .empty-state{padding:28px 18px}
 .import-preview table{min-width:640px}
 .import-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.erp-menu-page{padding:0 0 32px;background:var(--bg);min-height:100%}
+.erp-menu-intro{padding:18px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:16px}
+.erp-menu-intro h2{font-size:24px;font-weight:600;letter-spacing:-.02em;color:var(--text-primary)}
+.erp-menu-intro p{font-size:12px;color:var(--text-secondary);margin-top:4px}
+.erp-menu-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-bottom:1px solid var(--border)}
+.erp-menu-section{min-height:210px;padding:18px 24px;border-right:1px solid var(--border);border-bottom:1px solid var(--border)}
+.erp-menu-section:nth-child(3n){border-right:none}
+.erp-menu-section h3{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-secondary);margin-bottom:12px}
+.erp-link-list{display:grid;gap:6px}
+.erp-link{border:none;background:transparent;color:var(--text-primary);font-family:'IBM Plex Sans',sans-serif;font-size:13px;text-align:left;padding:4px 0;cursor:pointer}
+.erp-link:hover{color:var(--accent);text-decoration:underline}
+.orcr-actions{display:flex;flex-wrap:wrap;gap:8px;padding:10px 24px;border-bottom:1px solid var(--border);background:var(--surface)}
+.orcr-form{padding:18px 24px;border-bottom:1px solid var(--border)}
+.orcr-form-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.orcr-field label{display:block;font-size:10.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-secondary);margin-bottom:6px}
+.orcr-field input,.orcr-field select{width:100%}
+.orcr-form-section{margin-top:16px;border:1px solid var(--border);background:var(--bg)}
+.orcr-form-section .sub-header{border-bottom:1px solid var(--border)}
+.orcr-placeholder{padding:12px 14px;color:var(--text-secondary);font-size:12px;line-height:1.5}
+.orcr-run-row{display:flex;align-items:center;gap:12px;margin-top:16px}
+.orcr-run-row .live-stamp{display:none}
+.orcr-run-row.loading .live-stamp{display:inline}
+.orcr-results{padding:16px 24px 28px}
+.orcr-summary{display:none;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--border);background:var(--surface);padding:10px 12px;margin-bottom:12px}
+.orcr-summary.open{display:flex}
+.orcr-summary-meta{display:flex;flex-wrap:wrap;gap:16px;font-size:12px;color:var(--text-secondary)}
+.orcr-summary-meta strong{font-family:'IBM Plex Mono',monospace;color:var(--text-primary)}
+.orcr-result-table{display:none;border:1px solid var(--border);background:var(--bg);overflow-x:auto}
+.orcr-result-table.open{display:block}
+.orcr-result-table table{min-width:1120px}
+.report-preview-modal{width:min(1180px,calc(100vw - 48px));max-height:calc(100vh - 48px);overflow:auto;background:var(--bg);border:1px solid var(--border-strong);box-shadow:0 24px 70px rgba(15,23,42,.28)}
+.report-preview-body{padding:24px}
+.report-preview-head{display:flex;justify-content:space-between;gap:18px;border-bottom:1px solid var(--border);padding-bottom:14px;margin-bottom:14px}
+.report-preview-head h2{font-size:18px;font-weight:600;color:var(--text-primary);margin-bottom:4px}
+.report-preview-head p,.report-preview-meta{font-size:12px;color:var(--text-secondary);line-height:1.6}
+.report-preview-table{border:1px solid var(--border);overflow-x:auto}
+.report-preview-table table{min-width:1120px}
+.report-preview-actions{display:flex;gap:8px;justify-content:flex-end;padding:12px 24px;border-top:1px solid var(--border);background:var(--surface);position:sticky;bottom:0}
 .modal-overlay{position:fixed;inset:0;z-index:150;background:rgba(15,23,42,.46);display:none;align-items:center;justify-content:center;padding:24px}
 .modal-overlay.open{display:flex}
 .migration-modal{width:min(1120px,calc(100vw - 48px));max-height:calc(100vh - 48px);overflow:auto;background:var(--bg);border:1px solid var(--border-strong);box-shadow:0 24px 70px rgba(15,23,42,.28)}
@@ -349,7 +387,9 @@ body.dark .login-right{background:var(--bg)}
 body.dark .login-demo-note,body.dark .lm-tag,body.dark .tag{background:var(--surface);border-color:var(--border-strong)}
 body.dark #coa-list .sub-header{background:var(--bg)!important}
 body.dark .badge-delivered{color:var(--status-approved-text);background:var(--status-approved-bg);border-color:#166534}
-@media(max-width:1280px){:root{--sidebar-w:200px}.kpi-grid{grid-template-columns:repeat(3,1fr)}.cf-grid{grid-template-columns:repeat(2,1fr)}.payroll-summary,.migration-card-grid{grid-template-columns:repeat(2,1fr)}.migration-grid{grid-template-columns:1fr}}
+@media(max-width:1280px){:root{--sidebar-w:200px}.kpi-grid{grid-template-columns:repeat(3,1fr)}.cf-grid{grid-template-columns:repeat(2,1fr)}.payroll-summary,.migration-card-grid{grid-template-columns:repeat(2,1fr)}.migration-grid{grid-template-columns:1fr}.erp-menu-grid,.orcr-form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.erp-menu-section:nth-child(3n){border-right:1px solid var(--border)}.erp-menu-section:nth-child(2n){border-right:none}}
+@media(max-width:760px){#app{overflow:auto}.erp-menu-grid,.orcr-form-grid{grid-template-columns:1fr}.erp-menu-section,.erp-menu-section:nth-child(2n),.erp-menu-section:nth-child(3n){border-right:none}.erp-menu-intro,.page-header,.orcr-summary{align-items:flex-start;flex-direction:column}.orcr-actions,.orcr-form,.orcr-results{padding-left:16px;padding-right:16px}.report-preview-head{flex-direction:column}}
+@media print{body>*:not(#orcr-preview-overlay){display:none!important}#orcr-preview-overlay{position:static!important;display:block!important;background:#fff!important;padding:0!important}.report-preview-modal{width:100%!important;max-height:none!important;box-shadow:none!important;border:none!important}.report-preview-actions,.sp-close{display:none!important}}
 </style>
 </head>
 <body>
@@ -456,12 +496,16 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
             <svg viewBox="0 0 16 16" fill="currentColor"><path d="M1 6h14l-7-5-7 5zm1 1v6h3v-6H2zm4 0v6h4v-6H6zm5 0v6h3v-6h-3zM1 13h14v2H1z"/></svg>
             Banking
           </a></li>
-          <li><a onclick="nav('gl')" id="nav-gl">
-            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2h12v12H2zm2 2v8h8V4H4zm1 1h6v1H5zm0 2h6v1H5zm0 2h4v1H5z"/></svg>
-            General Ledger
-          </a></li>
-        </ul>
-      </div>
+	          <li><a onclick="nav('gl')" id="nav-gl">
+	            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2h12v12H2zm2 2v8h8V4H4zm1 1h6v1H5zm0 2h6v1H5zm0 2h4v1H5z"/></svg>
+	            General Ledger
+	          </a></li>
+	          <li><a onclick="nav('favorites')" id="nav-favorites">
+	            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1.5l1.9 3.9 4.3.6-3.1 3 .7 4.3L8 11.3l-3.8 2 .7-4.3-3.1-3 4.3-.6z"/></svg>
+	            Favorites
+	          </a></li>
+	        </ul>
+	      </div>
       <div class="sb-section">
         <div class="sb-section-label">HR & Admin</div>
         <ul class="sb-nav">
@@ -860,6 +904,135 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
         <div class="table-footer"><span class="table-count" id="branch-count">0 branches</span></div>
       </div>
 
+      <!-- ===== FAVORITES ===== -->
+      <div class="module" id="mod-favorites">
+        <div class="erp-menu-page">
+          <div class="erp-menu-intro">
+            <div>
+              <h2>Favorites</h2>
+              <p>Frequently used reports, service processes, integrations, and dashboards.</p>
+            </div>
+          </div>
+          <div class="erp-menu-grid">
+            <section class="erp-menu-section">
+              <h3>Data Views</h3>
+              <div class="erp-link-list">
+                <button class="erp-link" type="button">Sold Unit with OR/CR</button>
+                <button class="erp-link" type="button">Reg Tracker Report</button>
+              </div>
+            </section>
+            <section class="erp-menu-section">
+              <h3>Integration</h3>
+              <div class="erp-link-list">
+                <button class="erp-link" type="button">Import by Scenario</button>
+                <button class="erp-link" type="button">Data Providers</button>
+                <button class="erp-link" type="button">Import Scenarios</button>
+              </div>
+            </section>
+            <section class="erp-menu-section">
+              <h3>Services</h3>
+              <div class="erp-link-list">
+                <button class="erp-link" type="button">CSB OR/CR TRANSMITTAL</button>
+                <button class="erp-link" type="button" onclick="nav('orcr')">OTHER FINANCING OR/CR TRANSMITTAL</button>
+                <button class="erp-link" type="button">SUMISHO OR/CR TRANSMITTAL</button>
+              </div>
+            </section>
+            <section class="erp-menu-section">
+              <h3>Equipment</h3>
+              <div class="erp-link-list">
+                <button class="erp-link" type="button">Equipment</button>
+              </div>
+            </section>
+            <section class="erp-menu-section">
+              <h3>Dashboards</h3>
+              <div class="erp-link-list">
+                <button class="erp-link" type="button">REGISTRATION (NEW)</button>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== OTHER FINANCING OR/CR TRANSMITTAL ===== -->
+      <div class="module" id="mod-orcr">
+        <div class="page-header">
+          <div>
+            <button class="btn btn-sm" type="button" onclick="nav('favorites')" style="margin-bottom:10px">&#8592; Back to Favorites</button>
+            <div class="page-title">OTHER FINANCING OR/CR TRANSMITTAL</div>
+            <div class="page-sub">Static report process demo for financing bank OR/CR transmittal monitoring</div>
+          </div>
+        </div>
+        <div class="orcr-actions">
+          <button class="btn btn-sm btn-primary" type="button" onclick="runOrcrReport()">Run Report</button>
+          <button class="btn btn-sm" type="button">Save Template</button>
+          <button class="btn btn-sm" type="button">Remove Template</button>
+          <button class="btn btn-sm" type="button">Schedule Template</button>
+        </div>
+        <div class="orcr-form">
+          <div class="orcr-form-grid">
+            <div class="orcr-field">
+              <label for="orcr-template">Template</label>
+              <select id="orcr-template">
+                <option>Default Transmittal Template</option>
+                <option>Monthly Bank Release</option>
+                <option>Pending OR/CR Monitoring</option>
+              </select>
+            </div>
+            <div class="orcr-field">
+              <label for="orcr-cutoff">Cutoff Date</label>
+              <input type="date" id="orcr-cutoff" value="2026-05-14">
+            </div>
+            <div class="orcr-field">
+              <label for="orcr-bank">Financing Bank</label>
+              <select id="orcr-bank">
+                <option>All Banks</option>
+                <option>BDO</option>
+                <option>BPI</option>
+                <option>Metrobank</option>
+                <option>EastWest</option>
+                <option>Financing Bank</option>
+              </select>
+            </div>
+          </div>
+          <section class="orcr-form-section">
+            <div class="sub-header">Report Parameters</div>
+            <div class="orcr-placeholder">Includes released units with available OR/CR details up to the selected cutoff date.</div>
+          </section>
+          <section class="orcr-form-section">
+            <div class="sub-header">Additional Sort and Filter Conditions</div>
+            <div class="orcr-placeholder">Sort by financing bank, release date, customer name, and unit number.</div>
+          </section>
+          <section class="orcr-form-section">
+            <div class="sub-header">Print and Email Settings</div>
+            <div class="orcr-placeholder">Preview printable report, export CSV, or prepare a demo email notification.</div>
+          </section>
+          <div class="orcr-run-row" id="orcr-run-row">
+            <button class="btn btn-sm btn-primary" id="orcr-run-btn" type="button" onclick="runOrcrReport()">RUN</button>
+            <span class="live-stamp">Generating report...</span>
+          </div>
+        </div>
+        <div class="orcr-results">
+          <div class="orcr-summary" id="orcr-summary">
+            <div class="orcr-summary-meta">
+              <span>Total Records: <strong id="orcr-total">0</strong></span>
+              <span>Generated Date: <strong id="orcr-generated">--</strong></span>
+            </div>
+            <div class="page-actions">
+              <button class="btn btn-sm" type="button" onclick="exportOrcrCsv()">Export CSV</button>
+              <button class="btn btn-sm" type="button" onclick="openOrcrPreview()">Print Preview</button>
+              <button class="btn btn-sm" type="button" onclick="emailOrcrReport()">Email Report</button>
+            </div>
+          </div>
+          <div class="orcr-result-table" id="orcr-result-table">
+            <table>
+              <thead><tr><th>Unit No.</th><th>Customer Name</th><th>Financing Bank</th><th>OR Number</th><th>CR Number</th><th>Sales Order No.</th><th>Invoice No.</th><th>Release Date</th><th>Status</th><th>Remarks</th></tr></thead>
+              <tbody id="orcr-tbody"></tbody>
+            </table>
+          </div>
+          <div class="empty-state" id="orcr-empty"><div class="empty-title">No report generated yet</div><div class="empty-sub">Select parameters, then click RUN to display demo OR/CR transmittal records.</div></div>
+        </div>
+      </div>
+
       <!-- ===== IMPORT / EXPORT MODAL ===== -->
       <div class="modal-overlay" id="migration-modal-overlay" onclick="if(event.target===this)closeMigrationModal()">
       <div class="migration-modal" role="dialog" aria-modal="true" aria-labelledby="migration-modal-title">
@@ -915,6 +1088,17 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
     <div class="sp-close" onclick="closePanel()">&#215;</div>
   </div>
   <div class="sp-body" id="sp-body"></div>
+</div>
+
+<!-- OR/CR Report Preview -->
+<div class="modal-overlay" id="orcr-preview-overlay" onclick="if(event.target===this)closeOrcrPreview()">
+  <div class="report-preview-modal" role="dialog" aria-modal="true" aria-labelledby="orcr-preview-title">
+    <div class="report-preview-body" id="orcr-preview-body"></div>
+    <div class="report-preview-actions">
+      <button class="btn btn-sm" type="button" onclick="window.print()">Print</button>
+      <button class="btn btn-sm btn-primary" type="button" onclick="closeOrcrPreview()">Close</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -1004,6 +1188,22 @@ const migrationState={
     ['Supported sources','CSV, Excel, SQL dump, accounting exports, and legacy reports']
   ]
 };
+const financingReportData=[
+  {unitNo:'UNIT-2026-0104',customerName:'Maria Santos',financingBank:'BDO',orNumber:'OR-2026-01841',crNumber:'CR-2026-01172',salesOrderNo:'SO-2026-0704',invoiceNo:'INV-SO-2026-0504',releaseDate:'May 02, 2026',status:'Ready',remarks:'For bank transmittal'},
+  {unitNo:'UNIT-2026-0118',customerName:'Patrick Lim',financingBank:'BPI',orNumber:'OR-2026-01855',crNumber:'CR-2026-01188',salesOrderNo:'SO-2026-0698',invoiceNo:'INV-SO-2026-0510',releaseDate:'May 03, 2026',status:'Transmitted',remarks:'Batch sent to bank'},
+  {unitNo:'UNIT-2026-0127',customerName:'Jessa Cruz',financingBank:'Metrobank',orNumber:'OR-2026-01862',crNumber:'CR-2026-01195',salesOrderNo:'SO-2026-0689',invoiceNo:'INV-SO-2026-0518',releaseDate:'May 04, 2026',status:'Ready',remarks:'Complete documents'},
+  {unitNo:'UNIT-2026-0142',customerName:'Arnel Dizon',financingBank:'EastWest',orNumber:'OR-2026-01876',crNumber:'CR-2026-01204',salesOrderNo:'SO-2026-0678',invoiceNo:'INV-SO-2026-0529',releaseDate:'May 05, 2026',status:'Pending',remarks:'Awaiting CR copy'},
+  {unitNo:'UNIT-2026-0156',customerName:'Liza Ramos',financingBank:'Financing Bank',orNumber:'OR-2026-01889',crNumber:'CR-2026-01218',salesOrderNo:'SO-2026-0669',invoiceNo:'INV-SO-2026-0536',releaseDate:'May 06, 2026',status:'Ready',remarks:'For review'},
+  {unitNo:'UNIT-2026-0168',customerName:'Marco Tan',financingBank:'BDO',orNumber:'OR-2026-01901',crNumber:'CR-2026-01231',salesOrderNo:'SO-2026-0661',invoiceNo:'INV-SO-2026-0548',releaseDate:'May 07, 2026',status:'Transmitted',remarks:'Received by branch admin'},
+  {unitNo:'UNIT-2026-0175',customerName:'Ana Reyes',financingBank:'BPI',orNumber:'OR-2026-01915',crNumber:'CR-2026-01244',salesOrderNo:'SO-2026-0654',invoiceNo:'INV-SO-2026-0552',releaseDate:'May 08, 2026',status:'Ready',remarks:'Included in next run'},
+  {unitNo:'UNIT-2026-0183',customerName:'Camille Go',financingBank:'Metrobank',orNumber:'OR-2026-01924',crNumber:'CR-2026-01259',salesOrderNo:'SO-2026-0648',invoiceNo:'INV-SO-2026-0560',releaseDate:'May 09, 2026',status:'Pending',remarks:'Verify invoice reference'},
+  {unitNo:'UNIT-2026-0194',customerName:'Ramon Flores',financingBank:'EastWest',orNumber:'OR-2026-01939',crNumber:'CR-2026-01263',salesOrderNo:'SO-2026-0639',invoiceNo:'INV-SO-2026-0574',releaseDate:'May 10, 2026',status:'Ready',remarks:'Complete documents'},
+  {unitNo:'UNIT-2026-0201',customerName:'Nina Villanueva',financingBank:'Financing Bank',orNumber:'OR-2026-01948',crNumber:'CR-2026-01278',salesOrderNo:'SO-2026-0631',invoiceNo:'INV-SO-2026-0581',releaseDate:'May 11, 2026',status:'Transmitted',remarks:'Sent via courier'},
+  {unitNo:'UNIT-2026-0212',customerName:'Albert Garcia',financingBank:'BDO',orNumber:'OR-2026-01957',crNumber:'CR-2026-01286',salesOrderNo:'SO-2026-0624',invoiceNo:'INV-SO-2026-0593',releaseDate:'May 12, 2026',status:'Ready',remarks:'Ready for pickup'},
+  {unitNo:'UNIT-2026-0225',customerName:'Erika Mendoza',financingBank:'BPI',orNumber:'OR-2026-01970',crNumber:'CR-2026-01299',salesOrderNo:'SO-2026-0618',invoiceNo:'INV-SO-2026-0601',releaseDate:'May 13, 2026',status:'Ready',remarks:'For bank schedule'}
+];
+let currentOrcrRows=[];
+let currentOrcrGenerated='';
 const expenseData = Array.from({length:60},(_,i)=>{const categories=['Transportation','Representation','Fuel','Office Supplies','Branch Repairs','Courier','Meals'];const descriptions=['client visit','bank deposit run','branch delivery vehicle','printer ink and forms','showroom minor repair','document dispatch','field collection route'];return {no:`EXP-202605${pad(12-(i%12),2)}-${pad(i+1)}`,employee:personName(520+i),branch:branchData[(i*4)%branchData.length].name,category:categories[i%categories.length],desc:descriptions[i%descriptions.length],amount:150+((i*431)%8500),date:dateShort(i),status:i%7===0?'Pending':i%5===0?'Reimbursed':'Approved'}});
 const cashFundData = Array.from({length:100},(_,i)=>{const branch=branchData[(i*3)%branchData.length],isIn=i%4===0,amount=isIn?10000+((i*137)%45000):750+((i*271)%9800);return {date:dateShort(i),branch:branch.name,ref:`CF-202605${pad(12-(i%12),2)}-${pad(i+1)}`,desc:isIn?'Branch fund replenishment':'Operating cash disbursement',cashIn:isIn?amount:0,cashOut:isIn?0:amount,balance:branch.cashFund,recordedBy:personName(620+i)}});
 branchData.forEach(b=>{b.inventory=invData.filter(u=>u.branch===b.name&&u.status!=='Sold').length;b.sold=soData.filter(s=>s.branch===b.name&&s.status==='Completed').length;if(b.inventory<3)b.status='Low Stock'});
@@ -1012,7 +1212,7 @@ branchData.forEach(b=>{b.inventory=invData.filter(u=>u.branch===b.name&&u.status
 let invSort={f:'id',asc:true};
 function fmt(n){return new Intl.NumberFormat('en-PH',{minimumFractionDigits:2}).format(n)}
 function badge(s){
-  const map={Available:'available',Reserved:'reserved',Sold:'sold',Completed:'approved',Processing:'processing',Pending:'pending',Cancelled:'declined',Delivered:'delivered',Approved:'approved',Overdue:'overdue',Paid:'paid','Partial':'partial',Current:'approved',Active:'approved','Low Fund':'reserved','Low Stock':'reserved','Normal':'approved',Present:'approved',Late:'reserved',Absent:'declined',Reimbursed:'paid',Cash:'approved',Credit:'approved',Debit:'declined',Installment:'installment',Draft:'pending',Reviewed:'processing',Released:'paid'};
+  const map={Available:'available',Reserved:'reserved',Sold:'sold',Completed:'approved',Processing:'processing',Pending:'pending',Cancelled:'declined',Delivered:'delivered',Approved:'approved',Overdue:'overdue',Paid:'paid','Partial':'partial',Current:'approved',Active:'approved','Low Fund':'reserved','Low Stock':'reserved','Normal':'approved',Present:'approved',Late:'reserved',Absent:'declined',Reimbursed:'paid',Cash:'approved',Credit:'approved',Debit:'declined',Installment:'installment',Draft:'pending',Reviewed:'processing',Released:'paid',Ready:'approved',Transmitted:'paid'};
   return`<span class="badge badge-${map[s]||'pending'}">${s}</span>`;
 }
 
@@ -1766,6 +1966,8 @@ const navMeta={
   cashfund:{title:'Cash Fund Management',page:'Finance'},
   banking:{title:'Banking',page:'Bank Accounts & Transactions'},
   gl:{title:'General Ledger',page:'Finance'},
+  favorites:{title:'Favorites',page:'Services & Shortcuts'},
+  orcr:{title:'OTHER FINANCING OR/CR TRANSMITTAL',page:'Report Process'},
   timeexp:{title:'Time & Expenses',page:'HR & Admin'},
   payroll:{title:'Payroll Management',page:'HR & Admin'},
   branches:{title:'Branch Directory',page:'Administration'},
@@ -1773,12 +1975,119 @@ const navMeta={
 function nav(id){
   document.querySelectorAll('.sb-nav a').forEach(a=>a.classList.remove('active'));
   document.getElementById('nav-'+id)?.classList.add('active');
+  if(id==='orcr')document.getElementById('nav-favorites')?.classList.add('active');
   document.querySelectorAll('.module').forEach(m=>m.classList.remove('active'));
   document.getElementById('mod-'+id)?.classList.add('active');
   const m=navMeta[id]||{title:id,page:id};
   document.getElementById('tb-title').textContent=m.title;
   document.getElementById('tb-page').textContent=m.page;
   closePanel();
+}
+
+// ===== OTHER FINANCING OR/CR TRANSMITTAL =====
+function esc(value){
+  return String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+}
+function orcrGeneratedNow(){
+  return new Date().toLocaleString('en-PH',{year:'numeric',month:'short',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:true});
+}
+function getOrcrBank(){
+  return document.getElementById('orcr-bank')?.value||'All Banks';
+}
+function getOrcrCutoff(){
+  const value=document.getElementById('orcr-cutoff')?.value||'';
+  if(!value)return 'Not specified';
+  return new Date(`${value}T00:00:00`).toLocaleDateString('en-PH',{year:'numeric',month:'long',day:'2-digit'});
+}
+function renderOrcrRows(rows){
+  const tbody=document.getElementById('orcr-tbody');
+  if(!tbody)return;
+  tbody.innerHTML=rows.map(row=>`<tr>
+    <td class="mono">${esc(row.unitNo)}</td>
+    <td><strong>${esc(row.customerName)}</strong></td>
+    <td>${esc(row.financingBank)}</td>
+    <td class="mono">${esc(row.orNumber)}</td>
+    <td class="mono">${esc(row.crNumber)}</td>
+    <td class="mono">${esc(row.salesOrderNo)}</td>
+    <td class="mono">${esc(row.invoiceNo)}</td>
+    <td class="dim">${esc(row.releaseDate)}</td>
+    <td>${badge(row.status)}</td>
+    <td class="dim">${esc(row.remarks)}</td>
+  </tr>`).join('')||'<tr><td colspan="10" style="text-align:center;padding:32px;color:var(--text-tertiary)">No records found for the selected financing bank</td></tr>';
+}
+function runOrcrReport(){
+  const runRow=document.getElementById('orcr-run-row');
+  const runBtn=document.getElementById('orcr-run-btn');
+  runRow?.classList.add('loading');
+  if(runBtn){
+    runBtn.classList.add('busy');
+    runBtn.textContent='RUNNING...';
+  }
+  setTimeout(()=>{
+    const bank=getOrcrBank();
+    currentOrcrRows=bank==='All Banks'?financingReportData.slice():financingReportData.filter(row=>row.financingBank===bank);
+    currentOrcrGenerated=orcrGeneratedNow();
+    renderOrcrRows(currentOrcrRows);
+    document.getElementById('orcr-total').textContent=currentOrcrRows.length;
+    document.getElementById('orcr-generated').textContent=currentOrcrGenerated;
+    document.getElementById('orcr-summary')?.classList.add('open');
+    document.getElementById('orcr-result-table')?.classList.add('open');
+    document.getElementById('orcr-empty').style.display='none';
+    runRow?.classList.remove('loading');
+    if(runBtn){
+      runBtn.classList.remove('busy');
+      runBtn.textContent='RUN';
+    }
+    showToast('OTHER FINANCING OR/CR TRANSMITTAL generated');
+  },1000);
+}
+function exportOrcrCsv(){
+  if(!currentOrcrRows.length){
+    showToast('Run the report before exporting');
+    return;
+  }
+  const headers=['unitNo','customerName','financingBank','orNumber','crNumber','salesOrderNo','invoiceNo','releaseDate','status','remarks'];
+  const label=getOrcrBank().toLowerCase().replace(/[^a-z0-9]+/g,'-');
+  downloadFile(`other-financing-orcr-transmittal-${label}.csv`,toCsv(currentOrcrRows,headers),'text/csv;charset=utf-8');
+  showToast('OR/CR transmittal CSV exported');
+}
+function orcrPreviewTable(rows){
+  return `<div class="report-preview-table"><table>
+    <thead><tr><th>Unit No.</th><th>Customer Name</th><th>Financing Bank</th><th>OR Number</th><th>CR Number</th><th>Sales Order No.</th><th>Invoice No.</th><th>Release Date</th><th>Status</th><th>Remarks</th></tr></thead>
+    <tbody>${rows.map(row=>`<tr>
+      <td class="mono">${esc(row.unitNo)}</td><td>${esc(row.customerName)}</td><td>${esc(row.financingBank)}</td>
+      <td class="mono">${esc(row.orNumber)}</td><td class="mono">${esc(row.crNumber)}</td><td class="mono">${esc(row.salesOrderNo)}</td>
+      <td class="mono">${esc(row.invoiceNo)}</td><td>${esc(row.releaseDate)}</td><td>${esc(row.status)}</td><td>${esc(row.remarks)}</td>
+    </tr>`).join('')}</tbody>
+  </table></div>`;
+}
+function openOrcrPreview(){
+  if(!currentOrcrRows.length){
+    showToast('Run the report before opening preview');
+    return;
+  }
+  document.getElementById('orcr-preview-body').innerHTML=`
+    <div class="report-preview-head">
+      <div>
+        <h2>NEXII BSM DEMO</h2>
+        <p id="orcr-preview-title">OTHER FINANCING OR/CR TRANSMITTAL</p>
+      </div>
+      <div class="report-preview-meta">
+        <div>Cutoff Date: <strong>${esc(getOrcrCutoff())}</strong></div>
+        <div>Financing Bank: <strong>${esc(getOrcrBank())}</strong></div>
+        <div>Generated Date: <strong>${esc(currentOrcrGenerated)}</strong></div>
+        <div>Total Records: <strong>${currentOrcrRows.length}</strong></div>
+      </div>
+    </div>
+    ${orcrPreviewTable(currentOrcrRows)}
+  `;
+  document.getElementById('orcr-preview-overlay')?.classList.add('open');
+}
+function closeOrcrPreview(){
+  document.getElementById('orcr-preview-overlay')?.classList.remove('open');
+}
+function emailOrcrReport(){
+  showToast('Demo only: Report email has been prepared successfully.');
 }
 
 // ===== TIME & EXPENSE TABS =====
