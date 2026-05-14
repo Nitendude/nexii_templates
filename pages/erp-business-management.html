@@ -342,6 +342,20 @@ tbody td.amt{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:50
 .report-preview-table{border:1px solid var(--border);overflow-x:auto}
 .report-preview-table table{min-width:1120px}
 .report-preview-actions{display:flex;gap:8px;justify-content:flex-end;padding:12px 24px;border-top:1px solid var(--border);background:var(--surface);position:sticky;bottom:0}
+.erp-shortcuts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding:16px 24px;border-bottom:1px solid var(--border)}
+.erp-shortcut-card{min-height:64px;background:#0B0F19;color:#fff;border:1px solid #020617;padding:12px 14px;display:flex;align-items:center;gap:10px;text-align:left;font-family:'IBM Plex Sans',sans-serif;cursor:pointer}
+.erp-shortcut-card:hover{background:#111827}
+.erp-shortcut-icon{width:24px;height:24px;display:inline-flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.28);color:#fff;font-size:13px;flex-shrink:0}
+.erp-shortcut-card strong{display:block;font-size:13px;font-weight:600;line-height:1.25}
+.erp-menu-heading{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-secondary);margin-bottom:12px}
+.erp-menu-link{border:none;background:transparent;color:var(--text-primary);font-family:'IBM Plex Sans',sans-serif;font-size:13px;text-align:left;padding:4px 0;cursor:pointer}
+.erp-menu-link:hover{color:var(--accent);text-decoration:underline}
+.report-panel{padding:18px 24px;border-bottom:1px solid var(--border)}
+.report-form-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.report-section-box{margin-top:16px;border:1px solid var(--border);background:var(--bg)}
+.report-result-bar{display:none;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--border);background:var(--surface);padding:10px 12px;margin-bottom:12px}
+.report-result-bar.open{display:flex}
+.erp-view-switch{display:inline-flex;gap:6px;margin-left:8px}
 .modal-overlay{position:fixed;inset:0;z-index:150;background:rgba(15,23,42,.46);display:none;align-items:center;justify-content:center;padding:24px}
 .modal-overlay.open{display:flex}
 .migration-modal{width:min(1120px,calc(100vw - 48px));max-height:calc(100vh - 48px);overflow:auto;background:var(--bg);border:1px solid var(--border-strong);box-shadow:0 24px 70px rgba(15,23,42,.28)}
@@ -387,8 +401,8 @@ body.dark .login-right{background:var(--bg)}
 body.dark .login-demo-note,body.dark .lm-tag,body.dark .tag{background:var(--surface);border-color:var(--border-strong)}
 body.dark #coa-list .sub-header{background:var(--bg)!important}
 body.dark .badge-delivered{color:var(--status-approved-text);background:var(--status-approved-bg);border-color:#166534}
-@media(max-width:1280px){:root{--sidebar-w:200px}.kpi-grid{grid-template-columns:repeat(3,1fr)}.cf-grid{grid-template-columns:repeat(2,1fr)}.payroll-summary,.migration-card-grid{grid-template-columns:repeat(2,1fr)}.migration-grid{grid-template-columns:1fr}.erp-menu-grid,.orcr-form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.erp-menu-section:nth-child(3n){border-right:1px solid var(--border)}.erp-menu-section:nth-child(2n){border-right:none}}
-@media(max-width:760px){#app{overflow:auto}.erp-menu-grid,.orcr-form-grid{grid-template-columns:1fr}.erp-menu-section,.erp-menu-section:nth-child(2n),.erp-menu-section:nth-child(3n){border-right:none}.erp-menu-intro,.page-header,.orcr-summary{align-items:flex-start;flex-direction:column}.orcr-actions,.orcr-form,.orcr-results{padding-left:16px;padding-right:16px}.report-preview-head{flex-direction:column}}
+@media(max-width:1280px){:root{--sidebar-w:200px}.kpi-grid{grid-template-columns:repeat(3,1fr)}.cf-grid{grid-template-columns:repeat(2,1fr)}.payroll-summary,.migration-card-grid{grid-template-columns:repeat(2,1fr)}.migration-grid{grid-template-columns:1fr}.erp-menu-grid,.orcr-form-grid,.report-form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.erp-shortcuts{grid-template-columns:repeat(2,minmax(0,1fr))}.erp-menu-section:nth-child(3n){border-right:1px solid var(--border)}.erp-menu-section:nth-child(2n){border-right:none}}
+@media(max-width:760px){#app{overflow:auto}.erp-menu-grid,.orcr-form-grid,.report-form-grid,.erp-shortcuts{grid-template-columns:1fr}.erp-menu-section,.erp-menu-section:nth-child(2n),.erp-menu-section:nth-child(3n){border-right:none}.erp-menu-intro,.page-header,.orcr-summary,.report-result-bar{align-items:flex-start;flex-direction:column}.orcr-actions,.orcr-form,.orcr-results,.report-panel{padding-left:16px;padding-right:16px}.report-preview-head{flex-direction:column}}
 @media print{body>*:not(#orcr-preview-overlay){display:none!important}#orcr-preview-overlay{position:static!important;display:block!important;background:#fff!important;padding:0!important}.report-preview-modal{width:100%!important;max-height:none!important;box-shadow:none!important;border:none!important}.report-preview-actions,.sp-close{display:none!important}}
 </style>
 </head>
@@ -449,11 +463,11 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
       <div class="sb-section">
         <div class="sb-section-label">Sales</div>
         <ul class="sb-nav">
-          <li><a onclick="nav('sales')" id="nav-sales">
+	          <li><a onclick="nav('sales-menu')" id="nav-sales">
             <svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2h10l2 4-7 1.5L2 2zm1 5l.5 7h9l.5-7H3z"/></svg>
             Sales Orders
           </a></li>
-          <li><a onclick="nav('receivables')" id="nav-receivables">
+	          <li><a onclick="nav('receivables-menu')" id="nav-receivables">
             <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="3" width="14" height="10" rx="1"/><rect x="3" y="9" width="3" height="2" rx="0.3" fill="#fff"/><path d="M1 7h14" stroke="#fff" stroke-width="0.8" fill="none"/></svg>
             Receivables
           </a></li>
@@ -466,11 +480,11 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
       <div class="sb-section">
         <div class="sb-section-label">Procurement</div>
         <ul class="sb-nav">
-          <li><a onclick="nav('purchases')" id="nav-purchases">
+	          <li><a onclick="nav('purchases-menu')" id="nav-purchases">
             <svg viewBox="0 0 16 16" fill="currentColor"><path d="M3 2h10l2 3H1zm0 4h10v8H3z"/></svg>
             Purchase Orders
           </a></li>
-          <li><a onclick="nav('payables')" id="nav-payables">
+	          <li><a onclick="nav('payables-menu')" id="nav-payables">
             <svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 3h12v10H2zm3 3h6v1H5zm0 2.5h4v1H5z"/></svg>
             Payables
           </a></li>
@@ -479,28 +493,32 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
       <div class="sb-section">
         <div class="sb-section-label">Warehouse</div>
         <ul class="sb-nav">
-          <li><a onclick="nav('inventory')" id="nav-inventory">
+	          <li><a onclick="nav('inventory-menu')" id="nav-inventory">
             <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="3" width="14" height="2" rx="0.5"/><rect x="1" y="7" width="14" height="2" rx="0.5"/><rect x="1" y="11" width="14" height="2" rx="0.5"/></svg>
-            Inventory
-          </a></li>
+	            Inventory
+	          </a></li>
+	          <li><a onclick="nav('equipment-menu')" id="nav-equipment">
+	            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 3h12v4H2zm1 6h4v4H3zm6 0h4v4H9z"/></svg>
+	            Equipment
+	          </a></li>
         </ul>
       </div>
       <div class="sb-section">
         <div class="sb-section-label">Finance</div>
         <ul class="sb-nav">
-          <li><a onclick="nav('cashfund')" id="nav-cashfund">
+	          <li><a onclick="nav('cashfund-menu')" id="nav-cashfund">
             <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="7"/><path d="M8 4v1m0 6v1m-2-4h3a1 1 0 010 2H7a1 1 0 100 2h4" stroke="#fff" stroke-width="0.8" fill="none"/></svg>
             Cash Fund Mgmt
           </a></li>
-          <li><a onclick="nav('banking')" id="nav-banking">
+	          <li><a onclick="nav('banking-menu')" id="nav-banking">
             <svg viewBox="0 0 16 16" fill="currentColor"><path d="M1 6h14l-7-5-7 5zm1 1v6h3v-6H2zm4 0v6h4v-6H6zm5 0v6h3v-6h-3zM1 13h14v2H1z"/></svg>
             Banking
           </a></li>
-	          <li><a onclick="nav('gl')" id="nav-gl">
+		          <li><a onclick="nav('gl-menu')" id="nav-gl">
 	            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2h12v12H2zm2 2v8h8V4H4zm1 1h6v1H5zm0 2h6v1H5zm0 2h4v1H5z"/></svg>
 	            General Ledger
 	          </a></li>
-	          <li><a onclick="nav('favorites')" id="nav-favorites">
+		          <li><a onclick="nav('favorites')" id="nav-favorites">
 	            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1.5l1.9 3.9 4.3.6-3.1 3 .7 4.3L8 11.3l-3.8 2 .7-4.3-3.1-3 4.3-.6z"/></svg>
 	            Favorites
 	          </a></li>
@@ -509,7 +527,7 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
       <div class="sb-section">
         <div class="sb-section-label">HR & Admin</div>
         <ul class="sb-nav">
-          <li><a onclick="nav('timeexp')" id="nav-timeexp">
+	          <li><a onclick="nav('timeexp-menu')" id="nav-timeexp">
             <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="6"/><path d="M8 5v3l2 2" stroke="#fff" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg>
             Time &amp; Expenses
           </a></li>
@@ -904,6 +922,17 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
         <div class="table-footer"><span class="table-count" id="branch-count">0 branches</span></div>
       </div>
 
+      <div class="module" id="mod-payables-menu"></div>
+      <div class="module" id="mod-banking-menu"></div>
+      <div class="module" id="mod-gl-menu"></div>
+      <div class="module" id="mod-timeexp-menu"></div>
+      <div class="module" id="mod-cashfund-menu"></div>
+      <div class="module" id="mod-equipment-menu"></div>
+      <div class="module" id="mod-inventory-menu"></div>
+      <div class="module" id="mod-purchases-menu"></div>
+      <div class="module" id="mod-sales-menu"></div>
+      <div class="module" id="mod-receivables-menu"></div>
+
       <!-- ===== FAVORITES ===== -->
       <div class="module" id="mod-favorites">
         <div class="erp-menu-page">
@@ -968,8 +997,8 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
           <button class="btn btn-sm" type="button">Remove Template</button>
           <button class="btn btn-sm" type="button">Schedule Template</button>
         </div>
-        <div class="orcr-form">
-          <div class="orcr-form-grid">
+        <div class="orcr-form report-panel">
+          <div class="orcr-form-grid report-form-grid">
             <div class="orcr-field">
               <label for="orcr-template">Template</label>
               <select id="orcr-template">
@@ -994,15 +1023,15 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
               </select>
             </div>
           </div>
-          <section class="orcr-form-section">
+          <section class="orcr-form-section report-section-box">
             <div class="sub-header">Report Parameters</div>
             <div class="orcr-placeholder">Includes released units with available OR/CR details up to the selected cutoff date.</div>
           </section>
-          <section class="orcr-form-section">
+          <section class="orcr-form-section report-section-box">
             <div class="sub-header">Additional Sort and Filter Conditions</div>
             <div class="orcr-placeholder">Sort by financing bank, release date, customer name, and unit number.</div>
           </section>
-          <section class="orcr-form-section">
+          <section class="orcr-form-section report-section-box">
             <div class="sub-header">Print and Email Settings</div>
             <div class="orcr-placeholder">Preview printable report, export CSV, or prepare a demo email notification.</div>
           </section>
@@ -1012,7 +1041,7 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
           </div>
         </div>
         <div class="orcr-results">
-          <div class="orcr-summary" id="orcr-summary">
+          <div class="orcr-summary report-result-bar" id="orcr-summary">
             <div class="orcr-summary-meta">
               <span>Total Records: <strong id="orcr-total">0</strong></span>
               <span>Generated Date: <strong id="orcr-generated">--</strong></span>
@@ -1204,6 +1233,19 @@ const financingReportData=[
 ];
 let currentOrcrRows=[];
 let currentOrcrGenerated='';
+const erpMenuModules={
+  'payables-menu':{title:'Payables',dataView:'payables',shortcuts:['New Bill','New Payment','Vendor Details','New Vendor'],sections:{Transactions:['Bills and Adjustments','Checks and Payments'],Profiles:['Vendors','Credit Terms'],Processes:['Release AP Documents','Prepare Payments','Process Payments / Print Checks','Release Payments','Generate Intercompany Documents','Close Financial Periods'],Inquiries:['Vendor Details','Vendor Summary'],Reports:['AP Balance by GL Account','AP Balance by Vendor','AP Aging','AP Aged Period Sensitive']}},
+  'banking-menu':{title:'Banking',dataView:'banking',shortcuts:['New Cash Entry','New Transfer','New Deposit','Process Bank Records'],sections:{Transactions:['Transactions','Funds Transfers','Reconciliation Statements'],Profiles:['Cash Accounts','Corporate Cards'],Processes:['Import Bank Transactions','Process Bank Transactions','Release Cash Transactions','Close Financial Periods'],Inquiries:['Cash Account Details','Cash Flow Forecast'],Reports:['Cash Account Summary','Cash Account Details','Reconciliation Statement','Cash Requirements']}},
+  'gl-menu':{title:'General Ledger',dataView:'gl',shortcuts:['New Journal Entry','Account Summary','Account Details','Reclassify Journal Entries'],sections:{Transactions:['Journal Transactions'],Profiles:['Master Financial Calendar','Allocations','Chart of Accounts','Subaccounts'],Processes:['Run Allocations','Reclassify Transactions','Import Consolidation Data','Manage Financial Periods'],Budgets:['Budgets'],Inquiries:['Account Summary','Account Details'],Reports:['Trial Balance Summary','Transactions for Period','Transactions for Account'],'Financial Statements':['Balance Sheet','Balance Sheet - Comparative','Profit & Loss']}},
+  'timeexp-menu':{title:'Time and Expenses',dataView:'timeexp',shortcuts:['New Expense Receipt','New Expense Claim','Employee Time Card'],sections:{Tasks:['Tasks','Approvals','Events'],Email:['Incoming','Draft','Sent'],'Time Tracking':['Weekly Crew Time Entry','Employee Time Activities','Employee Time Cards','Release Time Activities'],'Expense Claims':['Expense Claims','Expense Receipts'],Reports:['Expense Claim Details']}},
+  'cashfund-menu':{title:'Cash Fund Management',dataView:'cashfund',sections:{Transactions:['Fund Transaction','Replenishment','Fund Transaction','Replenishment','Cash Advance'],Profiles:['Funds','Funds'],Processes:['Reclassify Cash Advances'],Inquiries:['ATPTEFM - Cash Advance'],'Printed Forms':['Liquidation','Cash Advance Request Form','Fund Transaction Form','Fund Replenishment Form','Request For Payment'],Reports:['Cash Advance Monitoring Report'],Preferences:['Employee Request Class','Cash Advance Preference','Fund Management Preference']}},
+  favorites:{title:'Favorites',sections:{'Data Views':['Sold Unit with OR/CR','Reg Tracker Report'],Integration:['Import by Scenario','Data Providers','Import Scenarios'],Services:['CSB OR/CR TRANSMITTAL',{label:'OTHER FINANCING OR/CR TRANSMITTAL',nav:'orcr'},'SUMISHO OR/CR TRANSMITTAL'],Equipment:['Equipment'],Dashboards:['REGISTRATION (NEW)']}},
+  'equipment-menu':{title:'Equipment',shortcuts:['New Service Contract','New Equipment'],sections:{Profiles:['Service Contracts','Equipment','Manufacturers','Manufacturer Models'],Processes:['Run Service Contract Billing','Generate from Service Contracts','Process Service Contracts'],Inquiries:['Service Contract Billing Batches','Contract Summary','Contract Schedule Summary','Contract Schedule Detail Summary','Model Equipment and Components'],Reports:['Service Order Details by Contract','Appointment Details by Contract','Service Time Activity by Contract','Appointment Details by Target Equipment'],Preferences:['Equipment Management Preferences']}},
+  'inventory-menu':{title:'Inventory',dataView:'inventory',shortcuts:['New Adjustment','New Transfer','New Kit Assembly','New Stock Item'],sections:{Transactions:['Receipts','Issues','Adjustments','Transfers','Kit Assembly'],Profiles:['Stock Items','Item Warehouse Details','Non-Stock Items','Warehouses','Warehouse Buildings'],'Physical Inventory':['Prepare Physical Count','Physical Inventory Count'],Processes:['Release IN Documents','Close Financial Periods'],Inquiries:['Inventory Summary','Storage Summary','Inventory Allocation Details','Inventory Transactions by Account','Inventory Lot/Serial History','Inventory by Item Class','Dead Stock','Intercompany Goods in Transit','Intercompany Returned Goods in Transit'],Reports:['Inventory Balance','Inventory Valuation','Inventory Register','Goods in Transit','Lot/Serial Numbers']}},
+  'purchases-menu':{title:'Purchases',dataView:'purchases',shortcuts:['New Purchase Order','New Purchase Receipt','New Purchase Request','New Vendor'],sections:{Transactions:['Requests','Requisitions','Purchase Orders','Purchase Receipts','Landed Costs'],Profiles:['Vendors','Vendor Prices','Vendor Inventory'],Processes:['Create Purchase Orders','Print/Email Purchase Orders','Generate Intercompany Purchase Orders'],'Printed Forms':['Item Request','Purchase Order','Purchase Receipt'],Reports:['Purchase Order Summary','Purchase Order Details by Vendor','Purchase Order Details by Inventory','Blanket Purchase Order Summary','Purchase Order Receipt and Billing','Purchase Receipt Details by Vendor','Purchase Accrual Details','Purchase Receipt Billing Details']}},
+  'sales-menu':{title:'Sales Orders',dataView:'sales',shortcuts:['New Sales Order','New Quote','New Payment','New Customer'],sections:{Transactions:['Sales Orders','Invoices','Shipments'],Profiles:['Customers','Sales Prices'],Processes:['Process Orders','Generate Intercompany Sales Orders','Process Shipments','Process Invoices and Memos','Create Transfer Orders','Print/Email Orders'],Reports:['Sales Order Summary','Sales Order Details by Customer','Sales Order Details by Inventory','Shipment Summary','Daily Sales Profitability','Sales Profitability by Salesperson','Sales Profitability by Item Class']}},
+  'receivables-menu':{title:'Receivables',dataView:'receivables',shortcuts:['New Invoice','New Payment','Customer Details','New Customer'],sections:{Transactions:['Invoices and Memos','Payments and Applications'],Profiles:['Customers','Credit Terms','Sales Prices'],Processes:['Release AR Documents','Print Invoices and Memos','Write Off Balances and Credits','Prepare Statements','Print Statements','Close Financial Periods'],Inquiries:['Customer Details','Customer Summary','Statement History Summary'],'Printed Forms':['Invoice/Memo'],Reports:['AR Balance by GL Account','AR Balance by Customer','AR Aged Past Due','AR Aged Period Sensitive'],'Profitability Analysis':['Sales Profitability Analysis','Daily Sales Profitability','Sales Profitability by Customer and Item','Sales Profitability by Item Class']}}
+};
 const expenseData = Array.from({length:60},(_,i)=>{const categories=['Transportation','Representation','Fuel','Office Supplies','Branch Repairs','Courier','Meals'];const descriptions=['client visit','bank deposit run','branch delivery vehicle','printer ink and forms','showroom minor repair','document dispatch','field collection route'];return {no:`EXP-202605${pad(12-(i%12),2)}-${pad(i+1)}`,employee:personName(520+i),branch:branchData[(i*4)%branchData.length].name,category:categories[i%categories.length],desc:descriptions[i%descriptions.length],amount:150+((i*431)%8500),date:dateShort(i),status:i%7===0?'Pending':i%5===0?'Reimbursed':'Approved'}});
 const cashFundData = Array.from({length:100},(_,i)=>{const branch=branchData[(i*3)%branchData.length],isIn=i%4===0,amount=isIn?10000+((i*137)%45000):750+((i*271)%9800);return {date:dateShort(i),branch:branch.name,ref:`CF-202605${pad(12-(i%12),2)}-${pad(i+1)}`,desc:isIn?'Branch fund replenishment':'Operating cash disbursement',cashIn:isIn?amount:0,cashOut:isIn?0:amount,balance:branch.cashFund,recordedBy:personName(620+i)}});
 branchData.forEach(b=>{b.inventory=invData.filter(u=>u.branch===b.name&&u.status!=='Sold').length;b.sold=soData.filter(s=>s.branch===b.name&&s.status==='Completed').length;if(b.inventory<3)b.status='Low Stock'});
@@ -1712,6 +1754,8 @@ function exportMigrationReport(){
 }
 
 function initializeDemo(){
+  renderErpMenuPages();
+  addMenuViewButtons();
   populateBranchSelects();
   renderDashboard();
   renderCashFund();
@@ -1958,23 +2002,34 @@ function closePanel(){
 const navMeta={
   dashboard:{title:'Dashboard',page:'Overview'},
   inventory:{title:'Inventory',page:'Motor Units'},
+  'inventory-menu':{title:'Inventory',page:'Menu View'},
   sales:{title:'Sales Orders',page:'Transactions'},
+  'sales-menu':{title:'Sales Orders',page:'Menu View'},
   receivables:{title:'Receivables',page:'Installment Accounts'},
+  'receivables-menu':{title:'Receivables',page:'Menu View'},
   customers:{title:'Customers',page:'Customer Records'},
   purchases:{title:'Purchase Orders',page:'Procurement'},
+  'purchases-menu':{title:'Purchases',page:'Menu View'},
   payables:{title:'Payables',page:'Accounts Payable'},
+  'payables-menu':{title:'Payables',page:'Menu View'},
   cashfund:{title:'Cash Fund Management',page:'Finance'},
+  'cashfund-menu':{title:'Cash Fund Management',page:'Menu View'},
   banking:{title:'Banking',page:'Bank Accounts & Transactions'},
+  'banking-menu':{title:'Banking',page:'Menu View'},
   gl:{title:'General Ledger',page:'Finance'},
+  'gl-menu':{title:'General Ledger',page:'Menu View'},
   favorites:{title:'Favorites',page:'Services & Shortcuts'},
+  'equipment-menu':{title:'Equipment',page:'Menu View'},
   orcr:{title:'OTHER FINANCING OR/CR TRANSMITTAL',page:'Report Process'},
   timeexp:{title:'Time & Expenses',page:'HR & Admin'},
+  'timeexp-menu':{title:'Time and Expenses',page:'Menu View'},
   payroll:{title:'Payroll Management',page:'HR & Admin'},
   branches:{title:'Branch Directory',page:'Administration'},
 };
 function nav(id){
   document.querySelectorAll('.sb-nav a').forEach(a=>a.classList.remove('active'));
-  document.getElementById('nav-'+id)?.classList.add('active');
+  const activeNavId=id.endsWith('-menu')?id.replace('-menu',''):id;
+  document.getElementById('nav-'+activeNavId)?.classList.add('active');
   if(id==='orcr')document.getElementById('nav-favorites')?.classList.add('active');
   document.querySelectorAll('.module').forEach(m=>m.classList.remove('active'));
   document.getElementById('mod-'+id)?.classList.add('active');
@@ -1982,6 +2037,57 @@ function nav(id){
   document.getElementById('tb-title').textContent=m.title;
   document.getElementById('tb-page').textContent=m.page;
   closePanel();
+}
+
+// ===== ERP MENU VIEWS =====
+function renderErpMenuLink(item){
+  const link=typeof item==='string'?{label:item}:item;
+  const click=link.nav?` onclick="nav('${link.nav}')"`:'';
+  return `<button class="erp-menu-link"${click} type="button">${esc(link.label)}</button>`;
+}
+function renderErpMenuPage(id,config){
+  const host=document.getElementById(`mod-${id}`);
+  if(!host)return;
+  const shortcutHtml=(config.shortcuts||[]).length?`
+    <div class="erp-shortcuts">
+      ${config.shortcuts.map((label,index)=>`
+        <button class="erp-shortcut-card" type="button">
+          <span class="erp-shortcut-icon">${index+1}</span>
+          <strong>${esc(label)}</strong>
+        </button>
+      `).join('')}
+    </div>`:'';
+  host.innerHTML=`
+    <div class="erp-menu-page">
+      <div class="erp-menu-intro">
+        <div>
+          <h2>${esc(config.title)}</h2>
+          <p>ERP menu view for transactions, profiles, processes, inquiries, reports, and setup links.</p>
+        </div>
+        ${config.dataView?`<button class="btn btn-sm" type="button" onclick="nav('${config.dataView}')">Data View</button>`:''}
+      </div>
+      ${shortcutHtml}
+      <div class="erp-menu-grid">
+        ${Object.entries(config.sections).map(([heading,links])=>`
+          <section class="erp-menu-section">
+            <h3 class="erp-menu-heading">${esc(heading)}</h3>
+            <div class="erp-link-list">${links.map(renderErpMenuLink).join('')}</div>
+          </section>
+        `).join('')}
+      </div>
+    </div>
+  `;
+}
+function renderErpMenuPages(){
+  Object.entries(erpMenuModules).forEach(([id,config])=>renderErpMenuPage(id,config));
+}
+function addMenuViewButtons(){
+  const map={inventory:'inventory-menu',sales:'sales-menu',receivables:'receivables-menu',purchases:'purchases-menu',payables:'payables-menu',cashfund:'cashfund-menu',banking:'banking-menu',gl:'gl-menu',timeexp:'timeexp-menu'};
+  Object.entries(map).forEach(([dataId,menuId])=>{
+    const actions=document.querySelector(`#mod-${dataId} .page-actions`);
+    if(!actions||actions.querySelector(`[data-menu-view="${menuId}"]`))return;
+    actions.insertAdjacentHTML('afterbegin',`<button class="btn btn-sm" data-menu-view="${menuId}" type="button" onclick="nav('${menuId}')">Menu View</button>`);
+  });
 }
 
 // ===== OTHER FINANCING OR/CR TRANSMITTAL =====
@@ -2369,6 +2475,11 @@ if(document.addEventListener){
     flashButton(btn);
     if(btn.getAttribute('onclick'))return;
     liveAction(btn);
+  });
+  document.addEventListener('click',e=>{
+    const link=e.target.closest?.('.erp-menu-link,.erp-shortcut-card');
+    if(!link||link.getAttribute('onclick'))return;
+    showToast(`${link.textContent.trim()} opened in demo mode`);
   });
 }
 
