@@ -11,9 +11,11 @@
       <nav class="demo-nav booking-demo-nav" aria-label="Demo navigation">
         <a class="brand" href="../index.html"><span class="brand-mark">NX</span><span>Demo Hub</span></a>
         <div class="demo-links" aria-label="Page sections">
+          <a href="#trial">Trial</a>
           <a href="#booking">Booking</a>
           <a href="#rooms">Rooms</a>
           <a href="#payment">Payment</a>
+          <a href="#operations">Operations</a>
           <a href="#admin">Admin</a>
         </div>
         <a class="back-link" href="../index.html#catalog">Back to dashboard</a>
@@ -37,11 +39,39 @@
         </header>
 
         <div class="booking-demo-tabs" aria-label="Booking steps">
+          <a href="#trial">Trial Access</a>
           <a class="active" href="#booking">Booking</a>
           <a href="#rooms">Rooms</a>
           <a href="#payment">Payment</a>
+          <a href="#operations">Operations</a>
           <a href="#admin">Admin Approval</a>
         </div>
+
+        <section class="resort-trial-panel" id="trial">
+          <div class="resort-trial-copy">
+            <span class="booking-kicker">Limited-access trial</span>
+            <h2>Experience the resort system like a real user.</h2>
+            <p>This page runs as a no-database trial. Guests can submit a booking, front desk can review payments, admins can approve bookings, and managers can export the current demo state.</p>
+          </div>
+          <div class="resort-role-switcher" aria-label="Trial role selector">
+            <button class="active" type="button" data-resort-role="guest">Guest</button>
+            <button type="button" data-resort-role="frontdesk">Front Desk</button>
+            <button type="button" data-resort-role="admin">Admin</button>
+            <button type="button" data-resort-role="manager">Manager</button>
+          </div>
+          <div class="resort-trial-stats">
+            <article><span>Bookings</span><strong id="resortBookings">0</strong></article>
+            <article><span>Confirmed</span><strong id="resortConfirmations">0</strong></article>
+            <article><span>Projected Revenue</span><strong id="resortRevenue">PHP 0</strong></article>
+            <article><span>Active Role</span><strong id="resortActiveRole">Guest</strong></article>
+          </div>
+          <div class="resort-trial-actions">
+            <button class="primary-btn" type="button" data-trial-booking>Start guest booking</button>
+            <button class="ghost-btn" type="button" data-trial-admin>Review admin queue</button>
+            <button class="ghost-btn" type="button" data-export-resort>Export trial state</button>
+            <button class="ghost-btn danger" type="button" data-reset-resort>Reset trial</button>
+          </div>
+        </section>
 
         <section class="booking-demo-body" id="booking">
           <div class="booking-main-flow">
@@ -149,6 +179,30 @@
               <label class="proof-upload-demo">Proof of payment uploaded</label>
             </article>
           </aside>
+        </section>
+
+        <section class="resort-operations-demo" id="operations">
+          <article class="booking-form-section">
+            <div class="booking-section-header">
+              <span class="booking-section-icon">OP</span>
+              <div>
+                <h2>Operations Dashboard</h2>
+                <p>Front desk and managers can monitor availability, housekeeping status, and upcoming arrivals.</p>
+              </div>
+            </div>
+            <div class="resort-room-status-grid" id="resortRoomStatus"></div>
+          </article>
+
+          <article class="booking-form-section">
+            <div class="booking-section-header">
+              <span class="booking-section-icon">CAL</span>
+              <div>
+                <h2>Booking Calendar</h2>
+                <p>Confirmed bookings block dates in the demo so clients can understand the booking logic.</p>
+              </div>
+            </div>
+            <div class="resort-calendar-board" id="resortCalendarBoard"></div>
+          </article>
         </section>
 
         <section class="booking-admin-demo" id="admin">

@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Payroll System Demo</title>
+  <style>
+    :root{
+      --bg:#eef3f8;--panel:#fff;--ink:#172033;--muted:#667085;--line:#d5dde8;
+      --nav:#111827;--blue:#155eef;--green:#067647;--amber:#b54708;--red:#b42318;
+      --teal:#0f766e;--soft:#f8fafc;--shadow:0 18px 45px rgba(16,24,40,.1)
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;font-size:14px}
+    button,input,select{font:inherit}button{cursor:pointer}a{color:inherit;text-decoration:none}
+    .app{min-height:100vh;display:grid;grid-template-columns:260px minmax(0,1fr)}
+    .sidebar{position:sticky;top:0;height:100vh;background:var(--nav);color:#e2e8f0;padding:18px;display:flex;flex-direction:column;gap:18px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .mark{width:42px;height:42px;border-radius:10px;background:#155eef;display:grid;place-items:center;color:#fff;font-weight:950}
+    .brand strong,.brand span{display:block}.brand span{color:#94a3b8;font-size:.8rem;margin-top:2px}
+    .nav{display:grid;gap:7px}
+    .nav button,.hub{border:0;background:transparent;color:#cbd5e1;border-radius:8px;min-height:40px;text-align:left;font-weight:850;padding:0 11px}
+    .nav button:hover,.nav button.active,.hub:hover{background:rgba(255,255,255,.1);color:#fff}
+    .side-card{margin-top:auto;border:1px solid rgba(255,255,255,.12);border-radius:12px;background:rgba(255,255,255,.06);padding:13px;line-height:1.45;color:#cbd5e1}
+    .side-card strong{display:block;color:#fff;margin-bottom:5px}
+    main{min-width:0}.topbar{height:66px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 22px;position:sticky;top:0;z-index:10}
+    .title strong,.title span{display:block}.title span{color:var(--muted);font-size:.84rem;margin-top:2px}
+    .actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:1px solid var(--line);border-radius:8px;background:#fff;min-height:36px;padding:0 12px;font-weight:850;color:#1849a9;display:inline-flex;align-items:center;justify-content:center;gap:7px}.btn:hover{background:#f8fafc}.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}.btn.dark{background:#101828;border-color:#101828;color:#fff}.btn.good{background:#ecfdf3;border-color:#bbf7d0;color:var(--green)}.btn.bad{background:#fff1f0;border-color:#ffd3ce;color:var(--red)}.btn.small{min-height:30px;font-size:.8rem;padding:0 9px}
+    .workspace{padding:20px;display:grid;gap:18px}
+    .hero{border-radius:16px;background:linear-gradient(135deg,#102033,#155eef 62%,#0f766e);color:#fff;padding:24px;display:grid;grid-template-columns:minmax(0,1fr)380px;gap:20px;align-items:end;box-shadow:var(--shadow);overflow:hidden}
+    .hero h1{margin:8px 0 10px;font-size:clamp(2.1rem,5vw,4.9rem);line-height:.95;letter-spacing:-.03em}.hero p{color:#dbe7f7;line-height:1.6;max-width:780px}
+    .eyebrow{display:block;color:#facc15;font-size:.72rem;font-weight:950;letter-spacing:.1em;text-transform:uppercase}
+    .hero-card{border:1px solid rgba(255,255,255,.18);border-radius:13px;background:rgba(255,255,255,.12);padding:16px;display:grid;gap:12px}
+    .hero-card div{display:flex;justify-content:space-between;gap:12px}.hero-card span{color:#cbd5e1}.hero-card strong{font-size:1.25rem}
+    .stats{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}.stat,.panel,.card{background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}.stat{padding:15px}.stat span{display:block;color:var(--muted);font-weight:850;font-size:.75rem}.stat strong{display:block;margin-top:6px;font-size:1.55rem}
+    .trial-panel{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);gap:14px;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:18px}.trial-panel h2{margin:6px 0 8px;font-size:clamp(1.45rem,3vw,2.35rem);line-height:1.08}.trial-panel p{margin:0;color:var(--muted);line-height:1.55}.role-switcher,.trial-actions{display:flex;flex-wrap:wrap;gap:8px;align-content:start;justify-content:flex-end}.role-switcher button{min-height:36px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#1849a9;font-weight:900;padding:0 12px}.role-switcher button.active{background:var(--blue);border-color:var(--blue);color:#fff}.trial-metrics{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.trial-metrics article{border:1px solid var(--line);border-radius:11px;background:#f8fafc;padding:12px}.trial-metrics span,.trial-metrics strong{display:block}.trial-metrics span{color:var(--muted);font-size:.75rem;font-weight:900}.trial-metrics strong{margin-top:5px;font-size:1.18rem}.trial-actions{grid-column:1/-1;justify-content:flex-start}.trial-actions .btn.bad{background:#fff1f0;border-color:#ffd3ce;color:var(--red)}
+    .layout{display:grid;grid-template-columns:minmax(0,1fr)390px;gap:18px;align-items:start}.pad{padding:18px}.section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:14px}.section-head h2{margin:0;font-size:clamp(1.35rem,3vw,2.2rem)}.section-head p{margin:4px 0 0;color:var(--muted);line-height:1.5}
+    .module-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.module-card{background:#fff;border:1px solid var(--line);border-radius:11px;box-shadow:var(--shadow);padding:15px;text-align:left;cursor:pointer}.module-card:hover,.employee-card:hover,.mini:hover{border-color:#93c5fd;box-shadow:0 0 0 3px rgba(21,94,239,.1)}.module-card.active{border-color:#93c5fd;box-shadow:0 0 0 3px rgba(21,94,239,.12)}.module-card strong{display:block;margin-bottom:5px}.module-card p{margin:0;color:var(--muted);line-height:1.45}
+    .toolbar{display:grid;grid-template-columns:1fr 180px 180px;gap:10px;margin-bottom:14px}.field{display:grid;gap:6px}.field label{font-size:.72rem;color:var(--muted);font-weight:900;text-transform:uppercase;letter-spacing:.05em}input,select{width:100%;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);padding:10px 11px;outline:0}input:focus,select:focus{border-color:#93c5fd;box-shadow:0 0 0 3px rgba(21,94,239,.12)}
+    .table-wrap{overflow:auto}table{width:100%;border-collapse:collapse}th,td{border-bottom:1px solid var(--line);padding:11px;text-align:left;white-space:nowrap}th{font-size:.72rem;color:var(--muted);letter-spacing:.05em;text-transform:uppercase}.status{display:inline-flex;align-items:center;min-height:26px;border-radius:999px;background:#eef2ff;color:var(--blue);font-size:.75rem;font-weight:900;padding:0 9px}.status.ok{background:#ecfdf3;color:var(--green)}.status.warn{background:#fff4e5;color:var(--amber)}.status.bad{background:#fff1f0;color:var(--red)}
+    .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}.three{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.mini{border:1px solid var(--line);border-radius:11px;background:#fff;padding:13px;cursor:pointer}.mini span,.employee-card span{display:block;color:var(--muted);font-size:.8rem;margin-top:4px}.employee-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.employee-card{border:1px solid var(--line);border-radius:11px;background:#fff;padding:14px;cursor:pointer}.card-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}.activity{display:grid;gap:9px}.event{border:1px solid var(--line);border-radius:9px;background:#fff;padding:10px}.event strong,.event span{display:block}.event span{color:var(--muted);font-size:.8rem;margin-top:3px}
+    .payslip{border:1px solid var(--line);border-radius:12px;background:#fff;padding:16px}.payslip header{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:12px}.payslip h3{margin:0}.split-row{display:flex;justify-content:space-between;gap:12px;border-bottom:1px dashed var(--line);padding:8px 0}.split-row.total{border-bottom:0;font-weight:950;font-size:1.08rem}.bank-flow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.bank-step{border:1px solid var(--line);border-radius:11px;background:#fff;padding:13px}.bank-step strong,.bank-step span{display:block}.bank-step span{color:var(--muted);font-size:.8rem;margin-top:4px}.report{white-space:pre-wrap;background:#101828;color:#dbeafe;border-radius:10px;padding:14px;line-height:1.55;min-height:230px}.toast{position:fixed;right:18px;bottom:18px;background:#101828;color:#fff;border-radius:10px;padding:12px 14px;font-weight:850;box-shadow:var(--shadow);opacity:0;transform:translateY(10px);transition:.2s;z-index:40}.toast.show{opacity:1;transform:translateY(0)}
+    @media(max-width:1120px){.app{grid-template-columns:1fr}.sidebar{position:static;height:auto}.hero,.layout,.trial-panel{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.module-grid,.employee-grid,.three,.bank-flow,.trial-metrics{grid-template-columns:repeat(2,1fr)}.role-switcher{justify-content:flex-start}}@media(max-width:680px){.topbar{height:auto;align-items:flex-start;flex-direction:column;padding:14px}.workspace{padding:12px}.stats,.module-grid,.employee-grid,.two,.three,.toolbar,.bank-flow,.trial-metrics{grid-template-columns:1fr}.hero h1{font-size:2.6rem}}
+  </style>
+</head>
+<body>
+  <section class="app">
+    <aside class="sidebar">
+      <div class="brand"><div class="mark">PY</div><div><strong>PayrollPro Demo</strong><span>Payroll and HR finance</span></div></div>
+      <nav class="nav">
+        <button class="active" data-module="dashboard">Dashboard</button>
+        <button data-module="run">Payroll Run</button>
+        <button data-module="employees">Employees</button>
+        <button data-module="timesheets">Timesheets</button>
+        <button data-module="deductions">Deductions</button>
+        <button data-module="approvals">Approvals</button>
+        <button data-module="banking">Bank Payouts</button>
+        <button data-module="payslips">Payslips</button>
+        <button data-module="reports">Reports</button>
+        <button data-module="settings">Settings</button>
+      </nav>
+      <a class="hub" href="../index.html#catalog">Back to Demo Hub</a>
+      <div class="side-card"><strong>Client demo flow</strong>Show payroll preparation, approval, bank payout processing, payslip publishing, and employee self-service without needing a backend.</div>
+    </aside>
+    <main>
+      <header class="topbar">
+        <div class="title"><strong id="screenTitle">Payroll Dashboard</strong><span id="screenSub">May 1-15, 2026 pay period overview.</span></div>
+        <div class="actions">
+          <button class="btn" id="togglePortal">Employee Portal</button>
+          <button class="btn" id="loadScenario">Load Demo Scenario</button>
+          <button class="btn primary" id="exportReport">Export Payroll Report</button>
+        </div>
+      </header>
+      <div class="workspace">
+        <section class="hero">
+          <div>
+            <span class="eyebrow">Payroll Management System</span>
+            <h1>Run payroll, approve records, send bank payouts, and publish payslips.</h1>
+            <p>This static payroll page works like a real client presentation: live totals, employee records, timesheet approvals, deductions, bank-ready payroll file generation, payout confirmation, payslip preview, report export, and a switchable employee portal.</p>
+          </div>
+          <aside class="hero-card">
+            <div><span>Current pay period</span><strong id="heroPeriod">May 1-15</strong></div>
+            <div><span>Run status</span><strong id="heroStatus">Draft</strong></div>
+            <div><span>Net payroll</span><strong id="heroNet">PHP 0</strong></div>
+          </aside>
+        </section>
+        <section class="trial-panel" id="trial">
+          <div>
+            <span class="eyebrow">Limited-access trial</span>
+            <h2>Experience the payroll system like a real team.</h2>
+            <p>This no-database trial lets clients switch roles, run payroll, approve attendance, prepare a bank-ready file, publish payslips, export a snapshot, and reset the demo before the next presentation.</p>
+          </div>
+          <div class="role-switcher" aria-label="Payroll trial role selector">
+            <button class="active" type="button" data-role="admin">Admin</button>
+            <button type="button" data-role="hr">HR</button>
+            <button type="button" data-role="finance">Finance</button>
+            <button type="button" data-role="employee">Employee</button>
+          </div>
+          <div class="trial-metrics">
+            <article><span>Active Role</span><strong id="payrollActiveRole">Admin</strong></article>
+            <article><span>Pay Period</span><strong id="payrollTrialPeriod">May 1-15</strong></article>
+            <article><span>Access Level</span><strong id="payrollTrialAccess">Full</strong></article>
+            <article><span>Demo State</span><strong id="payrollSavedState">Saved</strong></article>
+          </div>
+          <div class="trial-actions">
+            <button class="btn primary" type="button" data-trial-run>Start payroll run</button>
+            <button class="btn" type="button" data-trial-approvals>Review approvals</button>
+            <button class="btn" type="button" data-trial-employee>Employee portal</button>
+            <button class="btn dark" type="button" data-trial-export>Export trial state</button>
+            <button class="btn bad" type="button" data-trial-reset>Reset trial</button>
+          </div>
+        </section>
+        <section class="stats">
+          <article class="stat"><span>Employees Paid</span><strong id="metricEmployees">0</strong></article>
+          <article class="stat"><span>Gross Payroll</span><strong id="metricGross">PHP 0</strong></article>
+          <article class="stat"><span>Net Payroll</span><strong id="metricNet">PHP 0</strong></article>
+          <article class="stat"><span>Deductions</span><strong id="metricDeductions">PHP 0</strong></article>
+          <article class="stat"><span>Pending Items</span><strong id="metricPending">0</strong></article>
+          <article class="stat"><span>Bank Status</span><strong id="metricBank">Draft</strong></article>
+        </section>
+        <section class="panel pad">
+          <div class="section-head"><div><span class="eyebrow">Module Workspace</span><h2 id="moduleTitle">Payroll command center</h2><p id="moduleDesc">Review payroll status and open the workflow clients want to see.</p></div></div>
+          <div class="module-grid" id="moduleCards"></div>
+        </section>
+        <section class="layout">
+          <div id="mainPanel"></div>
+          <aside>
+            <article class="panel pad">
+              <span class="eyebrow">Selected Payslip</span>
+              <div id="payslipPreview"></div>
+            </article>
+            <article class="panel pad" style="margin-top:14px">
+              <span class="eyebrow">Audit Trail</span>
+              <h2>Activity</h2>
+              <div class="activity" id="activityList"></div>
+            </article>
+          </aside>
+        </section>
+      </div>
+    </main>
+  </section>
+  <div class="toast" id="toast"></div>
+  <script>
+    const money=new Intl.NumberFormat("en-PH",{style:"currency",currency:"PHP",maximumFractionDigits:0});
+    const employees=[
+      {id:"EMP-001",name:"Patricia Mendoza",role:"HR Manager",dept:"HR",base:52000,allowance:6000,hours:88,overtime:4,tax:6300,sss:1200,philhealth:900,pagibig:200,status:"Active",bank:"BPI **** 2041"},
+      {id:"EMP-002",name:"Marco Santos",role:"Finance Officer",dept:"Finance",base:48000,allowance:5000,hours:86,overtime:2,tax:5400,sss:1200,philhealth:850,pagibig:200,status:"Active",bank:"BDO **** 8110"},
+      {id:"EMP-003",name:"Leah Cruz",role:"Payroll Specialist",dept:"Finance",base:44500,allowance:4500,hours:88,overtime:6,tax:4950,sss:1200,philhealth:800,pagibig:200,status:"Active",bank:"Metrobank **** 1902"},
+      {id:"EMP-004",name:"Ramon Uy",role:"Operations Lead",dept:"Operations",base:50000,allowance:5500,hours:80,overtime:0,tax:5600,sss:1200,philhealth:880,pagibig:200,status:"For Review",bank:"UnionBank **** 7344"},
+      {id:"EMP-005",name:"Jessa Lim",role:"Client Support",dept:"Support",base:38000,allowance:3500,hours:88,overtime:3,tax:3900,sss:1200,philhealth:700,pagibig:200,status:"Active",bank:"BPI **** 6678"}
+    ];
+    let active="dashboard";
+    let portal="admin";
+    let selectedId="EMP-001";
+    let run={id:"PAY-2026-05A",period:"May 1-15, 2026",status:"Draft",approved:false,published:false,cutoff:"2026-05-15",release:"2026-05-20"};
+    let bankBatch={id:"BANK-2026-05A",bank:"BDO Payroll File",method:"Bank file upload",status:"Not Prepared",maker:"Finance Maker",checker:"Finance Approver",reference:"-",lastSync:"Not confirmed"};
+    let approvals=[
+      {id:"TS-4410",type:"Timesheet",owner:"Ramon Uy",status:"Pending"},
+      {id:"ADJ-2217",type:"Payroll Adjustment",owner:"Leah Cruz",status:"Review"},
+      {id:"BEN-1090",type:"Benefit Deduction",owner:"Marco Santos",status:"Pending"}
+    ];
+    const activity=["Payroll demo opened","May 1-15 payroll period loaded"];
+    let activeRole="Admin";
+    const storageKey="payroll-system-trial-state";
+    const defaultState=JSON.parse(JSON.stringify({employees,approvals,run,bankBatch,activity,activeRole,active,portal,selectedId}));
+    function restoreState(state){
+      employees.splice(0,employees.length,...state.employees);
+      approvals=state.approvals;
+      Object.assign(run,state.run);
+      Object.assign(bankBatch,state.bankBatch);
+      activity.splice(0,activity.length,...state.activity);
+      activeRole=state.activeRole||"Admin";
+      active=state.active||"dashboard";
+      portal=state.portal||"admin";
+      selectedId=state.selectedId||"EMP-001";
+    }
+    function loadTrialState(){
+      try{
+        const saved=JSON.parse(localStorage.getItem(storageKey)||"null");
+        if(saved)restoreState(saved);
+      }catch(error){
+        localStorage.removeItem(storageKey);
+      }
+    }
+    function saveTrialState(){
+      localStorage.setItem(storageKey,JSON.stringify({employees,approvals,run,bankBatch,activity,activeRole,active,portal,selectedId,savedAt:new Date().toISOString()}));
+    }
+    loadTrialState();
+    const meta={
+      dashboard:{title:"Payroll command center",desc:"Review pay run status, totals, blockers, bank payout state, and employee portal state.",cards:[["Run current payroll","Open the pay run and calculate totals."],["Approve timesheets","Clear attendance blockers before release."],["Bank payouts","Generate a bank-ready payroll file."],["Export report","Generate a management-ready payroll snapshot."]]},
+      run:{title:"Payroll run workspace",desc:"Calculate gross pay, deductions, net pay, and release status.",cards:[["Calculate Payroll","Refresh every employee payroll line."],["Approve Run","Lock the payroll run for finance release."],["Bank Payout","Generate the bank-ready payroll file."],["Publish Payslips","Allow employees to view payslips."]]},
+      employees:{title:"Employee payroll records",desc:"Employee compensation profiles with bank, department, and pay status.",cards:[["Employee List","View salary, allowance, and employee status."],["Add Employee","Create a demo employee payroll record."],["Select Payslip","Preview a payroll record in the side panel."],["Portal View","Switch to the employee-facing experience."]]},
+      timesheets:{title:"Timesheets and attendance",desc:"Validate hours, overtime, and attendance exceptions before payroll release.",cards:[["Review Attendance","See hours and overtime per employee."],["Approve All","Clear pending timesheet approvals."],["Flag Exception","Add a missing attendance approval."],["Back to Run","Continue payroll processing."]]},
+      deductions:{title:"Deductions and benefits",desc:"Manage tax, statutory contributions, cash advance deductions, and adjustments.",cards:[["Contribution Matrix","View SSS, PhilHealth, Pag-IBIG, and tax."],["Add Deduction","Simulate a new payroll deduction."],["Audit Adjustment","Track who changed deductions."],["Refresh Net Pay","Update net payroll totals."]]},
+      approvals:{title:"Payroll approvals",desc:"Finance and HR approval queue for timesheets, adjustments, and release controls.",cards:[["Approval Queue","Review payroll blockers."],["Approve All","Mark all pending payroll items approved."],["Return Item","Send one item back for correction."],["Run Payroll","Return to the payroll run."]]},
+      banking:{title:"Bank payout center",desc:"Prepare bank-ready payroll files for upload to the company banking portal and record payout confirmation.",cards:[["Generate Bank File","Create a bank-ready payroll CSV."],["Mark Uploaded","Record that finance uploaded the file to the bank portal."],["Confirm Paid","Update payout status after bank confirmation."],["Publish Payslips","Publish payslips after successful payout."]]},
+      payslips:{title:"Payslip publishing",desc:"Preview employee payslips and publish them to the employee portal.",cards:[["Payslip Preview","Select an employee payslip."],["Publish All","Show payslips in the employee portal."],["Download PDF","Simulate a payslip download."],["Employee Portal","Switch to employee view."]]},
+      reports:{title:"Payroll reports",desc:"Export a payroll summary for finance, management, and audit review.",cards:[["Payroll Summary","Generate payroll totals."],["Department Costing","See payroll by department."],["Bank File","Prepare bank release data."],["Audit Trail","Review system activity."]]},
+      settings:{title:"Payroll settings",desc:"Configure cutoff, release date, approval controls, and statutory labels.",cards:[["Pay Period","Adjust cutoff and release dates."],["Approval Rules","Require HR and finance approval."],["Employee Access","Control payslip visibility."],["Save Settings","Apply demo settings."]]}
+    };
+    const qs=s=>document.querySelector(s),qsa=s=>[...document.querySelectorAll(s)];
+    function gross(e){return e.base+e.allowance+(e.overtime*650)}
+    function deductions(e){return e.tax+e.sss+e.philhealth+e.pagibig}
+    function net(e){return gross(e)-deductions(e)}
+    function totals(){return employees.reduce((a,e)=>({gross:a.gross+gross(e),ded:a.ded+deductions(e),net:a.net+net(e)}),{gross:0,ded:0,net:0})}
+    function pending(){return approvals.filter(a=>!["Approved","Returned"].includes(a.status)).length+employees.filter(e=>e.status==="For Review").length}
+    function notify(msg){const t=qs("#toast");t.textContent=msg;t.classList.add("show");setTimeout(()=>t.classList.remove("show"),2000)}
+    function addActivity(msg){activity.unshift(msg);renderActivity()}
+    function statusClass(s){return ["Approved","Active","Released","Published","Paid","Uploaded"].includes(s)?"ok":["Draft","Pending","Review","For Review","File Generated","Ready for Bank"].includes(s)?"warn":"bad"}
+    function renderMetrics(){const t=totals();qs("#metricEmployees").textContent=employees.length;qs("#metricGross").textContent=money.format(t.gross);qs("#metricNet").textContent=money.format(t.net);qs("#metricDeductions").textContent=money.format(t.ded);qs("#metricPending").textContent=pending();qs("#metricBank").textContent=bankBatch.status;qs("#heroStatus").textContent=run.status;qs("#heroNet").textContent=money.format(t.net);qs("#heroPeriod").textContent=run.period.replace(", 2026","")}
+    function renderTrial(){
+      const access={Admin:"Full",HR:"Employee + attendance",Finance:"Payroll + bank file",Employee:"Self-service"};
+      qs("#payrollActiveRole").textContent=activeRole;
+      qs("#payrollTrialPeriod").textContent=run.period.replace(", 2026","");
+      qs("#payrollTrialAccess").textContent=access[activeRole]||"Limited";
+      qs("#payrollSavedState").textContent="Saved";
+      qsa("[data-role]").forEach(button=>button.classList.toggle("active",button.textContent.trim()===activeRole));
+    }
+    function renderModules(){const m=meta[active];qs("#moduleTitle").textContent=m.title;qs("#moduleDesc").textContent=m.desc;qs("#screenTitle").textContent=portal==="employee"?"Employee Payroll Portal":m.title;qs("#screenSub").textContent=portal==="employee"?"Employee view for payslips, payroll status, and personal deductions.":m.desc;qs("#moduleCards").innerHTML=m.cards.map((c,i)=>`<article class="module-card ${i===0?"active":""}" data-card="${i}"><strong>${c[0]}</strong><p>${c[1]}</p></article>`).join("");qsa("[data-module]").forEach(b=>b.classList.toggle("active",b.dataset.module===active));qsa("[data-card]").forEach(c=>c.onclick=()=>handleCard(Number(c.dataset.card)))}
+    function renderMain(){if(portal==="employee")return renderEmployeePortal();if(active==="dashboard")return renderDashboard();if(active==="run")return renderRun();if(active==="employees")return renderEmployees();if(active==="timesheets")return renderTimesheets();if(active==="deductions")return renderDeductions();if(active==="approvals")return renderApprovals();if(active==="banking")return renderBanking();if(active==="payslips")return renderPayslips();if(active==="reports")return renderReports();return renderSettings()}
+    function renderDashboard(){const t=totals();qs("#mainPanel").innerHTML=`<section class="two"><article class="panel pad"><div class="section-head"><div><span class="eyebrow">Pay Run</span><h2>${run.period}</h2><p>Current payroll run status with live totals, bank status, and blockers.</p></div><span class="status ${statusClass(run.status)}">${run.status}</span></div><div class="three"><div class="mini" data-open="run"><strong>${money.format(t.gross)}</strong><span>Gross payroll</span></div><div class="mini" data-open="deductions"><strong>${money.format(t.ded)}</strong><span>Total deductions</span></div><div class="mini" data-open="banking"><strong>${bankBatch.status}</strong><span>Bank payout</span></div></div><div class="card-actions"><button class="btn primary" id="dashCalculate">Calculate Payroll</button><button class="btn" id="dashApprovals">Review Approvals</button><button class="btn dark" id="dashBank">Bank Payout</button></div></article><article class="panel pad"><span class="eyebrow">Payroll Flow</span><h2>Demo checklist</h2><div class="activity"><div class="event"><strong>1. Validate attendance</strong><span>Approve hours and overtime.</span></div><div class="event"><strong>2. Review deductions</strong><span>Confirm tax and statutory contributions.</span></div><div class="event"><strong>3. Generate bank file</strong><span>Download a bank-ready payroll file for upload.</span></div><div class="event"><strong>4. Publish payslips</strong><span>Release employee payslips after payout confirmation.</span></div></div></article></section>`;qs("#dashCalculate").onclick=calculatePayroll;qs("#dashApprovals").onclick=()=>switchModule("approvals");qs("#dashBank").onclick=()=>switchModule("banking");bindMini()}
+    function payrollTable(rows=employees){return `<div class="table-wrap"><table><thead><tr><th>Employee</th><th>Dept</th><th>Gross</th><th>Deductions</th><th>Net</th><th>Status</th><th>Actions</th></tr></thead><tbody>${rows.map(e=>`<tr><td><strong>${e.name}</strong><br><span style="color:var(--muted)">${e.role}</span></td><td>${e.dept}</td><td>${money.format(gross(e))}</td><td>${money.format(deductions(e))}</td><td><strong>${money.format(net(e))}</strong></td><td><span class="status ${statusClass(e.status)}">${e.status}</span></td><td><button class="btn small" data-select="${e.id}">Preview</button><button class="btn small good" data-clear="${e.id}">Approve</button></td></tr>`).join("")}</tbody></table></div>`}
+    function renderRun(){qs("#mainPanel").innerHTML=`<article class="panel pad"><div class="section-head"><div><span class="eyebrow">Payroll Run</span><h2>${run.id}</h2><p>Finance can calculate, approve, release, and publish from this screen.</p></div><span class="status ${statusClass(run.status)}">${run.status}</span></div><div class="card-actions"><button class="btn primary" id="calculateRun">Calculate Payroll</button><button class="btn good" id="approveRun">Approve Run</button><button class="btn dark" id="releaseRun">Release Payroll</button><button class="btn" id="publishRun">Publish Payslips</button></div><div style="margin-top:14px">${payrollTable()}</div></article>`;bindEmployeeButtons();qs("#calculateRun").onclick=calculatePayroll;qs("#approveRun").onclick=approveRun;qs("#releaseRun").onclick=releaseRun;qs("#publishRun").onclick=publishPayslips}
+    function renderEmployees(){qs("#mainPanel").innerHTML=`<article class="panel pad"><div class="section-head"><div><span class="eyebrow">Employees</span><h2>Compensation records</h2><p>Clickable employee payroll profiles with bank and status actions.</p></div><button class="btn" id="addEmployee">Add Employee</button></div><div class="toolbar"><div class="field"><label>Search</label><input id="employeeSearch" placeholder="Search employee or department"></div><div class="field"><label>Department</label><select id="deptFilter"><option>All</option><option>HR</option><option>Finance</option><option>Operations</option><option>Support</option></select></div><div class="field"><label>Status</label><select id="statusFilter"><option>All</option><option>Active</option><option>For Review</option></select></div></div><div class="employee-grid" id="employeeGrid"></div></article>`;qs("#employeeSearch").oninput=renderEmployeeGrid;qs("#deptFilter").onchange=renderEmployeeGrid;qs("#statusFilter").onchange=renderEmployeeGrid;qs("#addEmployee").onclick=()=>{employees.push({id:`EMP-${String(employees.length+1).padStart(3,"0")}`,name:"New Payroll Employee",role:"Operations Staff",dept:"Operations",base:36000,allowance:3000,hours:88,overtime:0,tax:3500,sss:1200,philhealth:650,pagibig:200,status:"For Review",bank:"Bank pending"});addActivity("New payroll employee added");renderAll()};renderEmployeeGrid()}
+    function renderEmployeeGrid(){const q=(qs("#employeeSearch")?.value||"").toLowerCase(),dept=qs("#deptFilter")?.value||"All",status=qs("#statusFilter")?.value||"All";const rows=employees.filter(e=>(dept==="All"||e.dept===dept)&&(status==="All"||e.status===status)&&[e.name,e.role,e.dept].join(" ").toLowerCase().includes(q));qs("#employeeGrid").innerHTML=rows.map(e=>`<article class="employee-card" data-open-employee="${e.id}"><strong>${e.name}</strong><span>${e.id} · ${e.role}</span><p>${e.dept} · ${e.bank}</p><span class="status ${statusClass(e.status)}">${e.status}</span><div class="card-actions"><button class="btn small" data-select="${e.id}">Payslip</button><button class="btn small good" data-clear="${e.id}">Approve</button></div></article>`).join("")||"<p>No employees match the filter.</p>";bindEmployeeButtons();qsa("[data-open-employee]").forEach(c=>c.onclick=e=>{if(e.target.closest("button"))return;selectedId=c.dataset.openEmployee;renderPayslipPreview();addActivity("Employee payroll profile opened");notify("Employee profile opened")})}
+    function renderTimesheets(){qs("#mainPanel").innerHTML=`<article class="panel pad"><div class="section-head"><div><span class="eyebrow">Timesheets</span><h2>Attendance approval</h2><p>Approve hours and overtime before payroll release.</p></div><button class="btn good" id="approveTimesheets">Approve All Timesheets</button></div><div class="table-wrap"><table><thead><tr><th>Employee</th><th>Regular Hours</th><th>Overtime</th><th>Status</th><th>Action</th></tr></thead><tbody>${employees.map(e=>`<tr><td><strong>${e.name}</strong></td><td>${e.hours}</td><td>${e.overtime}</td><td><span class="status ${statusClass(e.status)}">${e.status}</span></td><td><button class="btn small good" data-clear="${e.id}">Approve</button></td></tr>`).join("")}</tbody></table></div></article>`;qs("#approveTimesheets").onclick=approveAll;bindEmployeeButtons()}
+    function renderDeductions(){qs("#mainPanel").innerHTML=`<article class="panel pad"><div class="section-head"><div><span class="eyebrow">Deductions</span><h2>Tax and contribution matrix</h2><p>Review government contributions, tax, and employee deductions.</p></div><button class="btn" id="addDeduction">Add Deduction</button></div><div class="table-wrap"><table><thead><tr><th>Employee</th><th>Tax</th><th>SSS</th><th>PhilHealth</th><th>Pag-IBIG</th><th>Total</th></tr></thead><tbody>${employees.map(e=>`<tr><td><strong>${e.name}</strong></td><td>${money.format(e.tax)}</td><td>${money.format(e.sss)}</td><td>${money.format(e.philhealth)}</td><td>${money.format(e.pagibig)}</td><td><strong>${money.format(deductions(e))}</strong></td></tr>`).join("")}</tbody></table></div></article>`;qs("#addDeduction").onclick=()=>{const e=employees.find(x=>x.id===selectedId)||employees[0];e.tax+=500;addActivity(`Tax adjustment added for ${e.name}`);renderAll();notify("Deduction added")}}
+    function renderApprovals(){qs("#mainPanel").innerHTML=`<article class="panel pad"><div class="section-head"><div><span class="eyebrow">Approvals</span><h2>Payroll approval queue</h2><p>HR and finance can approve or return payroll blockers.</p></div><button class="btn good" id="approveAllQueue">Approve All</button></div><div class="table-wrap"><table><thead><tr><th>Reference</th><th>Type</th><th>Owner</th><th>Status</th><th>Actions</th></tr></thead><tbody>${approvals.map(a=>`<tr><td><strong>${a.id}</strong></td><td>${a.type}</td><td>${a.owner}</td><td><span class="status ${statusClass(a.status)}">${a.status}</span></td><td><button class="btn small good" data-approve="${a.id}">Approve</button><button class="btn small bad" data-return="${a.id}">Return</button></td></tr>`).join("")}</tbody></table></div></article>`;qs("#approveAllQueue").onclick=()=>{approvals.forEach(a=>a.status="Approved");addActivity("All payroll approvals cleared");renderAll();notify("Approvals cleared")};qsa("[data-approve]").forEach(b=>b.onclick=()=>updateApproval(b.dataset.approve,"Approved"));qsa("[data-return]").forEach(b=>b.onclick=()=>updateApproval(b.dataset.return,"Returned"))}
+    function bankRows(){return employees.map(e=>({name:e.name,bank:e.bank,amount:net(e),status:bankBatch.status==="Paid"?"Paid":bankBatch.status==="Uploaded"?"Uploaded":bankBatch.status==="Failed"?"Failed":"Ready"}))}
+    function renderBanking(){const t=totals();qs("#mainPanel").innerHTML=`<article class="panel pad"><div class="section-head"><div><span class="eyebrow">Bank Payouts</span><h2>Bank file release center</h2><p>Demo the safer production flow: generate a bank-ready payroll file, finance uploads it to the bank portal, then records payout confirmation.</p></div><span class="status ${statusClass(bankBatch.status)}">${bankBatch.status}</span></div><div class="bank-flow"><div class="bank-step"><strong>1. Payroll approved</strong><span>${run.approved?"Ready for payout":"Needs approval"}</span></div><div class="bank-step"><strong>2. Bank file</strong><span>${bankBatch.reference==="-"?"Not generated":bankBatch.reference}</span></div><div class="bank-step"><strong>3. Bank portal</strong><span>${bankBatch.bank}</span></div><div class="bank-step"><strong>4. Confirmation</strong><span>${bankBatch.lastSync}</span></div></div><div class="card-actions"><button class="btn" id="generateBankFile">Generate Bank File</button><button class="btn good" id="makerApprove">Maker Approve</button><button class="btn dark" id="markUploaded">Mark Uploaded</button><button class="btn primary" id="confirmPaid">Confirm Paid</button></div><div style="margin-top:14px" class="table-wrap"><table><thead><tr><th>Employee</th><th>Bank Account</th><th>Net Pay</th><th>Payout Status</th></tr></thead><tbody>${bankRows().map(row=>`<tr><td><strong>${row.name}</strong></td><td>${row.bank}</td><td>${money.format(row.amount)}</td><td><span class="status ${statusClass(row.status)}">${row.status}</span></td></tr>`).join("")}</tbody><tfoot><tr><td colspan="2"><strong>Total payout</strong></td><td colspan="2"><strong>${money.format(t.net)}</strong></td></tr></tfoot></table></div></article>`;qs("#generateBankFile").onclick=generateBankFile;qs("#makerApprove").onclick=makerApprove;qs("#markUploaded").onclick=markUploaded;qs("#confirmPaid").onclick=confirmPaid}
+    function renderPayslips(){qs("#mainPanel").innerHTML=`<article class="panel pad"><div class="section-head"><div><span class="eyebrow">Payslips</span><h2>Payslip publishing</h2><p>Select, preview, publish, or simulate download of employee payslips.</p></div><button class="btn primary" id="publishPayslips">Publish All</button></div>${payrollTable()}</article>`;bindEmployeeButtons();qs("#publishPayslips").onclick=publishPayslips}
+    function reportText(){const t=totals();return `PAYROLL SYSTEM REPORT\nGenerated: ${new Date().toLocaleString()}\n\nPay period: ${run.period}\nPayroll run: ${run.id}\nStatus: ${run.status}\nEmployees paid: ${employees.length}\nGross payroll: ${money.format(t.gross)}\nTotal deductions: ${money.format(t.ded)}\nNet payroll: ${money.format(t.net)}\nPending blockers: ${pending()}\n\nBank payout:\nBank format: ${bankBatch.bank}\nMethod: ${bankBatch.method}\nBatch: ${bankBatch.id}\nReference: ${bankBatch.reference}\nStatus: ${bankBatch.status}\nLast confirmation: ${bankBatch.lastSync}\n\nDepartment costing:\n${["HR","Finance","Operations","Support"].map(d=>`- ${d}: ${money.format(employees.filter(e=>e.dept===d).reduce((s,e)=>s+net(e),0))}`).join("\n")}\n\nRecommended next steps:\n- Clear approval queue before payroll release.\n- Generate the bank-ready payroll file for finance upload.\n- Record bank portal confirmation after payout is processed.\n- Publish payslips and archive the payroll audit trail.`}
+    function renderReports(){qs("#mainPanel").innerHTML=`<article class="panel pad"><div class="section-head"><div><span class="eyebrow">Reports</span><h2>Payroll management report</h2><p>Exportable static payroll snapshot.</p></div><button class="btn primary" id="downloadReport">Download Report</button></div><pre class="report">${reportText()}</pre></article>`;qs("#downloadReport").onclick=downloadReport}
+    function renderSettings(){qs("#mainPanel").innerHTML=`<article class="panel pad"><div class="section-head"><div><span class="eyebrow">Settings</span><h2>Payroll controls</h2><p>Configure dates, bank file format, and visibility for the demo pay period.</p></div></div><form class="two" id="settingsForm"><div class="field"><label>Cutoff date</label><input name="cutoff" type="date" value="${run.cutoff}"></div><div class="field"><label>Release date</label><input name="release" type="date" value="${run.release}"></div><div class="field"><label>Pay period label</label><input name="period" value="${run.period}"></div><div class="field"><label>Bank file format</label><select name="bank"><option>BDO Payroll File</option><option>BPI BizLink File</option><option>Metrobank Payroll File</option><option>UnionBank Payroll File</option><option>Security Bank Payroll File</option></select></div><div class="field"><label>Payslip visibility</label><select name="published"><option value="false">Hidden until published</option><option value="true" ${run.published?"selected":""}>Visible to employees</option></select></div><button class="btn primary" type="submit">Save Settings</button></form></article>`;qs("#settingsForm").onsubmit=e=>{e.preventDefault();const d=Object.fromEntries(new FormData(e.currentTarget).entries());run.cutoff=d.cutoff;run.release=d.release;run.period=d.period;run.published=d.published==="true";bankBatch.bank=d.bank;bankBatch.method="Bank file upload";addActivity("Payroll and bank file settings saved");renderAll();notify("Settings saved")}}
+    function renderEmployeePortal(){const e=employees.find(x=>x.id===selectedId)||employees[0];qs("#mainPanel").innerHTML=`<article class="panel pad"><div class="section-head"><div><span class="eyebrow">Employee Portal</span><h2>Welcome, ${e.name}</h2><p>Employee-facing payroll view for payslip status, deductions, and bank release details.</p></div><button class="btn" id="backAdmin">Back to Admin</button></div><div class="three"><div class="mini"><strong>${run.published?"Available":"Not yet published"}</strong><span>Payslip status</span></div><div class="mini"><strong>${money.format(net(e))}</strong><span>Expected net pay</span></div><div class="mini"><strong>${run.release}</strong><span>Release date</span></div></div><div style="margin-top:14px" class="payslip">${payslipHtml(e)}</div></article>`;qs("#backAdmin").onclick=()=>{portal="admin";renderAll()}}
+    function payslipHtml(e){return `<header><div><h3>${e.name}</h3><span>${e.id} · ${e.role}</span></div><span class="status ${run.published?"ok":"warn"}">${run.published?"Published":"Draft"}</span></header><div class="split-row"><span>Base salary</span><strong>${money.format(e.base)}</strong></div><div class="split-row"><span>Allowance</span><strong>${money.format(e.allowance)}</strong></div><div class="split-row"><span>Overtime</span><strong>${money.format(e.overtime*650)}</strong></div><div class="split-row"><span>Tax and contributions</span><strong>${money.format(deductions(e))}</strong></div><div class="split-row total"><span>Net pay</span><strong>${money.format(net(e))}</strong></div><div class="card-actions"><button class="btn small" id="simulateDownload">Download PDF</button><button class="btn small" id="sendPayslip">Send to Email</button></div>`}
+    function renderPayslipPreview(){const e=employees.find(x=>x.id===selectedId)||employees[0];qs("#payslipPreview").innerHTML=`<div class="payslip">${payslipHtml(e)}</div>`;qs("#simulateDownload").onclick=()=>{addActivity(`Payslip PDF downloaded for ${e.name}`);notify("Payslip download simulated")};qs("#sendPayslip").onclick=()=>{addActivity(`Payslip email sent to ${e.name}`);notify("Payslip email simulated")}}
+    function renderActivity(){qs("#activityList").innerHTML=activity.slice(0,7).map(item=>`<div class="event"><strong>${item}</strong><span>${new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})}</span></div>`).join("")}
+    function bindEmployeeButtons(){qsa("[data-select]").forEach(b=>b.onclick=()=>{selectedId=b.dataset.select;renderPayslipPreview();addActivity("Payslip preview selected");notify("Payslip preview updated")});qsa("[data-clear]").forEach(b=>b.onclick=()=>{const e=employees.find(x=>x.id===b.dataset.clear);e.status="Active";addActivity(`${e.name} approved for payroll`);renderAll();notify("Employee approved")})}
+    function bindMini(){qsa("[data-open]").forEach(c=>c.onclick=()=>switchModule(c.dataset.open))}
+    function calculatePayroll(){run.status="Calculated";addActivity("Payroll calculated");renderAll();notify("Payroll calculated")}
+    function approveRun(){run.approved=true;run.status="Approved";approvals.forEach(a=>a.status="Approved");employees.forEach(e=>e.status="Active");addActivity("Payroll run approved");renderAll();notify("Run approved")}
+    function releaseRun(){if(!run.approved){notify("Approve the run first");return}bankBatch.status="Ready for Bank";run.status="Ready for Bank";addActivity("Payroll approved for bank payout");switchModule("banking");notify("Open bank payout center")}
+    function generateBankFile(){if(!run.approved){notify("Approve payroll first");return}bankBatch.status="File Generated";bankBatch.reference=`FILE-${new Date().getFullYear()}-${Math.floor(10000+Math.random()*89999)}`;bankBatch.lastSync="Awaiting bank portal upload";addActivity(`${bankBatch.bank} payout file generated`);renderAll();notify("Bank file generated")}
+    function makerApprove(){if(bankBatch.status==="Not Prepared"){generateBankFile();return}bankBatch.status="Maker Approved";addActivity(`${bankBatch.maker} approved bank batch`);renderAll();notify("Maker approval complete")}
+    function markUploaded(){if(!run.approved){notify("Approve payroll first");return}if(bankBatch.status==="Not Prepared")generateBankFile();bankBatch.status="Uploaded";bankBatch.lastSync=new Date().toLocaleString();run.status="Bank Portal Uploaded";addActivity(`Payroll file marked uploaded to ${bankBatch.bank}`);renderAll();notify("Bank upload recorded")}
+    function confirmPaid(){if(bankBatch.status==="Uploaded"||bankBatch.status==="Maker Approved"||bankBatch.status==="File Generated"||bankBatch.status==="Ready for Bank"){bankBatch.status="Paid";run.status="Released";bankBatch.lastSync=new Date().toLocaleString();addActivity("Bank payout confirmed as paid");renderAll();notify("Payout confirmed")}else{bankBatch.lastSync=new Date().toLocaleString();addActivity("Bank confirmation checked");renderAll();notify("Bank confirmation checked")}}
+    function publishPayslips(){run.published=true;if(run.status==="Approved")run.status="Published";addActivity("Payslips published to employee portal");renderAll();notify("Payslips published")}
+    function approveAll(){employees.forEach(e=>e.status="Active");approvals.filter(a=>a.type==="Timesheet").forEach(a=>a.status="Approved");addActivity("All timesheets approved");renderAll();notify("Timesheets approved")}
+    function updateApproval(id,status){const item=approvals.find(a=>a.id===id);if(!item)return;item.status=status;addActivity(`${item.id} ${status.toLowerCase()}`);renderAll();notify(`Approval ${status.toLowerCase()}`)}
+    function handleCard(i){const actions={dashboard:["run","timesheets","banking","reports"],run:["run","run","banking","payslips"],employees:["employees","employees","payslips","employees"],timesheets:["timesheets","timesheets","approvals","run"],deductions:["deductions","deductions","reports","run"],approvals:["approvals","approvals","approvals","run"],banking:["banking","banking","banking","payslips"],payslips:["payslips","payslips","payslips","employees"],reports:["reports","reports","banking","reports"],settings:["settings","settings","settings","settings"]};const target=(actions[active]||[])[i]||active;if(active==="run"&&i===1)return approveRun();if(active==="run"&&i===2)return releaseRun();if(active==="run"&&i===3)return publishPayslips();if(active==="timesheets"&&i===1)return approveAll();if(active==="approvals"&&i===1){approvals.forEach(a=>a.status="Approved");addActivity("All approvals cleared from module card");return renderAll()}if(active==="banking"&&i===0)return generateBankFile();if(active==="banking"&&i===1)return markUploaded();if(active==="banking"&&i===2)return confirmPaid();if(active==="banking"&&i===3)return publishPayslips();if(active==="payslips"&&i===1)return publishPayslips();if(active==="employees"&&i===3){portal="employee";return renderAll()}switchModule(target)}
+    function switchModule(module){active=module;portal="admin";addActivity(`${meta[module].title} opened`);renderAll()}
+    function setTrialRole(role){
+      activeRole=role;
+      if(role==="Employee"){
+        portal="employee";
+        active="payslips";
+        selectedId="EMP-001";
+      }else{
+        portal="admin";
+        active=role==="HR"?"employees":role==="Finance"?"run":"dashboard";
+      }
+      activity.unshift(`${role} trial access opened`);
+      renderAll();
+      notify(`${role} view opened`);
+    }
+    function resetTrial(){
+      restoreState(JSON.parse(JSON.stringify(defaultState)));
+      localStorage.removeItem(storageKey);
+      renderAll();
+      notify("Payroll trial reset");
+    }
+    function exportTrialState(){
+      const lines=[
+        "PAYROLL SYSTEM TRIAL STATE",
+        `Generated: ${new Date().toLocaleString()}`,
+        `Active role: ${activeRole}`,
+        `Active module: ${active}`,
+        "",
+        reportText(),
+        "",
+        "Employee records:",
+        ...employees.map(e=>`- ${e.id} | ${e.name} | ${e.dept} | ${e.status} | Net ${money.format(net(e))}`),
+        "",
+        "Approval queue:",
+        ...approvals.map(a=>`- ${a.id} | ${a.type} | ${a.owner} | ${a.status}`),
+        "",
+        "Audit trail:",
+        ...activity.slice(0,14).map(item=>`- ${item}`)
+      ];
+      const blob=new Blob([lines.join("\n")],{type:"text/plain"}),url=URL.createObjectURL(blob),a=document.createElement("a");
+      a.href=url;
+      a.download="payroll-trial-state.txt";
+      a.click();
+      URL.revokeObjectURL(url);
+      addActivity("Payroll trial state exported");
+      notify("Trial state exported");
+    }
+    function renderAll(){renderMetrics();renderModules();renderMain();renderPayslipPreview();renderActivity();renderTrial();saveTrialState()}
+    function downloadReport(){const blob=new Blob([reportText()],{type:"text/plain"}),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download="payroll-system-report.txt";a.click();URL.revokeObjectURL(url);addActivity("Payroll report exported");notify("Report exported")}
+    qsa("[data-module]").forEach(b=>b.onclick=()=>switchModule(b.dataset.module));
+    qsa("[data-role]").forEach(b=>b.onclick=()=>setTrialRole(b.textContent.trim()));
+    qs("[data-trial-run]").onclick=()=>switchModule("run");
+    qs("[data-trial-approvals]").onclick=()=>switchModule("approvals");
+    qs("[data-trial-employee]").onclick=()=>setTrialRole("Employee");
+    qs("[data-trial-export]").onclick=exportTrialState;
+    qs("[data-trial-reset]").onclick=resetTrial;
+    qs("#togglePortal").onclick=()=>{portal=portal==="admin"?"employee":"admin";renderAll();notify(portal==="admin"?"Admin view opened":"Employee portal opened")};
+    qs("#loadScenario").onclick=()=>{approvals.unshift({id:`ADJ-${Math.floor(3000+Math.random()*6000)}`,type:"Overtime Adjustment",owner:"Jessa Lim",status:"Pending"});employees[4].overtime+=2;run.status="Draft";addActivity("Demo payroll scenario loaded");renderAll();notify("Scenario loaded")};
+    qs("#exportReport").onclick=downloadReport;
+    renderAll();
+  </script>
+</body>
+</html>

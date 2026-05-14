@@ -281,6 +281,33 @@ tbody td.amt{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:50
 .payroll-value{font-family:'IBM Plex Mono',monospace;font-size:20px;font-weight:600;color:var(--text-primary)}
 .payroll-sub{font-size:11px;color:var(--text-tertiary);margin-top:3px}
 .live-stamp{font-size:11px;color:var(--text-tertiary);font-family:'IBM Plex Mono',monospace}
+.migration-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(360px,.9fr);border-bottom:1px solid var(--border)}
+.migration-panel{padding:16px 20px;border-right:1px solid var(--border)}
+.migration-panel:last-child{border-right:none}
+.migration-card-grid{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--border)}
+.migration-card{padding:16px 20px;border-right:1px solid var(--border);background:var(--bg)}
+.migration-card:last-child{border-right:none}
+.migration-card span{display:block;font-size:10px;font-weight:600;color:var(--text-secondary);letter-spacing:.06em;text-transform:uppercase;margin-bottom:7px}
+.migration-card strong{display:block;font-family:'IBM Plex Mono',monospace;font-size:20px;color:var(--text-primary)}
+.migration-card small{display:block;margin-top:3px;color:var(--text-tertiary)}
+.import-drop{border:1px dashed var(--border-strong);background:var(--surface);padding:18px;display:grid;gap:10px;margin-top:12px}
+.import-drop strong{font-size:13px}.import-drop p{font-size:12px;color:var(--text-secondary);line-height:1.5}
+.mapping-list{display:grid;gap:8px;margin-top:12px}
+.mapping-row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center;border:1px solid var(--border);background:var(--bg);padding:8px}
+.mapping-row span{font-size:12px}.mapping-row .mono{font-family:'IBM Plex Mono',monospace;color:var(--text-secondary)}
+.migration-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.migration-log{display:grid;gap:8px;margin-top:12px}
+.migration-log-item{border:1px solid var(--border);background:var(--bg);padding:9px 10px}
+.migration-log-item strong,.migration-log-item span{display:block}
+.migration-log-item strong{font-size:12px}.migration-log-item span{margin-top:2px;font-size:11px;color:var(--text-secondary)}
+.import-preview{margin-top:12px;border:1px solid var(--border);background:var(--bg);min-height:96px}
+.import-preview .empty-state{padding:28px 18px}
+.import-preview table{min-width:640px}
+.import-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.modal-overlay{position:fixed;inset:0;z-index:150;background:rgba(15,23,42,.46);display:none;align-items:center;justify-content:center;padding:24px}
+.modal-overlay.open{display:flex}
+.migration-modal{width:min(1120px,calc(100vw - 48px));max-height:calc(100vh - 48px);overflow:auto;background:var(--bg);border:1px solid var(--border-strong);box-shadow:0 24px 70px rgba(15,23,42,.28)}
+.migration-modal .page-header{position:sticky;top:0;background:var(--bg);z-index:2}
 .toast{position:fixed;right:18px;bottom:18px;z-index:200;background:var(--sidebar-bg);color:var(--sidebar-text);border:1px solid var(--border-strong);padding:10px 12px;font-size:12px;box-shadow:0 12px 30px rgba(0,0,0,.18);opacity:0;transform:translateY(8px);pointer-events:none;transition:opacity .18s,transform .18s}
 .toast.show{opacity:1;transform:translateY(0)}
 
@@ -322,7 +349,7 @@ body.dark .login-right{background:var(--bg)}
 body.dark .login-demo-note,body.dark .lm-tag,body.dark .tag{background:var(--surface);border-color:var(--border-strong)}
 body.dark #coa-list .sub-header{background:var(--bg)!important}
 body.dark .badge-delivered{color:var(--status-approved-text);background:var(--status-approved-bg);border-color:#166534}
-@media(max-width:1280px){:root{--sidebar-w:200px}.kpi-grid{grid-template-columns:repeat(3,1fr)}.cf-grid{grid-template-columns:repeat(2,1fr)}.payroll-summary{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:1280px){:root{--sidebar-w:200px}.kpi-grid{grid-template-columns:repeat(3,1fr)}.cf-grid{grid-template-columns:repeat(2,1fr)}.payroll-summary,.migration-card-grid{grid-template-columns:repeat(2,1fr)}.migration-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -476,6 +503,7 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
       <div class="topbar-spacer"></div>
       <div class="topbar-meta">
         <div class="topbar-badge"><span class="dot"></span> 5 Alerts Active</div>
+        <button class="hub-link" onclick="openMigrationModal()" type="button">Import / Export</button>
         <a class="hub-link" href="../index.html#catalog">Demo Hub</a>
         <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark mode"><span class="knob"></span><span id="theme-label">Light</span></button>
         <div class="topbar-clock" id="tb-clock"></div>
@@ -487,11 +515,11 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
       <div class="module active" id="mod-dashboard">
         <div class="page-header">
           <div><div class="page-title">Executive Dashboard</div><div class="page-sub">Operational overview &mdash; all branches &mdash; <span class="live-dot">Live</span></div></div>
-          <div class="page-actions"><button class="btn btn-sm">Export Report</button><button class="btn btn-sm btn-primary">Refresh</button></div>
+          <div class="page-actions"><button class="btn btn-sm" onclick="openMigrationModal('inventory')">Import</button><button class="btn btn-sm" onclick="exportCsv('inventory')">Export</button><button class="btn btn-sm btn-primary">Refresh</button></div>
         </div>
         <div class="kpi-grid">
-          <div class="kpi-block"><div class="kpi-label">Total Inventory</div><div class="kpi-value">1,248</div><div class="kpi-sub"><span class="kpi-delta up">&#9650; 34</span> vs last week</div></div>
-          <div class="kpi-block"><div class="kpi-label">Units Sold (MTD)</div><div class="kpi-value">214</div><div class="kpi-sub"><span class="kpi-delta up">&#9650; 19</span> vs last month</div></div>
+          <div class="kpi-block"><div class="kpi-label">Total Inventory</div><div class="kpi-value" id="dash-inventory-total">1,248</div><div class="kpi-sub"><span class="kpi-delta up">&#9650; 34</span> vs last week</div></div>
+          <div class="kpi-block"><div class="kpi-label">Units Sold (MTD)</div><div class="kpi-value" id="dash-sold-total">214</div><div class="kpi-sub"><span class="kpi-delta up">&#9650; 19</span> vs last month</div></div>
           <div class="kpi-block"><div class="kpi-label">Monthly Revenue</div><div class="kpi-value" style="font-size:20px">&#8369;18.4M</div><div class="kpi-sub"><span class="kpi-delta up">&#9650; 8.2%</span> vs May</div></div>
           <div class="kpi-block"><div class="kpi-label">Pending Receivables</div><div class="kpi-value" style="color:var(--yellow)">&#8369;4.1M</div><div class="kpi-sub"><span class="kpi-delta warn">&#9650; 12</span> new this week</div></div>
           <div class="kpi-block"><div class="kpi-label">Overdue Payables</div><div class="kpi-value" style="color:var(--red)">&#8369;890K</div><div class="kpi-sub"><span class="kpi-delta down">3 invoices</span> past due</div></div>
@@ -521,7 +549,7 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
       <div class="module" id="mod-inventory">
         <div class="page-header">
           <div><div class="page-title">Inventory Management</div><div class="page-sub">Serialized motor units &mdash; all branches</div></div>
-          <div class="page-actions"><button class="btn btn-sm">Export</button><button class="btn btn-sm btn-primary">+ Add Unit</button></div>
+          <div class="page-actions"><button class="btn btn-sm" onclick="openMigrationModal('inventory')">Import</button><button class="btn btn-sm" onclick="exportCsv('inventory')">Export</button><button class="btn btn-sm btn-primary">+ Add Unit</button></div>
         </div>
         <div class="ctrl-bar">
           <div class="search-wrap"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10 10l3.5 3.5"/></svg><input type="search" id="inv-q" placeholder="Search unit, engine, chassis, model..." oninput="filterInv()"></div>
@@ -545,7 +573,7 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
       <div class="module" id="mod-sales">
         <div class="page-header">
           <div><div class="page-title">Sales Orders</div><div class="page-sub">All customer purchase transactions</div></div>
-          <div class="page-actions"><button class="btn btn-sm">Export</button><button class="btn btn-sm btn-primary">+ New Order</button></div>
+          <div class="page-actions"><button class="btn btn-sm" onclick="openMigrationModal('sales')">Import</button><button class="btn btn-sm" onclick="exportCsv('sales')">Export</button><button class="btn btn-sm btn-primary">+ New Order</button></div>
         </div>
         <div class="ctrl-bar">
           <div class="search-wrap"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10 10l3.5 3.5"/></svg><input type="search" id="so-q" placeholder="Search order, customer, model..." oninput="filterSO()"></div>
@@ -569,7 +597,7 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
       <div class="module" id="mod-receivables">
         <div class="page-header">
           <div><div class="page-title">Receivables</div><div class="page-sub">Installment accounts &amp; collection monitoring</div></div>
-          <div class="page-actions"><button class="btn btn-sm">Export</button><button class="btn btn-sm btn-primary">+ Record Payment</button></div>
+          <div class="page-actions"><button class="btn btn-sm" onclick="openMigrationModal('receivables')">Import</button><button class="btn btn-sm" onclick="exportCsv('receivables')">Export</button><button class="btn btn-sm btn-primary">+ Record Payment</button></div>
         </div>
         <div class="ctrl-bar">
           <div class="search-wrap"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10 10l3.5 3.5"/></svg><input type="search" id="ar-q" placeholder="Search account, customer, invoice..." oninput="filterAR()"></div>
@@ -592,7 +620,7 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
       <div class="module" id="mod-customers">
         <div class="page-header">
           <div><div class="page-title">Customer Records</div><div class="page-sub">All registered customers</div></div>
-          <div class="page-actions"><button class="btn btn-sm">Export</button><button class="btn btn-sm btn-primary">+ New Customer</button></div>
+          <div class="page-actions"><button class="btn btn-sm" onclick="openMigrationModal('customers')">Import</button><button class="btn btn-sm" onclick="exportCsv('customers')">Export</button><button class="btn btn-sm btn-primary">+ New Customer</button></div>
         </div>
         <div class="ctrl-bar">
           <div class="search-wrap"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10 10l3.5 3.5"/></svg><input type="search" id="cust-q" placeholder="Search name, ID, contact..." oninput="filterCust()"></div>
@@ -614,7 +642,7 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
       <div class="module" id="mod-purchases">
         <div class="page-header">
           <div><div class="page-title">Purchase Orders</div><div class="page-sub">Supplier orders &amp; delivery tracking</div></div>
-          <div class="page-actions"><button class="btn btn-sm">Export</button><button class="btn btn-sm btn-primary">+ New PO</button></div>
+          <div class="page-actions"><button class="btn btn-sm" onclick="openMigrationModal('purchases')">Import</button><button class="btn btn-sm" onclick="exportCsv('purchases')">Export</button><button class="btn btn-sm btn-primary">+ New PO</button></div>
         </div>
         <div class="ctrl-bar">
           <div class="search-wrap"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10 10l3.5 3.5"/></svg><input type="search" id="po-q" placeholder="Search PO, supplier, model..." oninput="filterPO()"></div>
@@ -637,7 +665,7 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
       <div class="module" id="mod-payables">
         <div class="page-header">
           <div><div class="page-title">Payables</div><div class="page-sub">Supplier invoices &amp; payment obligations</div></div>
-          <div class="page-actions"><button class="btn btn-sm">Export</button><button class="btn btn-sm btn-primary">+ Record Payment</button></div>
+          <div class="page-actions"><button class="btn btn-sm" onclick="openMigrationModal('payables')">Import</button><button class="btn btn-sm" onclick="exportCsv('payables')">Export</button><button class="btn btn-sm btn-primary">+ Record Payment</button></div>
         </div>
         <div class="ctrl-bar">
           <div class="search-wrap"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10 10l3.5 3.5"/></svg><input type="search" id="ap-q" placeholder="Search invoice, vendor..." oninput="filterAP()"></div>
@@ -659,7 +687,7 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
       <div class="module" id="mod-cashfund">
         <div class="page-header">
           <div><div class="page-title">Cash Fund Management</div><div class="page-sub">Petty cash &amp; operational fund per branch</div></div>
-          <div class="page-actions"><button class="btn btn-sm">Export</button><button class="btn btn-sm btn-primary">+ Fund Transfer</button></div>
+          <div class="page-actions"><button class="btn btn-sm" onclick="openMigrationModal('cashfund')">Import</button><button class="btn btn-sm" onclick="exportCsv('cashfund')">Export</button><button class="btn btn-sm btn-primary">+ Fund Transfer</button></div>
         </div>
         <div class="cf-grid" id="cf-grid"></div>
         <div class="section-header"><div class="section-title">Cash Fund Ledger — May 2026</div><button class="btn btn-sm">View Full History</button></div>
@@ -675,7 +703,7 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
       <div class="module" id="mod-banking">
         <div class="page-header">
           <div><div class="page-title">Banking</div><div class="page-sub">Bank accounts &amp; transaction reconciliation</div></div>
-          <div class="page-actions"><button class="btn btn-sm">Export</button><button class="btn btn-sm btn-primary">+ New Transaction</button></div>
+          <div class="page-actions"><button class="btn btn-sm" onclick="openMigrationModal('banking')">Import</button><button class="btn btn-sm" onclick="exportCsv('banking')">Export</button><button class="btn btn-sm btn-primary">+ New Transaction</button></div>
         </div>
         <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr)">
           <div class="kpi-block"><div class="kpi-label">BPI — Main Account</div><div class="kpi-value" style="font-size:20px">&#8369;12,480,500</div><div class="kpi-sub">Acct No. <span class="tag">1234-5678-90</span></div></div>
@@ -686,7 +714,7 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
         <div class="table-wrap">
           <table>
             <thead><tr><th>Date</th><th>Bank</th><th>Reference No.</th><th>Description</th><th>Debit (&#8369;)</th><th>Credit (&#8369;)</th><th>Running Balance</th><th>Type</th></tr></thead>
-            <tbody>
+            <tbody id="bank-tb">
               <tr><td class="mono dim">May 12</td><td>BPI</td><td class="mono">BPI-20260512-001</td><td>Collection — Installment accounts (batch)</td><td class="dim">—</td><td class="amt" style="color:var(--green)">184,500.00</td><td class="amt">12,480,500.00</td><td><span class="badge badge-approved">Credit</span></td></tr>
               <tr><td class="mono dim">May 12</td><td>BDO</td><td class="mono">BDO-20260512-001</td><td>Supplier payment — Honda Philippines (PO-2026-0091)</td><td class="amt" style="color:var(--red)">980,000.00</td><td class="dim">—</td><td class="amt">6,901,200.00</td><td><span class="badge badge-declined">Debit</span></td></tr>
               <tr><td class="mono dim">May 11</td><td>BPI</td><td class="mono">BPI-20260511-002</td><td>Cash sales deposit — Manila Main</td><td class="dim">—</td><td class="amt" style="color:var(--green)">357,800.00</td><td class="amt">12,296,000.00</td><td><span class="badge badge-approved">Credit</span></td></tr>
@@ -702,7 +730,7 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
       <div class="module" id="mod-gl">
         <div class="page-header">
           <div><div class="page-title">General Ledger</div><div class="page-sub">Journal entries &amp; chart of accounts</div></div>
-          <div class="page-actions"><button class="btn btn-sm">Export</button><button class="btn btn-sm btn-primary">+ Journal Entry</button></div>
+          <div class="page-actions"><button class="btn btn-sm" onclick="openMigrationModal('accounting')">Import</button><button class="btn btn-sm" onclick="exportCsv('accounting')">Export</button><button class="btn btn-sm btn-primary">+ Journal Entry</button></div>
         </div>
         <div class="ctrl-bar">
           <div class="search-wrap"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10 10l3.5 3.5"/></svg><input type="search" id="gl-q" placeholder="Search journal entry, account..." oninput="filterGL()"></div>
@@ -749,7 +777,7 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
       <div class="module" id="mod-timeexp">
         <div class="page-header">
           <div><div class="page-title">Time &amp; Expenses</div><div class="page-sub">Staff attendance &amp; expense reimbursements</div></div>
-          <div class="page-actions"><button class="btn btn-sm">Export</button><button class="btn btn-sm btn-primary">+ Submit Expense</button></div>
+          <div class="page-actions"><button class="btn btn-sm" onclick="openMigrationModal('timeexp')">Import</button><button class="btn btn-sm" onclick="exportCsv('timeexp')">Export</button><button class="btn btn-sm btn-primary">+ Submit Expense</button></div>
         </div>
         <div class="te-tabs">
           <div class="te-tab active" onclick="teTab('attendance',this)">Attendance Log</div>
@@ -786,7 +814,7 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
       <div class="module" id="mod-payroll">
         <div class="page-header">
           <div><div class="page-title">Payroll Management</div><div class="page-sub">Staff salary run, deductions, and payout monitoring &mdash; <span class="live-dot">Live</span></div></div>
-          <div class="page-actions"><button class="btn btn-sm" onclick="exportPayroll()">Export Payroll</button><button class="btn btn-sm" onclick="approvePayroll()">Approve Run</button><button class="btn btn-sm btn-primary" onclick="processPayroll()">Process Payout</button></div>
+          <div class="page-actions"><button class="btn btn-sm" onclick="openMigrationModal('payroll')">Import</button><button class="btn btn-sm" onclick="exportPayroll()">Export Payroll</button><button class="btn btn-sm" onclick="approvePayroll()">Approve Run</button><button class="btn btn-sm btn-primary" onclick="processPayroll()">Process Payout</button></div>
         </div>
         <div class="payroll-summary">
           <div class="payroll-card"><div class="payroll-label">Payroll Period</div><div class="payroll-value">May 1-15</div><div class="payroll-sub">Semi-monthly cycle</div></div>
@@ -816,7 +844,7 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
       <div class="module" id="mod-branches">
         <div class="page-header">
           <div><div class="page-title">Branch Directory</div><div class="page-sub">All NEXII BSM DEMO locations</div></div>
-          <div class="page-actions"><button class="btn btn-sm">Export</button><button class="btn btn-sm btn-primary">+ Add Branch</button></div>
+          <div class="page-actions"><button class="btn btn-sm" onclick="openMigrationModal('branches')">Import</button><button class="btn btn-sm" onclick="exportCsv('branches')">Export</button><button class="btn btn-sm btn-primary">+ Add Branch</button></div>
         </div>
         <div class="ctrl-bar">
           <div class="search-wrap"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10 10l3.5 3.5"/></svg><input type="search" id="branch-q" placeholder="Search branch, manager, region..." oninput="renderBranches()"></div>
@@ -831,6 +859,49 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
           </div>
         </div>
         <div class="table-footer"><span class="table-count" id="branch-count">0 branches</span></div>
+      </div>
+
+      <!-- ===== IMPORT / EXPORT MODAL ===== -->
+      <div class="modal-overlay" id="migration-modal-overlay" onclick="if(event.target===this)closeMigrationModal()">
+      <div class="migration-modal" role="dialog" aria-modal="true" aria-labelledby="migration-modal-title">
+        <div class="page-header">
+          <div><div class="page-title" id="migration-modal-title">Import / Export Center</div><div class="page-sub">Migrate old database files, validate mappings, and export BSM-ready records without leaving the current module</div></div>
+          <div class="page-actions"><button class="btn btn-sm" onclick="exportMigrationReport()">Export Migration Report</button><button class="btn btn-sm btn-primary" onclick="simulateImport()">Import Sample Data</button><button class="sp-close" onclick="closeMigrationModal()" title="Close">&times;</button></div>
+        </div>
+        <div class="migration-card-grid">
+          <div class="migration-card"><span>Imported Files</span><strong id="mig-files">0</strong><small>CSV, Excel, SQL dump, or legacy export</small></div>
+          <div class="migration-card"><span>Validated Records</span><strong id="mig-records">0</strong><small>Inventory, customers, suppliers, accounting</small></div>
+          <div class="migration-card"><span>Imported to System</span><strong id="mig-imported">0</strong><small>Visible in the live demo modules</small></div>
+          <div class="migration-card"><span>Export Packages</span><strong id="mig-exports">0</strong><small>Generated for review or backup</small></div>
+        </div>
+        <div class="migration-grid">
+          <section class="migration-panel">
+            <div class="sub-header">Import old database files <span class="live-dot">Demo Mode</span></div>
+            <div class="import-drop">
+              <strong id="migration-context-title">Upload or select legacy data</strong>
+              <p id="migration-context-copy">For production, this module can accept old CSV, Excel, SQL dump, accounting exports, inventory lists, customer files, and payroll records. In this demo, use the contextual import button to show the workflow safely.</p>
+              <input type="file" id="legacy-file" accept=".csv,.xlsx,.xls,.sql,.txt" onchange="previewLegacyFile(this)">
+              <div class="migration-actions">
+                <button class="btn btn-sm" onclick="loadContextSample()" id="migration-load-context">Load Current Module Sample</button>
+                <button class="btn btn-sm btn-primary" onclick="validateLegacyMapping()">Validate Mapping</button>
+              </div>
+            </div>
+            <div class="sub-header" style="margin-top:14px">Field Mapping Preview</div>
+            <div class="mapping-list" id="migration-mapping"></div>
+            <div class="sub-header" style="margin-top:14px">Imported Records Preview</div>
+            <div class="import-preview" id="migration-preview"></div>
+          </section>
+          <section class="migration-panel">
+            <div class="sub-header">Export and backup files</div>
+            <div class="migration-actions">
+              <button class="btn btn-sm btn-primary" onclick="exportCurrentModule()" id="migration-export-context">Export Current Module CSV</button>
+              <button class="btn btn-sm btn-primary" onclick="exportMigrationReport()">Export Full Migration Report</button>
+            </div>
+            <div class="sub-header" style="margin-top:14px">Migration Activity</div>
+            <div class="migration-log" id="migration-log"></div>
+          </section>
+        </div>
+      </div>
       </div>
 
     </div><!-- /workspace -->
@@ -914,6 +985,26 @@ glData = Array.from({length:200},(_,i)=>{const so=soData[i%soData.length],ar=arD
 const employeeData = Array.from({length:90},(_,i)=>{const positions=['Branch Manager','Sales Agent','Finance Officer','Collector','Encoder','Inventory Clerk','Branch Cashier','Service Coordinator'];const status=i%23===0?'Absent':i%11===0?'Late':'Present';return {id:`EMP-${pad(i+1)}`,name:personName(390+i),position:positions[i%positions.length],branch:branchData[(i*9)%branchData.length].name,date:'May 12',timeIn:status==='Absent'?'—':i%11===0?'09:08 AM':'08:0'+(i%10)+' AM',timeOut:status==='Absent'||status==='Late'?'—':'05:'+pad(1+(i%49),2)+' PM',hours:status==='Absent'||status==='Late'?'—':(8.5+(i%10)/10).toFixed(2)+' hrs',status}});
 const payrollRates={'Branch Manager':48000,'Sales Agent':28000,'Finance Officer':36000,'Collector':26000,'Encoder':23000,'Inventory Clerk':24000,'Branch Cashier':25000,'Service Coordinator':27000};
 let payrollData = employeeData.map((e,i)=>{const basic=Math.round((payrollRates[e.position]||25000)/2);const overtime=(i%5)*550;const allowance=1200+(i%4)*350;const deductions=Math.round(basic*.085)+((i%6)*120);const status=i%13===0?'Draft':i%7===0?'Reviewed':i%5===0?'Approved':i%3===0?'Processing':'Released';return {no:`PAY-202605-${pad(i+1)}`,employeeId:e.id,employee:e.name,position:e.position,branch:e.branch,basic,overtime,allowance,deductions,net:basic+overtime+allowance-deductions,status,updated:dateShort(i)}});
+const migrationState={
+  files:0,
+  records:0,
+  exports:0,
+  sourceType:"inventory",
+  activeModule:"dashboard",
+  selected:"Inventory CSV",
+  imported:[],
+  mapping:[
+    ['legacy_unit_id','Unit ID','Mapped'],
+    ['engine_no','Engine No.','Mapped'],
+    ['chassis_serial','Chassis No.','Mapped'],
+    ['branch_name','Branch','Mapped'],
+    ['retail_price','SRP','Needs Review']
+  ],
+  logs:[
+    ['Migration center opened','Ready to import old database exports'],
+    ['Supported sources','CSV, Excel, SQL dump, accounting exports, and legacy reports']
+  ]
+};
 const expenseData = Array.from({length:60},(_,i)=>{const categories=['Transportation','Representation','Fuel','Office Supplies','Branch Repairs','Courier','Meals'];const descriptions=['client visit','bank deposit run','branch delivery vehicle','printer ink and forms','showroom minor repair','document dispatch','field collection route'];return {no:`EXP-202605${pad(12-(i%12),2)}-${pad(i+1)}`,employee:personName(520+i),branch:branchData[(i*4)%branchData.length].name,category:categories[i%categories.length],desc:descriptions[i%descriptions.length],amount:150+((i*431)%8500),date:dateShort(i),status:i%7===0?'Pending':i%5===0?'Reimbursed':'Approved'}});
 const cashFundData = Array.from({length:100},(_,i)=>{const branch=branchData[(i*3)%branchData.length],isIn=i%4===0,amount=isIn?10000+((i*137)%45000):750+((i*271)%9800);return {date:dateShort(i),branch:branch.name,ref:`CF-202605${pad(12-(i%12),2)}-${pad(i+1)}`,desc:isIn?'Branch fund replenishment':'Operating cash disbursement',cashIn:isIn?amount:0,cashOut:isIn?0:amount,balance:branch.cashFund,recordedBy:personName(620+i)}});
 branchData.forEach(b=>{b.inventory=invData.filter(u=>u.branch===b.name&&u.status!=='Sold').length;b.sold=soData.filter(s=>s.branch===b.name&&s.status==='Completed').length;if(b.inventory<3)b.status='Low Stock'});
@@ -939,6 +1030,10 @@ function populateBranchSelects(){
 function renderDashboard(){
   const tb=document.getElementById('dash-so-tb');
   if(!tb)return;
+  const invTotal=document.getElementById('dash-inventory-total');
+  const soldTotal=document.getElementById('dash-sold-total');
+  if(invTotal)invTotal.textContent=invData.length.toLocaleString();
+  if(soldTotal)soldTotal.textContent=soData.filter(r=>r.status==='Completed').length.toLocaleString();
   tb.innerHTML=soData.slice(0,12).map(r=>`<tr><td class="mono">${r.no}</td><td>${r.customer}</td><td>${r.model}</td><td class="amt">&#8369;${fmt(r.srp)}</td><td>${badge(r.mode)}</td><td class="dim">${r.branch}</td><td>${badge(r.status)}</td><td class="dim mono">${r.date.replace(', 2026','')}</td></tr>`).join('');
 }
 
@@ -1011,6 +1106,377 @@ function renderBranches(){
   document.getElementById('branch-count').textContent=`${rows.length} of ${branchData.length} branches`;
 }
 
+function renderMigration(){
+  const files=document.getElementById('mig-files');
+  if(!files)return;
+  files.textContent=migrationState.files;
+  document.getElementById('mig-records').textContent=migrationState.records;
+  document.getElementById('mig-imported').textContent=migrationState.imported.length;
+  document.getElementById('mig-exports').textContent=migrationState.exports;
+  document.getElementById('migration-mapping').innerHTML=migrationState.mapping.map(row=>`
+    <div class="mapping-row">
+      <span class="mono">${row[0]}</span>
+      <span>${row[1]}</span>
+      <span>${badge(row[2])}</span>
+    </div>
+  `).join('');
+  document.getElementById('migration-log').innerHTML=migrationState.logs.slice(-8).reverse().map(row=>`
+    <div class="migration-log-item"><strong>${row[0]}</strong><span>${row[1]}</span></div>
+  `).join('');
+  const preview=document.getElementById('migration-preview');
+  if(preview){
+    const rows=migrationState.imported.slice(0,12);
+    preview.innerHTML=rows.length?`
+      <div class="table-wrap"><table>
+        <thead><tr><th>Module</th><th>Record ID</th><th>Imported Record</th><th>Destination</th><th>Status</th></tr></thead>
+        <tbody>${rows.map(row=>`<tr>
+          <td>${row.module}</td><td class="mono">${row.id}</td><td><strong>${row.title}</strong></td>
+          <td class="dim">${row.destination}</td><td>${badge(row.status)}</td>
+        </tr>`).join('')}</tbody>
+      </table></div>
+      <div class="import-actions">
+        <button class="btn btn-sm" onclick="closeMigrationModal();nav('inventory')">Open Inventory</button>
+        <button class="btn btn-sm" onclick="closeMigrationModal();nav('customers')">Open Customers</button>
+        <button class="btn btn-sm" onclick="closeMigrationModal();nav('sales')">Open Sales</button>
+        <button class="btn btn-sm" onclick="closeMigrationModal();nav('gl')">Open Accounting</button>
+        <button class="btn btn-sm" onclick="closeMigrationModal();nav('payroll')">Open Payroll</button>
+      </div>
+    `:'<div class="empty-state"><strong>No records imported yet</strong><p>Load a sample file, validate the mapping, then click Import Sample Data. Imported records will appear here and inside the matching live module.</p></div>';
+  }
+  renderMigrationContext();
+}
+
+function migrationTypeForModule(id){
+  const map={dashboard:'inventory',inventory:'inventory',customers:'customers',sales:'sales',receivables:'receivables',purchases:'purchases',payables:'payables',cashfund:'cashfund',banking:'banking',timeexp:'timeexp',payroll:'payroll',branches:'branches',gl:'accounting'};
+  return map[id]||'inventory';
+}
+
+function exportTypeForModule(id){
+  const map={dashboard:'inventory',inventory:'inventory',customers:'customers',sales:'sales',receivables:'receivables',purchases:'purchases',payables:'payables',cashfund:'cashfund',banking:'banking',timeexp:'timeexp',payroll:'payroll',branches:'branches',gl:'accounting'};
+  return map[id]||'inventory';
+}
+
+function migrationLabel(type){
+  const labels={inventory:'Inventory CSV',customers:'Customers XLSX',accounting:'Accounting SQL',sales:'Sales Orders CSV',receivables:'Receivables CSV',purchases:'Purchase Orders CSV',payables:'Payables CSV',cashfund:'Cash Fund CSV',banking:'Banking CSV',timeexp:'Time & Expenses XLSX',payroll:'Payroll CSV',branches:'Branches CSV'};
+  return labels[type]||'Inventory CSV';
+}
+
+function renderMigrationContext(){
+  const title=document.getElementById('migration-context-title');
+  if(!title)return;
+  const importType=migrationState.sourceType||migrationTypeForModule(migrationState.activeModule);
+  const exportType=exportTypeForModule(migrationState.activeModule);
+  title.textContent=`Current target: ${migrationLabel(importType)}`;
+  document.getElementById('migration-context-copy').textContent=`This modal is tied to the current page. Importing will update ${migrationLabel(importType).replace(' CSV','').replace(' XLSX','').replace(' SQL','')} records in the live demo, and exporting will download ${migrationLabel(exportType)} from this page context.`;
+  document.getElementById('migration-load-context').textContent=`Load ${migrationLabel(importType)} Sample`;
+  document.getElementById('migration-export-context').textContent=`Export ${migrationLabel(exportType)}`;
+}
+
+function openMigrationModal(sourceType){
+  const active=document.querySelector('.module.active')?.id?.replace('mod-','')||'dashboard';
+  migrationState.activeModule=active;
+  migrationState.sourceType=sourceType||migrationTypeForModule(active);
+  renderMigrationContext();
+  renderMigration();
+  document.getElementById('migration-modal-overlay')?.classList.add('open');
+}
+
+function closeMigrationModal(){
+  document.getElementById('migration-modal-overlay')?.classList.remove('open');
+}
+
+function loadContextSample(){
+  loadLegacySample(migrationState.sourceType||migrationTypeForModule(migrationState.activeModule));
+}
+
+function exportCurrentModule(){
+  exportCsv(exportTypeForModule(migrationState.activeModule));
+}
+
+function migrationLog(title,detail){
+  migrationState.logs.push([title,detail]);
+  renderMigration();
+}
+
+function previewLegacyFile(input){
+  const file=input.files&&input.files[0];
+  if(!file)return;
+  migrationState.files+=1;
+  migrationState.selected=file.name;
+  migrationLog('Legacy file selected',`${file.name} queued for field mapping`);
+  showToast(`${file.name} ready for validation`);
+}
+
+function loadLegacySample(type){
+  const samples={
+    inventory:{name:'old_inventory_master.csv',records:1248,mapping:[['unit_code','Unit ID','Mapped'],['motor_model','Model','Mapped'],['engine_number','Engine No.','Mapped'],['dealer_branch','Branch','Mapped'],['unit_srp','SRP','Mapped']]},
+    customers:{name:'legacy_customer_accounts.xlsx',records:360,mapping:[['customer_code','Customer ID','Mapped'],['full_name','Full Name','Mapped'],['mobile_no','Contact No.','Mapped'],['home_address','Address','Mapped'],['account_state','Account Status','Needs Review']]},
+    accounting:{name:'old_accounting_ledger.sql',records:200,mapping:[['journal_ref','Ref No.','Mapped'],['posting_date','Date','Mapped'],['coa_account','Account','Mapped'],['debit_amount','Debit','Mapped'],['credit_amount','Credit','Mapped']]},
+    sales:{name:'old_sales_orders.csv',records:420,mapping:[['sales_ref','SO No.','Mapped'],['customer_name','Customer','Mapped'],['unit_model','Model','Mapped'],['payment_mode','Payment Mode','Mapped'],['order_status','Status','Mapped']]},
+    receivables:{name:'old_receivables.csv',records:250,mapping:[['account_ref','Account No.','Mapped'],['customer_name','Customer','Mapped'],['balance_due','Balance','Mapped'],['monthly_due','Monthly Due','Mapped'],['aging_status','Status','Mapped']]},
+    purchases:{name:'old_purchase_orders.csv',records:180,mapping:[['po_ref','PO No.','Mapped'],['vendor_name','Supplier','Mapped'],['unit_model','Model','Mapped'],['qty_ordered','Qty','Mapped'],['po_status','Status','Mapped']]},
+    payables:{name:'old_supplier_invoices.csv',records:140,mapping:[['invoice_ref','Invoice No.','Mapped'],['vendor_name','Vendor','Mapped'],['invoice_amount','Amount','Mapped'],['amount_paid','Paid','Mapped'],['due_status','Status','Mapped']]},
+    cashfund:{name:'old_cash_fund.csv',records:100,mapping:[['cash_ref','Reference','Mapped'],['branch_name','Branch','Mapped'],['cash_in','Cash In','Mapped'],['cash_out','Cash Out','Mapped'],['running_balance','Balance','Mapped']]},
+    banking:{name:'old_bank_transactions.csv',records:80,mapping:[['bank_ref','Reference','Mapped'],['bank_name','Bank','Mapped'],['transaction_desc','Description','Mapped'],['debit','Debit','Mapped'],['credit','Credit','Mapped']]},
+    timeexp:{name:'old_time_expenses.xlsx',records:120,mapping:[['employee_code','Employee ID','Mapped'],['staff_name','Name','Mapped'],['branch_name','Branch','Mapped'],['hours_worked','Hours','Mapped'],['expense_amount','Amount','Mapped']]},
+    payroll:{name:'old_payroll_register.xlsx',records:90,mapping:[['payroll_ref','Payroll No.','Mapped'],['employee_code','Employee ID','Mapped'],['gross_pay','Gross Pay','Mapped'],['deductions','Deductions','Mapped'],['net_pay','Net Pay','Mapped']]},
+    branches:{name:'old_branch_directory.csv',records:12,mapping:[['branch_name','Branch Name','Mapped'],['region','Region','Mapped'],['address','Address','Mapped'],['manager_name','Manager','Mapped'],['cash_balance','Cash Fund','Mapped']]}
+  };
+  const sample=samples[type]||samples.inventory;
+  migrationState.files+=1;
+  migrationState.records=sample.records;
+  migrationState.sourceType=type in samples?type:'inventory';
+  migrationState.selected=sample.name;
+  migrationState.mapping=sample.mapping;
+  migrationLog('Sample legacy file loaded',`${sample.name} with ${sample.records.toLocaleString()} records`);
+  showToast(`${sample.name} loaded`);
+  renderMigration();
+}
+
+function validateLegacyMapping(){
+  migrationState.mapping=migrationState.mapping.map(row=>[row[0],row[1],'Mapped']);
+  migrationLog('Field mapping validated',`${migrationState.selected} is ready for import`);
+  showToast('Legacy fields validated');
+  renderMigration();
+}
+
+function simulateImport(){
+  if(!migrationState.records)loadLegacySample('inventory');
+  const type=migrationState.sourceType||'inventory';
+  let inserted=[];
+  if(type==='customers'){
+    const base=custData.length+1;
+    inserted=[
+      {id:`CUS-IMP-${pad(base,4)}`,name:'Legacy Buyer - Maria Santos',contact:'+63 917 442 9012',address:'Quezon City',branch:branchData[1].name,units:1,total:89500,status:'Active'},
+      {id:`CUS-IMP-${pad(base+1,4)}`,name:'Legacy Buyer - Patrick Lim',contact:'+63 998 230 1440',address:'Makati City',branch:branchData[2].name,units:2,total:168000,status:'Active'},
+      {id:`CUS-IMP-${pad(base+2,4)}`,name:'Legacy Buyer - Jessa Cruz',contact:'+63 906 815 3370',address:'Cebu City',branch:branchData[3].name,units:1,total:74000,status:'Pending'}
+    ];
+    custData.unshift(...inserted);
+    clearImportFilters('customers');
+    filterCust();
+    migrationState.imported.unshift(...inserted.map(r=>({module:'Customers',id:r.id,title:r.name,destination:'Customer Management',status:r.status})));
+    migrationLog('Import completed',`${inserted.length} customer records added to Customer Management`);
+    showToast('Imported customers now visible in Customer Management');
+  }else if(type==='receivables'){
+    const base=arData.length+1;
+    inserted=[
+      {no:`AR-IMP-${pad(base,4)}`,customer:'Legacy Buyer - Maria Santos',model:'Honda Click 125i',total:72500,balance:58000,monthly:2417,due:'May 30, 2026',overdue:0,branch:branchData[0].name,status:'Current'},
+      {no:`AR-IMP-${pad(base+1,4)}`,customer:'Legacy Buyer - Patrick Lim',model:'Yamaha Mio Gear',total:79500,balance:55650,monthly:2319,due:'May 24, 2026',overdue:4,branch:branchData[1].name,status:'Overdue'}
+    ];
+    arData.unshift(...inserted);
+    clearImportFilters('receivables');
+    filterAR();
+    migrationState.imported.unshift(...inserted.map(r=>({module:'Receivables',id:r.no,title:`${r.customer} - ${r.model}`,destination:'Receivables',status:r.status})));
+    migrationLog('Import completed',`${inserted.length} receivable accounts added`);
+    showToast('Imported receivables now visible');
+  }else if(type==='sales'){
+    const base=soData.length+1;
+    inserted=[
+      {no:`SO-IMP-${pad(base,4)}`,date:'May 14, 2026',customer:'Legacy Buyer - Maria Santos',model:'Honda Click 125i (Black)',srp:72500,dp:14500,mode:'Installment',branch:branchData[0].name,status:'Pending'},
+      {no:`SO-IMP-${pad(base+1,4)}`,date:'May 14, 2026',customer:'Legacy Buyer - Patrick Lim',model:'Yamaha Mio Gear (Matte Blue)',srp:79500,dp:23850,mode:'Bank Financing',branch:branchData[1].name,status:'Processing'},
+      {no:`SO-IMP-${pad(base+2,4)}`,date:'May 14, 2026',customer:'Legacy Buyer - Jessa Cruz',model:'Suzuki Burgman Street (White)',srp:89500,dp:89500,mode:'Cash',branch:branchData[2].name,status:'Completed'}
+    ];
+    soData.unshift(...inserted);
+    clearImportFilters('sales');
+    filterSO();
+    renderDashboard();
+    migrationState.imported.unshift(...inserted.map(r=>({module:'Sales',id:r.no,title:`${r.customer} - ${r.model}`,destination:'Sales Orders',status:r.status})));
+    migrationLog('Import completed',`${inserted.length} sales orders added to Sales Orders`);
+    showToast('Imported sales orders now visible in Sales');
+  }else if(type==='purchases'){
+    const base=poData.length+1;
+    inserted=[
+      {no:`PO-IMP-${pad(base,4)}`,date:'May 14, 2026',supplier:'Honda Philippines',model:'Honda Click 125i',qty:18,amount:1170000,delivery:'May 22, 2026',branch:branchData[0].name,status:'Pending'},
+      {no:`PO-IMP-${pad(base+1,4)}`,date:'May 14, 2026',supplier:'Yamaha Motor PH',model:'Yamaha Mio Gear',qty:12,amount:882000,delivery:'May 24, 2026',branch:branchData[1].name,status:'Approved'}
+    ];
+    poData.unshift(...inserted);
+    clearImportFilters('purchases');
+    filterPO();
+    migrationState.imported.unshift(...inserted.map(r=>({module:'Purchases',id:r.no,title:`${r.supplier} - ${r.model}`,destination:'Purchase Orders',status:r.status})));
+    migrationLog('Import completed',`${inserted.length} purchase orders added`);
+    showToast('Imported purchase orders now visible');
+  }else if(type==='payables'){
+    const base=apData.length+1;
+    inserted=[
+      {inv:`INV-IMP-${pad(base,4)}`,vendor:'Honda Philippines',desc:'Legacy supplier invoice import',amount:1170000,paid:450000,due:720000,invDate:'May 14, 2026',dueDate:'May 30, 2026',status:'Partial'},
+      {inv:`INV-IMP-${pad(base+1,4)}`,vendor:'Yamaha Motor PH',desc:'Legacy supplier invoice import',amount:882000,paid:0,due:882000,invDate:'May 14, 2026',dueDate:'May 28, 2026',status:'Pending'}
+    ];
+    apData.unshift(...inserted);
+    clearImportFilters('payables');
+    filterAP();
+    migrationState.imported.unshift(...inserted.map(r=>({module:'Payables',id:r.inv,title:`${r.vendor} - ${r.desc}`,destination:'Payables',status:r.status})));
+    migrationLog('Import completed',`${inserted.length} supplier invoices added`);
+    showToast('Imported payables now visible');
+  }else if(type==='cashfund'){
+    inserted=[
+      {date:'05/14/26',branch:branchData[0].name,ref:`CF-IMP-${pad(cashFundData.length+1,4)}`,desc:'Legacy cash fund replenishment import',cashIn:25000,cashOut:0,balance:branchData[0].cashFund+25000,recordedBy:'Legacy Import'},
+      {date:'05/14/26',branch:branchData[1].name,ref:`CF-IMP-${pad(cashFundData.length+2,4)}`,desc:'Legacy operating cash disbursement import',cashIn:0,cashOut:8500,balance:branchData[1].cashFund-8500,recordedBy:'Legacy Import'}
+    ];
+    cashFundData.unshift(...inserted);
+    renderCashFund();
+    migrationState.imported.unshift(...inserted.map(r=>({module:'Cash Fund',id:r.ref,title:`${r.branch} - ${r.desc}`,destination:'Cash Fund Management',status:r.cashIn?'Credit':'Debit'})));
+    migrationLog('Import completed',`${inserted.length} cash fund entries added`);
+    showToast('Imported cash fund entries now visible');
+  }else if(type==='banking'){
+    inserted=[
+      {date:'May 14',bank:'BPI',ref:`BPI-IMP-${pad(migrationState.imported.length+1,4)}`,desc:'Legacy bank collection import',debit:0,credit:96500,balance:12577000,type:'Credit'},
+      {date:'May 14',bank:'BDO',ref:`BDO-IMP-${pad(migrationState.imported.length+2,4)}`,desc:'Legacy supplier payment import',debit:42000,credit:0,balance:6859200,type:'Debit'}
+    ];
+    const bankTb=document.getElementById('bank-tb');
+    if(bankTb)bankTb.insertAdjacentHTML('afterbegin',inserted.map(r=>`<tr><td class="mono dim">${r.date}</td><td>${r.bank}</td><td class="mono">${r.ref}</td><td>${r.desc}</td><td class="${r.debit?'amt':'dim'}" style="${r.debit?'color:var(--red)':''}">${r.debit?fmt(r.debit):'—'}</td><td class="${r.credit?'amt':'dim'}" style="${r.credit?'color:var(--green)':''}">${r.credit?fmt(r.credit):'—'}</td><td class="amt">${fmt(r.balance)}</td><td>${badge(r.type)}</td></tr>`).join(''));
+    migrationState.imported.unshift(...inserted.map(r=>({module:'Banking',id:r.ref,title:`${r.bank} - ${r.desc}`,destination:'Banking',status:r.type})));
+    migrationLog('Import completed',`${inserted.length} bank transactions added`);
+    showToast('Imported bank transactions now visible');
+  }else if(type==='timeexp'){
+    inserted=[
+      {id:`EMP-IMP-${pad(employeeData.length+1,3)}`,name:'Legacy Staff - Arnel Cruz',position:'Sales Agent',branch:branchData[0].name,date:'May 14',timeIn:'08:05 AM',timeOut:'05:10 PM',hours:'9.08 hrs',status:'Present'},
+      {id:`EMP-IMP-${pad(employeeData.length+2,3)}`,name:'Legacy Staff - Liza Ramos',position:'Encoder',branch:branchData[1].name,date:'May 14',timeIn:'09:12 AM',timeOut:'—',hours:'—',status:'Late'}
+    ];
+    employeeData.unshift(...inserted);
+    renderEmployees();
+    migrationState.imported.unshift(...inserted.map(r=>({module:'Time & Expenses',id:r.id,title:`${r.name} - ${r.position}`,destination:'Time & Expenses',status:r.status})));
+    migrationLog('Import completed',`${inserted.length} attendance records added`);
+    showToast('Imported attendance records now visible');
+  }else if(type==='payroll'){
+    const base=payrollData.length+1;
+    inserted=[
+      {no:`PAY-IMP-${pad(base,4)}`,employeeId:'EMP-LEG-101',employee:'Legacy Employee - Ana Reyes',position:'Branch Cashier',branch:branchData[0].name,basic:14500,overtime:1100,allowance:1800,deductions:1520,net:15880,status:'Reviewed',updated:'05/14/26'},
+      {no:`PAY-IMP-${pad(base+1,4)}`,employeeId:'EMP-LEG-102',employee:'Legacy Employee - Marco Tan',position:'Sales Agent',branch:branchData[1].name,basic:14000,overtime:2200,allowance:1550,deductions:1390,net:16360,status:'Approved',updated:'05/14/26'},
+      {no:`PAY-IMP-${pad(base+2,4)}`,employeeId:'EMP-LEG-103',employee:'Legacy Employee - Camille Go',position:'Finance Officer',branch:branchData[2].name,basic:18000,overtime:550,allowance:1900,deductions:1810,net:18640,status:'Processing',updated:'05/14/26'}
+    ];
+    payrollData.unshift(...inserted);
+    clearImportFilters('payroll');
+    filterPayroll();
+    migrationState.imported.unshift(...inserted.map(r=>({module:'Payroll',id:r.no,title:`${r.employee} - ${r.position}`,destination:'Payroll Management',status:r.status})));
+    migrationLog('Import completed',`${inserted.length} payroll records added to Payroll Management`);
+    showToast('Imported payroll records now visible in Payroll');
+  }else if(type==='accounting'){
+    const base=glData.length+1;
+    inserted=[
+      {date:'05/14/26',ref:`JE-IMP-${pad(base,4)}`,account:'Cash in Bank / Sales Revenue',desc:'Legacy sales deposit imported from old ledger',debit:145000,credit:145000,type:'Sales'},
+      {date:'05/14/26',ref:`JE-IMP-${pad(base+1,4)}`,account:'Accounts Receivable / Sales Revenue',desc:'Legacy installment account balance imported',debit:92500,credit:92500,type:'Payment'},
+      {date:'05/14/26',ref:`JE-IMP-${pad(base+2,4)}`,account:'Operating Expense / Cash Fund',desc:'Legacy branch expense imported',debit:18450,credit:18450,type:'Adjustment'}
+    ];
+    glData.unshift(...inserted);
+    clearImportFilters('accounting');
+    filterGL();
+    migrationState.imported.unshift(...inserted.map(r=>({module:'Accounting',id:r.ref,title:r.desc,destination:'General Ledger',status:r.type})));
+    migrationLog('Import completed',`${inserted.length} ledger entries added to Accounting / GL`);
+    showToast('Imported ledger entries now visible in Accounting');
+  }else if(type==='branches'){
+    inserted=[
+      {name:'Imported Legacy Branch',region:'Luzon',address:'Legacy Avenue, Batangas City',manager:'Legacy Manager',contact:'+63 917 000 2026',cashFund:78000,status:'Normal'}
+    ];
+    branchData.unshift(...inserted);
+    refreshBranchInventory();
+    populateBranchSelects();
+    renderBranches();
+    migrationState.imported.unshift(...inserted.map(r=>({module:'Branches',id:r.name,title:`${r.region} - ${r.address}`,destination:'Branch Directory',status:r.status})));
+    migrationLog('Import completed',`${inserted.length} branch record added`);
+    showToast('Imported branch now visible');
+  }else{
+    const base=invData.length+1;
+    inserted=[
+      {id:`UNIT-IMP-${pad(base,4)}`,brand:'Honda',model:'Legacy Click 125i',color:'Black',engine:`ENG-OLD-${pad(7000+migrationState.files,5)}`,chassis:`CHS-OLD-${pad(8000+migrationState.files,5)}`,branch:branchData[0].name,status:'Available',price:72500,date:'May 14, 2026'},
+      {id:`UNIT-IMP-${pad(base+1,4)}`,brand:'Yamaha',model:'Legacy Mio Gear',color:'Matte Blue',engine:`ENG-OLD-${pad(7010+migrationState.files,5)}`,chassis:`CHS-OLD-${pad(8010+migrationState.files,5)}`,branch:branchData[1].name,status:'Reserved',price:79500,date:'May 14, 2026'},
+      {id:`UNIT-IMP-${pad(base+2,4)}`,brand:'Suzuki',model:'Legacy Burgman Street',color:'White',engine:`ENG-OLD-${pad(7020+migrationState.files,5)}`,chassis:`CHS-OLD-${pad(8020+migrationState.files,5)}`,branch:branchData[2].name,status:'Available',price:89500,date:'May 14, 2026'}
+    ];
+    invData.unshift(...inserted);
+    refreshBranchInventory();
+    clearImportFilters('inventory');
+    filterInv();
+    renderDashboard();
+    renderBranches();
+    migrationState.imported.unshift(...inserted.map(r=>({module:'Inventory',id:r.id,title:`${r.brand} ${r.model}`,destination:'Inventory Management',status:r.status})));
+    migrationLog('Import completed',`${inserted.length} motorcycle units added to Inventory Management`);
+    showToast('Imported units now visible in Inventory Management');
+  }
+  migrationState.records=Math.max(migrationState.records,inserted.length);
+  renderMigration();
+}
+
+function clearImportFilters(type){
+  const ids=type==='customers'?['cust-q','cust-branch']:type==='accounting'?['gl-q','gl-type']:type==='sales'?['so-q','so-status','so-mode','so-branch']:type==='receivables'?['ar-q','ar-status','ar-branch']:type==='purchases'?['po-q','po-status','po-supplier']:type==='payables'?['ap-q','ap-status']:type==='payroll'?['payroll-q','payroll-branch','payroll-status']:['inv-q','inv-brand','inv-status','inv-branch'];
+  ids.forEach(id=>{const el=document.getElementById(id);if(el)el.value=''});
+}
+
+function refreshBranchInventory(){
+  branchData.forEach(b=>{
+    b.inventory=invData.filter(u=>u.branch===b.name&&u.status!=='Sold').length;
+    b.sold=soData.filter(s=>s.branch===b.name&&s.status==='Completed').length;
+    b.status=b.inventory<3?'Low Stock':'Normal';
+  });
+}
+
+function csvEscape(value){
+  const text=String(value??'');
+  return /[",\n]/.test(text)?`"${text.replace(/"/g,'""')}"`:text;
+}
+
+function toCsv(rows,headers){
+  return [headers.join(','),...rows.map(row=>headers.map(key=>csvEscape(row[key])).join(','))].join('\n');
+}
+
+function downloadFile(filename,content,type='text/plain;charset=utf-8'){
+  const blob=new Blob([content],{type});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function exportCsv(type){
+  const sources={
+    inventory:{name:'inventory-export.csv',rows:invData.slice(0,120),headers:['id','brand','model','engine','chassis','color','branch','status','price','date']},
+    customers:{name:'customers-export.csv',rows:custData.slice(0,120),headers:['id','name','contact','address','branch','units','total','status']},
+    sales:{name:'sales-orders-export.csv',rows:soData.slice(0,120),headers:['no','date','customer','model','srp','dp','mode','branch','status']},
+    receivables:{name:'receivables-export.csv',rows:arData.slice(0,120),headers:['no','customer','model','total','balance','monthly','due','overdue','branch','status']},
+    purchases:{name:'purchase-orders-export.csv',rows:poData.slice(0,120),headers:['no','date','supplier','model','qty','amount','delivery','branch','status']},
+    payables:{name:'payables-export.csv',rows:apData.slice(0,120),headers:['inv','vendor','desc','amount','paid','due','invDate','dueDate','status']},
+    cashfund:{name:'cash-fund-export.csv',rows:cashFundData.slice(0,120),headers:['date','branch','ref','desc','cashIn','cashOut','balance','recordedBy']},
+    accounting:{name:'general-ledger-export.csv',rows:glData.slice(0,120),headers:['date','ref','account','desc','debit','credit','type']},
+    timeexp:{name:'time-expenses-export.csv',rows:employeeData.slice(0,120),headers:['id','name','position','branch','date','timeIn','timeOut','hours','status']},
+    payroll:{name:'payroll-export.csv',rows:payrollData.slice(0,120),headers:['no','employeeId','employee','position','branch','basic','overtime','allowance','deductions','net','status']},
+    branches:{name:'branches-export.csv',rows:branchData.slice(0,120),headers:['name','region','address','manager','contact','inventory','sold','cashFund','status']},
+    banking:{name:'banking-export.csv',rows:[...document.querySelectorAll('#bank-tb tr')].slice(0,120).map(row=>{const c=[...row.children].map(td=>td.textContent.trim());return {date:c[0],bank:c[1],ref:c[2],desc:c[3],debit:c[4],credit:c[5],balance:c[6],type:c[7]}}),headers:['date','bank','ref','desc','debit','credit','balance','type']}
+  };
+  const source=sources[type]||sources.inventory;
+  downloadFile(source.name,toCsv(source.rows,source.headers),'text/csv;charset=utf-8');
+  migrationState.exports+=1;
+  migrationLog('Export generated',`${source.name} downloaded with ${source.rows.length} sample records`);
+  renderMigration();
+  showToast(`${source.name} exported`);
+}
+
+function exportMigrationReport(){
+  const content=[
+    'NEXII BSM IMPORT / EXPORT MIGRATION REPORT',
+    `Generated: ${new Date().toLocaleString('en-PH')}`,
+    '',
+    `Imported files: ${migrationState.files}`,
+    `Validated records: ${migrationState.records}`,
+    `Export packages: ${migrationState.exports}`,
+    `Current source: ${migrationState.selected}`,
+    `Imported to system: ${migrationState.imported.length}`,
+    '',
+    'Field mapping:',
+    ...migrationState.mapping.map(row=>`- ${row[0]} -> ${row[1]} (${row[2]})`),
+    '',
+    'Imported records:',
+    ...(migrationState.imported.length?migrationState.imported.map(row=>`- ${row.module}: ${row.id} - ${row.title} -> ${row.destination} (${row.status})`):['- None yet']),
+    '',
+    'Activity:',
+    ...migrationState.logs.slice(-12).map(row=>`- ${row[0]}: ${row[1]}`)
+  ].join('\n');
+  downloadFile('nexii-bsm-migration-report.txt',content);
+  migrationState.exports+=1;
+  migrationLog('Migration report exported','Client-ready import/export report downloaded');
+  renderMigration();
+  showToast('Migration report exported');
+}
+
 function initializeDemo(){
   populateBranchSelects();
   renderDashboard();
@@ -1018,6 +1484,7 @@ function initializeDemo(){
   renderEmployees();
   renderPayroll();
   renderBranches();
+  renderMigration();
 }
 
 function filterInv(){
@@ -1311,6 +1778,143 @@ function flashButton(btn,label){
   setTimeout(()=>{btn.classList.remove('busy');btn.textContent=old;},520);
   setTimeout(()=>btn.classList.remove('flash'),900);
 }
+
+function activeModuleId(){
+  return document.querySelector('.module.active')?.id?.replace('mod-','')||'dashboard';
+}
+
+function openActionPanel(title,sections,actions=''){
+  document.getElementById('sp-title').textContent=title;
+  document.getElementById('sp-body').innerHTML=sections.map(section=>`
+    <div class="sp-section">
+      <div class="sp-section-label">${section.label}</div>
+      ${section.rows.map(row=>`<div class="sp-row"><span class="sp-key">${row[0]}</span><span class="sp-val ${row[2]||''}">${row[1]}</span></div>`).join('')}
+    </div>
+  `).join('')+(actions?`<div class="sp-actions">${actions}</div>`:'');
+  openPanel();
+}
+
+function refreshCurrentModule(){
+  renderDashboard();filterInv();filterSO();filterAR();filterCust();filterPO();filterAP();renderCashFund();filterGL();renderEmployees();renderPayroll();renderBranches();
+  showToast('Current module refreshed');
+}
+
+function addDemoUnit(){
+  const r={id:`UNIT-DEMO-${pad(invData.length+1,4)}`,brand:'Honda',model:'Demo ADV 160',color:'Pearl White',engine:`ENG-DEMO-${pad(9000+invData.length,5)}`,chassis:`CHS-DEMO-${pad(9500+invData.length,5)}`,branch:branchData[0].name,status:'Available',price:166900,date:'May 14, 2026'};
+  invData.unshift(r);refreshBranchInventory();clearImportFilters('inventory');filterInv();renderDashboard();renderBranches();
+  openInvPanel(r);showToast('Demo unit added to inventory');
+}
+
+function addDemoOrder(){
+  const r={no:`SO-DEMO-${pad(soData.length+1,4)}`,date:'May 14, 2026',customer:'Demo Client - Sofia Reyes',model:'Honda ADV 160 (Pearl White)',srp:166900,dp:50000,mode:'Installment',branch:branchData[0].name,status:'Pending'};
+  soData.unshift(r);clearImportFilters('sales');filterSO();renderDashboard();openSOPanel(r);showToast('Demo sales order created');
+}
+
+function recordDemoPayment(){
+  const r=arData.find(x=>x.status!=='Paid')||arData[0];
+  if(!r)return;
+  r.balance=Math.max(0,r.balance-r.monthly);
+  r.overdue=0;
+  r.status=r.balance?'Current':'Paid';
+  filterAR();
+  openActionPanel('Payment Recorded',[
+    {label:'Account',rows:[['Account No.',r.no,'mono'],['Customer',r.customer],['Updated Status',badge(r.status)],['Remaining Balance',`₱${fmt(r.balance)}`,'mono']]},
+    {label:'Receipt',rows:[['Amount Paid',`₱${fmt(r.monthly)}`,'mono'],['Posting Date','May 14, 2026','mono'],['Collected By','Demo Collector']]}
+  ],'<button class="btn btn-sm btn-primary">Print Receipt</button><button class="btn btn-sm">Send SMS</button>');
+  showToast('Payment posted to receivables');
+}
+
+function addDemoCustomer(){
+  const r={id:`CUS-DEMO-${pad(custData.length+1,4)}`,name:'Demo Customer - Adrian Villanueva',contact:'+63 917 700 2026',address:'BGC, Taguig City',branch:branchData[0].name,units:0,total:0,status:'Active'};
+  custData.unshift(r);clearImportFilters('customers');filterCust();
+  openActionPanel('Customer Created',[
+    {label:'Customer Profile',rows:[['Customer ID',r.id,'mono'],['Full Name',r.name],['Contact',r.contact,'mono'],['Branch',r.branch],['Status',badge(r.status)]]}
+  ],'<button class="btn btn-sm btn-primary">Create Sales Order</button><button class="btn btn-sm">Open KYC</button>');
+  showToast('Demo customer added');
+}
+
+function addDemoPO(){
+  const r={no:`PO-DEMO-${pad(poData.length+1,4)}`,date:'May 14, 2026',supplier:'Honda Philippines',model:'Honda ADV 160',qty:10,amount:1440000,delivery:'May 28, 2026',branch:branchData[0].name,status:'Pending'};
+  poData.unshift(r);clearImportFilters('purchases');filterPO();openPOPanel(r);showToast('Demo purchase order created');
+}
+
+function recordDemoPayable(){
+  const r=apData.find(x=>x.due>0)||apData[0];
+  if(!r)return;
+  const payment=Math.min(r.due,50000);
+  r.paid+=payment;r.due-=payment;r.status=r.due?'Partial':'Paid';
+  filterAP();
+  openActionPanel('Supplier Payment Posted',[
+    {label:'Invoice',rows:[['Invoice No.',r.inv,'mono'],['Vendor',r.vendor],['Payment',`₱${fmt(payment)}`,'mono'],['Remaining Due',`₱${fmt(r.due)}`,'mono'],['Status',badge(r.status)]]}
+  ],'<button class="btn btn-sm btn-primary">Print Voucher</button><button class="btn btn-sm">Email Supplier</button>');
+  showToast('Supplier payment recorded');
+}
+
+function addDemoFundTransfer(){
+  const r={date:'05/14/26',branch:branchData[0].name,ref:`CF-DEMO-${pad(cashFundData.length+1,4)}`,desc:'Demo branch fund replenishment',cashIn:30000,cashOut:0,balance:branchData[0].cashFund+30000,recordedBy:'Patricia Mendoza'};
+  cashFundData.unshift(r);branchData[0].cashFund=r.balance;renderCashFund();renderBranches();
+  openActionPanel('Fund Transfer Created',[
+    {label:'Transfer Details',rows:[['Reference',r.ref,'mono'],['Branch',r.branch],['Cash In',`₱${fmt(r.cashIn)}`,'mono'],['New Balance',`₱${fmt(r.balance)}`,'mono']]}
+  ],'<button class="btn btn-sm btn-primary">Approve Transfer</button><button class="btn btn-sm">Print Voucher</button>');
+  showToast('Cash fund transfer added');
+}
+
+function addDemoBankTransaction(){
+  const r={date:'May 14',bank:'BPI',ref:`BPI-DEMO-${pad(Date.now()%10000,4)}`,desc:'Demo client collection deposit',debit:0,credit:125000,balance:12605500,type:'Credit'};
+  const bankTb=document.getElementById('bank-tb');
+  if(bankTb)bankTb.insertAdjacentHTML('afterbegin',`<tr><td class="mono dim">${r.date}</td><td>${r.bank}</td><td class="mono">${r.ref}</td><td>${r.desc}</td><td class="dim">—</td><td class="amt" style="color:var(--green)">${fmt(r.credit)}</td><td class="amt">${fmt(r.balance)}</td><td>${badge(r.type)}</td></tr>`);
+  openActionPanel('Bank Transaction Added',[
+    {label:'Transaction',rows:[['Bank',r.bank],['Reference',r.ref,'mono'],['Description',r.desc],['Credit',`₱${fmt(r.credit)}`,'mono'],['Type',badge(r.type)]]}
+  ],'<button class="btn btn-sm btn-primary">Reconcile</button><button class="btn btn-sm">Attach Proof</button>');
+  showToast('Bank transaction added');
+}
+
+function addDemoJournalEntry(){
+  const r={date:'05/14/26',ref:`JE-DEMO-${pad(glData.length+1,4)}`,account:'Cash in Bank / Sales Revenue',desc:'Demo manual journal entry',debit:125000,credit:125000,type:'Sales'};
+  glData.unshift(r);clearImportFilters('accounting');filterGL();
+  openActionPanel('Journal Entry Created',[
+    {label:'Entry',rows:[['Reference',r.ref,'mono'],['Account',r.account],['Debit',`₱${fmt(r.debit)}`,'mono'],['Credit',`₱${fmt(r.credit)}`,'mono'],['Type',badge(r.type)]]}
+  ],'<button class="btn btn-sm btn-primary">Post Entry</button><button class="btn btn-sm">Print Journal</button>');
+  showToast('Journal entry added');
+}
+
+function submitDemoExpense(){
+  const r={no:`EXP-DEMO-${pad(expenseData.length+1,4)}`,employee:'Demo Staff - Carla Dizon',branch:branchData[0].name,category:'Transportation',desc:'Demo client visit expense',amount:1850,date:'05/14/26',status:'Pending'};
+  expenseData.unshift(r);renderEmployees();
+  openActionPanel('Expense Submitted',[
+    {label:'Claim',rows:[['Claim No.',r.no,'mono'],['Employee',r.employee],['Category',r.category],['Amount',`₱${fmt(r.amount)}`,'mono'],['Status',badge(r.status)]]}
+  ],'<button class="btn btn-sm btn-primary">Approve Claim</button><button class="btn btn-sm">Request Receipt</button>');
+  showToast('Expense claim submitted');
+}
+
+function addDemoBranch(){
+  const r={name:'Demo Expansion Branch',region:'Luzon',address:'Demo Business District, Pampanga',manager:'Demo Manager',contact:'+63 917 888 2026',inventory:0,sold:0,cashFund:100000,status:'Normal'};
+  branchData.unshift(r);populateBranchSelects();renderBranches();
+  openActionPanel('Branch Added',[
+    {label:'Branch Profile',rows:[['Branch',r.name],['Region',r.region],['Address',r.address],['Manager',r.manager],['Cash Fund',`₱${fmt(r.cashFund)}`,'mono'],['Status',badge(r.status)]]}
+  ],'<button class="btn btn-sm btn-primary">Assign Inventory</button><button class="btn btn-sm">Open Branch</button>');
+  showToast('Demo branch added');
+}
+
+function manageAlerts(){
+  openActionPanel('Alert Management',[
+    {label:'Active Alerts',rows:[['Critical Stock','1 branch below threshold'],['Finance Alerts','2 payment issues'],['Receivables','6 accounts need follow-up'],['Next Action','Assign alert owners']]}
+  ],'<button class="btn btn-sm btn-primary">Assign Owners</button><button class="btn btn-sm">Snooze Low Priority</button>');
+}
+
+function reconcileBank(){
+  openActionPanel('Bank Reconciliation',[
+    {label:'Reconciliation Run',rows:[['Matched Transactions','42'],['Exceptions','3'],['Bank','BPI / BDO / MetroBank'],['Status',badge('Processing')]]}
+  ],'<button class="btn btn-sm btn-primary">Approve Reconciliation</button><button class="btn btn-sm">Export Exceptions</button>');
+  showToast('Bank reconciliation prepared');
+}
+
+function showHistory(title='Full History'){
+  openActionPanel(title,[
+    {label:'Audit Trail',rows:[['May 14, 2026','Demo record created'],['May 14, 2026','Workflow status updated'],['May 13, 2026','Export generated'],['May 12, 2026','Manager reviewed']]}
+  ],'<button class="btn btn-sm btn-primary">Export History</button><button class="btn btn-sm">Print</button>');
+}
+
 function refreshPayroll(){
   payrollData=payrollData.map((r,i)=>i%17===0&&r.status==='Processing'?{...r,status:'Released'}:r);
   renderPayroll();
@@ -1338,11 +1942,68 @@ function updateOnePayroll(no,status){
   showToast(`${no} updated to ${status}`);
 }
 function exportPayroll(){
-  showToast(`Payroll export queued for ${payrollRows().length} records`);
+  exportCsv('payroll');
 }
 function liveAction(btn){
-  const label=(btn.textContent||'Action').trim();
-  showToast(`${label.replace(/^[+]\s*/,'')} completed in demo mode`);
+  const label=(btn.textContent||'Action').trim().replace(/\s+/g,' ');
+  const clean=label.replace(/^[+]\s*/,'');
+  const module=activeModuleId();
+  if(label==='Refresh'){refreshCurrentModule();return}
+  if(label.includes('Manage')){manageAlerts();return}
+  if(label.includes('View Full History')){showHistory('Cash Fund History');return}
+  if(label==='Reconcile'){reconcileBank();return}
+  if(label.includes('Add Unit')){addDemoUnit();return}
+  if(label.includes('New Order')){addDemoOrder();return}
+  if(label.includes('Record Payment')){module==='payables'?recordDemoPayable():recordDemoPayment();return}
+  if(label.includes('New Customer')){addDemoCustomer();return}
+  if(label.includes('New PO')){addDemoPO();return}
+  if(label.includes('Fund Transfer')){addDemoFundTransfer();return}
+  if(label.includes('New Transaction')){addDemoBankTransaction();return}
+  if(label.includes('Journal Entry')){addDemoJournalEntry();return}
+  if(label.includes('Submit Expense')){submitDemoExpense();return}
+  if(label.includes('Add Branch')){addDemoBranch();return}
+  if(label.includes('Add Account')){
+    openActionPanel('Chart of Account Added',[
+      {label:'Account',rows:[['Code','5400','mono'],['Name','Demo Operating Expense'],['Type','Expense'],['Status',badge('Active')]]}
+    ],'<button class="btn btn-sm btn-primary">Save Account</button><button class="btn btn-sm">View Ledger</button>');
+    showToast('Demo chart account prepared');
+    return;
+  }
+  if(label.includes('Prev')||label.includes('Next')){
+    showToast(`${label.replace(/[←→]/g,'').trim()} page loaded`);
+    return;
+  }
+  if(label.includes('Print')||label.includes('Payslip')){
+    downloadFile(`nexii-${clean.toLowerCase().replace(/[^a-z0-9]+/g,'-')}.txt`,`${clean}\nGenerated from NEXII BSM Demo on ${new Date().toLocaleString('en-PH')}`);
+    showToast(`${clean} downloaded`);
+    return;
+  }
+  if(label.includes('Export')){
+    downloadFile(`nexii-${clean.toLowerCase().replace(/[^a-z0-9]+/g,'-')}.txt`,`${clean}\nGenerated from NEXII BSM Demo on ${new Date().toLocaleString('en-PH')}`);
+    showToast(`${clean} downloaded`);
+    return;
+  }
+  if(label.includes('Transfer Unit')){
+    openActionPanel('Unit Transfer',[
+      {label:'Transfer Request',rows:[['From','Manila Main'],['To','Quezon City North'],['Approval',badge('Pending')],['ETA','May 16, 2026']]}
+    ],'<button class="btn btn-sm btn-primary">Approve Transfer</button><button class="btn btn-sm">Print Gate Pass</button>');
+    return;
+  }
+  if(label.includes('Create Sales Order')){addDemoOrder();return}
+  if(label.includes('View Account')){
+    nav('receivables');
+    showToast('Receivables account opened');
+    return;
+  }
+  if(label.includes('Mark Delivered')){
+    showToast('Purchase order marked delivered');
+    return;
+  }
+  if(label.includes('Approve')||label.includes('Post')||label.includes('Assign')||label.includes('Save')||label.includes('Send')||label.includes('Attach')||label.includes('Request')||label.includes('Open')){
+    showToast(`${clean} completed`);
+    return;
+  }
+  showToast(`${clean} completed in demo mode`);
 }
 function toggleTheme(){
   const dark=!document.body.classList.contains('dark');

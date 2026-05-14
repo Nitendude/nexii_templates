@@ -300,6 +300,95 @@ button {
   color: #ffffff;
 }
 
+.resort-trial-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(220px, 0.8fr);
+  gap: 18px;
+  padding: 24px 30px;
+  border-bottom: 1px solid rgba(15, 76, 92, 0.12);
+  background: linear-gradient(135deg, #f8fafc, #eef7f8);
+}
+
+.resort-trial-copy h2 {
+  margin: 6px 0 8px;
+  font-size: clamp(1.5rem, 3vw, 2.6rem);
+  line-height: 1.05;
+}
+
+.resort-trial-copy p {
+  max-width: 760px;
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.58;
+}
+
+.resort-role-switcher,
+.resort-trial-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-content: start;
+  justify-content: flex-end;
+}
+
+.resort-role-switcher button {
+  min-height: 36px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #ffffff;
+  color: #31515a;
+  font-weight: 900;
+  padding: 0 12px;
+}
+
+.resort-role-switcher button.active {
+  border-color: #0f4c5c;
+  background: #0f4c5c;
+  color: #ffffff;
+}
+
+.resort-trial-stats {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.resort-trial-stats article {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #ffffff;
+  padding: 14px;
+  box-shadow: 0 12px 30px rgba(16, 42, 50, 0.08);
+}
+
+.resort-trial-stats span,
+.resort-trial-stats strong {
+  display: block;
+}
+
+.resort-trial-stats span {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.resort-trial-stats strong {
+  margin-top: 5px;
+  font-size: 1.35rem;
+}
+
+.resort-trial-actions {
+  grid-column: 1 / -1;
+  justify-content: flex-start;
+}
+
+.ghost-btn.danger {
+  color: #b42318;
+  border-color: #ffd3ce;
+  background: #fff1f0;
+}
+
 .booking-demo-body,
 .booking-admin-demo {
   display: grid;
@@ -311,6 +400,63 @@ button {
 .booking-admin-demo {
   grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.8fr);
   padding-top: 0;
+}
+
+.resort-operations-demo {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+  gap: 20px;
+  padding: 0 30px 30px;
+}
+
+.resort-room-status-grid,
+.resort-calendar-board {
+  display: grid;
+  gap: 10px;
+}
+
+.resort-room-status-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.resort-status-card,
+.resort-calendar-item {
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: #ffffff;
+  padding: 13px;
+}
+
+.resort-status-card strong,
+.resort-status-card span,
+.resort-calendar-item strong,
+.resort-calendar-item span {
+  display: block;
+}
+
+.resort-status-card span,
+.resort-calendar-item span {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.resort-mini-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 10px;
+}
+
+.resort-mini-actions button {
+  min-height: 30px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #ffffff;
+  color: #0f4c5c;
+  font-size: 0.82rem;
+  font-weight: 900;
+  padding: 0 9px;
 }
 
 .booking-main-flow {
@@ -1149,6 +1295,8 @@ button {
   .app-preview,
   .booking-demo-body,
   .booking-admin-demo,
+  .resort-trial-panel,
+  .resort-operations-demo,
   .booking-header-content,
   .booking-activity-demo {
     grid-template-columns: 1fr;
@@ -1158,6 +1306,8 @@ button {
   .service-row,
   .workspace-grid,
   .package-grid,
+  .resort-trial-stats,
+  .resort-room-status-grid,
   .role-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1185,9 +1335,11 @@ button {
   .tool-grid,
   .feature-grid,
   .service-row,
-  .workspace-grid,
-  .package-grid,
-  .role-grid {
+    .workspace-grid,
+    .package-grid,
+    .resort-trial-stats,
+    .resort-room-status-grid,
+    .role-grid {
     grid-template-columns: 1fr;
   }
 
@@ -1206,7 +1358,9 @@ button {
   }
 
   .booking-demo-body,
-  .booking-admin-demo {
+  .booking-admin-demo,
+  .resort-trial-panel,
+  .resort-operations-demo {
     padding: 18px;
   }
 

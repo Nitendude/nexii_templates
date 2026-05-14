@@ -447,16 +447,25 @@ Status: Available for demo confirmation.`;
 }
 
 function initResortOps() {
+  const storageKey = "resort-operations-trial-state";
   let selectedRoom = {
     name: "Cabana Room 5",
     rate: 6200
   };
-  let bookings = [
-    ["BHP-2401", "Mika Santos", "Overnight - Cabana Room 5", "Pending"],
-    ["BHP-2402", "Ramos Family", "Day Tour - 12 guests", "Proof Uploaded"],
-    ["BHP-2403", "Ari Events", "Event Package - Poolside", "Invoice Draft"],
-    ["BHP-2404", "Nina Cruz", "Overnight - Loft House", "Confirmed"]
+  const defaultBookings = [
+    ["BHP-2401", "Mika Santos", "Overnight - Cabana Room 5", "Pending", "2026-06-18", "Cabana Room 5", 6200],
+    ["BHP-2402", "Ramos Family", "Day Tour - 12 guests", "Proof Uploaded", "2026-06-21", "Pool Day Access", 21600],
+    ["BHP-2403", "Ari Events", "Event Package - Poolside", "Invoice Draft", "2026-06-25", "Poolside Event Area", 28000],
+    ["BHP-2404", "Nina Cruz", "Overnight - Loft House", "Confirmed", "2026-06-28", "Honey Bee Loft House", 9800]
   ];
+  const roomInventory = [
+    ["Cabana Room 5", "2 rooms", "Ready"],
+    ["Honey Bee Loft House", "1 loft", "Needs cleaning"],
+    ["King Bee Barkada House", "1 house", "Ready"],
+    ["Poolside Event Area", "1 event slot", "Available"]
+  ];
+  let role = "Guest";
+  let bookings = defaultBookings.map((booking) => [...booking]);
   const publicPages = [
     ["Rooms and Amenities", "Guest", "Room cards, amenity images, booking CTA, and shareable links."],
     ["Resort Amenities", "Guest", "Pools, courts, recreation, dining, parking, and guest inclusions."],
@@ -464,10 +473,27 @@ function initResortOps() {
     ["Event Packages and Rates", "Sales", "Birthdays, weddings, private events, inclusions, and inquiry links."],
     ["Cafe and Restaurant", "Sales", "Menu links, dining highlights, cafe photos, and social page routing."]
   ];
-  const logs = [
+  let logs = [
     ["System ready", "Guest, admin, and public page modules loaded"],
     ["Room settings active", "Availability and stay times are admin controlled"]
   ];
+  try {
+    const saved = JSON.parse(localStorage.getItem(storageKey) || "{}");
+    if (Array.isArray(saved.bookings)) bookings = saved.bookings;
+    if (Array.isArray(saved.logs)) logs = saved.logs;
+    if (saved.role) role = saved.role;
+  } catch (error) {
+    localStorage.removeItem(storageKey);
+  }
+
+  function saveTrial() {
+    localStorage.setItem(storageKey, JSON.stringify({bookings, logs, role}));
+  }
+
+  function scrollToSection(id) {
+    const section = qs(id);
+    if (section) section.scrollIntoView({behavior: "smooth", block: "start"});
+  }
 
   function renderSummary(data) {
     const option = qs("#resortBookingForm select[name='stay']").selectedOptions[0];
@@ -492,7 +518,7 @@ function initResortOps() {
       <tr>
         <td>${booking[0]}</td>
         <td>${booking[1]}</td>
-        <td>${booking[2]}</td>
+        <td>${booking[2]}<br><span style="color:var(--muted)">${booking[4] || "Date pending"} · ${booking[5] || "Room pending"}</span></td>
         <td>${statusBadge(booking[3])}</td>
         <td>
           <button class="action-btn" type="button" data-resort-approve="${index}">Approve</button>
@@ -503,7 +529,13 @@ function initResortOps() {
     const pending = bookings.filter((booking) => !["Confirmed", "Invoice Sent"].includes(booking[3])).length;
     qs("#resortPendingHero").textContent = pending;
     qs("#resortConfirmations").textContent = bookings.filter((booking) => booking[3] === "Confirmed").length;
-    qs("#resortBookings").textContent = bookings.length + 8;
+    qs("#resortBookings").textContent = bookings.length;
+    qs("#resortRevenue").textContent = money.format(bookings.reduce((sum, booking) => sum + (Number(booking[6]) || 0), 0));
+    qs("#resortRoomsHero").textContent = Math.max(0, 18 - bookings.filter((booking) => booking[3] === "Confirmed").length);
+    saveTrial();
+    renderCalendar();
+    renderRoomStatus();
+    renderTrialRole();
   }
 
   function renderPages() {
@@ -516,12 +548,52 @@ function initResortOps() {
 
   function renderLogs() {
     qs("#resortActivity").innerHTML = logs.slice(-7).reverse().map((item) => activity(item[0], item[1])).join("");
+    saveTrial();
+  }
+
+  function renderTrialRole() {
+    qs("#resortActiveRole").textContent = role;
+    qsa("[data-resort-role]").forEach((button) => button.classList.toggle("active", button.dataset.resortRole.toLowerCase() === role.toLowerCase().replace(/\s+/g, "")));
+  }
+
+  function renderRoomStatus() {
+    const confirmedRooms = bookings.filter((booking) => booking[3] === "Confirmed").map((booking) => booking[5]);
+    qs("#resortRoomStatus").innerHTML = roomInventory.map((room) => {
+      const booked = confirmedRooms.includes(room[0]);
+      const status = booked ? "Booked" : room[2];
+      return `<article class="resort-status-card"><strong>${room[0]}</strong><span>${room[1]} · ${status}</span><div class="resort-mini-actions"><button type="button" data-room-status="${room[0]}">Select</button><button type="button" data-housekeeping="${room[0]}">Mark Ready</button></div></article>`;
+    }).join("");
+    qsa("[data-room-status]").forEach((button) => button.onclick = () => {
+      const roomButton = qsa("[data-room]").find((item) => item.dataset.room === button.dataset.roomStatus);
+      if (roomButton) roomButton.click();
+      scrollToSection("#booking");
+    });
+    qsa("[data-housekeeping]").forEach((button) => button.onclick = () => {
+      logs.push(["Housekeeping updated", `${button.dataset.housekeeping} marked ready`]);
+      renderLogs();
+    });
+  }
+
+  function renderCalendar() {
+    const dated = bookings
+      .filter((booking) => booking[4])
+      .slice()
+      .sort((a, b) => a[4].localeCompare(b[4]))
+      .slice(0, 7);
+    qs("#resortCalendarBoard").innerHTML = dated.map((booking) => `
+      <article class="resort-calendar-item">
+        <strong>${booking[4]} · ${booking[1]}</strong>
+        <span>${booking[5]} · ${booking[3]} · ${booking[0]}</span>
+      </article>
+    `).join("") || "<p>No scheduled bookings yet.</p>";
   }
 
   qs("#resortBookingForm").addEventListener("submit", (event) => {
     event.preventDefault();
     const data = Object.fromEntries(new FormData(event.currentTarget).entries());
-    bookings.unshift([`BHP-${Math.floor(3000 + Math.random() * 6000)}`, data.guest, `${data.stay} - ${selectedRoom.name}`, "Pending"]);
+    const option = qs("#resortBookingForm select[name='stay']").selectedOptions[0];
+    const total = Math.max(Number(option.dataset.rate), selectedRoom.rate) + (data.restaurant ? 450 * Number(data.guests) : 0) + (data.event ? 3500 : 0);
+    bookings.unshift([`BHP-${Math.floor(3000 + Math.random() * 6000)}`, data.guest, `${data.stay} - ${selectedRoom.name}`, "Pending", data.date, selectedRoom.name, total]);
     logs.push(["Booking sent to admin", `${data.guest} is waiting for review`]);
     renderSummary(data);
     renderRows();
@@ -557,16 +629,14 @@ function initResortOps() {
   });
 
   qs("[data-load-resort-sample]").addEventListener("click", () => {
-    bookings.unshift(["BHP-2501", "Corporate Outing", "Event Package - Poolside Event Area", "Proof Uploaded"]);
-    qs("#resortRevenue").textContent = "PHP 124k";
-    qs("#resortRoomsHero").textContent = "17";
+    bookings.unshift(["BHP-2501", "Corporate Outing", "Event Package - Poolside Event Area", "Proof Uploaded", "2026-07-04", "Poolside Event Area", 42000]);
     logs.push(["Sample booking loaded", "Corporate outing added with uploaded proof"]);
     renderRows();
     renderLogs();
   });
 
   qs("[data-add-resort-booking]").addEventListener("click", () => {
-    bookings.push(["BHP-2502", "Walk-in Guest", "Day Tour - 5 guests", "Pending"]);
+    bookings.push(["BHP-2502", "Walk-in Guest", "Day Tour - 5 guests", "Pending", "2026-06-30", "Pool Day Access", 9000]);
     logs.push(["Walk-in booking added", "Admin entered a same-day request"]);
     renderRows();
     renderLogs();
@@ -584,6 +654,52 @@ function initResortOps() {
   });
 
   qs("#resortPageFilter").addEventListener("change", renderPages);
+  qsa("[data-resort-role]").forEach((button) => {
+    button.addEventListener("click", () => {
+      role = button.textContent.trim();
+      logs.push(["Trial role changed", `${role} access selected`]);
+      renderTrialRole();
+      renderLogs();
+      if (role === "Guest") scrollToSection("#booking");
+      if (role === "Front Desk") scrollToSection("#operations");
+      if (role === "Admin") scrollToSection("#admin");
+      if (role === "Manager") scrollToSection("#trial");
+    });
+  });
+  qs("[data-trial-booking]").addEventListener("click", () => scrollToSection("#booking"));
+  qs("[data-trial-admin]").addEventListener("click", () => scrollToSection("#admin"));
+  qs("[data-reset-resort]").addEventListener("click", () => {
+    localStorage.removeItem(storageKey);
+    bookings = defaultBookings.map((booking) => [...booking]);
+    logs = [["Trial reset", "Sample resort data restored"]];
+    role = "Guest";
+    renderRows();
+    renderPages();
+    renderLogs();
+    scrollToSection("#trial");
+  });
+  qs("[data-export-resort]").addEventListener("click", () => {
+    const lines = [
+      "RESORT BOOKING AND OPERATIONS TRIAL",
+      `Generated: ${new Date().toLocaleString()}`,
+      `Active role: ${role}`,
+      "",
+      "Bookings:",
+      ...bookings.map((booking) => `- ${booking[0]} | ${booking[1]} | ${booking[2]} | ${booking[3]} | ${booking[4] || "No date"} | ${money.format(Number(booking[6]) || 0)}`),
+      "",
+      "Activity:",
+      ...logs.slice(-12).map((item) => `- ${item[0]}: ${item[1]}`)
+    ];
+    const blob = new Blob([lines.join("\n")], {type: "text/plain"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "resort-trial-state.txt";
+    a.click();
+    URL.revokeObjectURL(url);
+    logs.push(["Trial exported", "Manager downloaded resort trial state"]);
+    renderLogs();
+  });
   renderSummary(Object.fromEntries(new FormData(qs("#resortBookingForm")).entries()));
   renderRows();
   renderPages();
