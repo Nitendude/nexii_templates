@@ -503,7 +503,6 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
       <div class="topbar-spacer"></div>
       <div class="topbar-meta">
         <div class="topbar-badge"><span class="dot"></span> 5 Alerts Active</div>
-        <button class="hub-link" onclick="openMigrationModal()" type="button">Import / Export</button>
         <a class="hub-link" href="../index.html#catalog">Demo Hub</a>
         <button class="theme-toggle" onclick="toggleTheme()" title="Toggle dark mode"><span class="knob"></span><span id="theme-label">Light</span></button>
         <div class="topbar-clock" id="tb-clock"></div>
@@ -515,7 +514,7 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
       <div class="module active" id="mod-dashboard">
         <div class="page-header">
           <div><div class="page-title">Executive Dashboard</div><div class="page-sub">Operational overview &mdash; all branches &mdash; <span class="live-dot">Live</span></div></div>
-          <div class="page-actions"><button class="btn btn-sm" onclick="openMigrationModal('inventory')">Import</button><button class="btn btn-sm" onclick="exportCsv('inventory')">Export</button><button class="btn btn-sm btn-primary">Refresh</button></div>
+          <div class="page-actions"><button class="btn btn-sm btn-primary">Refresh</button></div>
         </div>
         <div class="kpi-grid">
           <div class="kpi-block"><div class="kpi-label">Total Inventory</div><div class="kpi-value" id="dash-inventory-total">1,248</div><div class="kpi-sub"><span class="kpi-delta up">&#9650; 34</span> vs last week</div></div>
@@ -549,7 +548,7 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
       <div class="module" id="mod-inventory">
         <div class="page-header">
           <div><div class="page-title">Inventory Management</div><div class="page-sub">Serialized motor units &mdash; all branches</div></div>
-          <div class="page-actions"><button class="btn btn-sm" onclick="openMigrationModal('inventory')">Import</button><button class="btn btn-sm" onclick="exportCsv('inventory')">Export</button><button class="btn btn-sm btn-primary">+ Add Unit</button></div>
+          <div class="page-actions"><button class="btn btn-sm" onclick="openMigrationModal('inventory')">Import / Export</button><button class="btn btn-sm btn-primary">+ Add Unit</button></div>
         </div>
         <div class="ctrl-bar">
           <div class="search-wrap"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10 10l3.5 3.5"/></svg><input type="search" id="inv-q" placeholder="Search unit, engine, chassis, model..." oninput="filterInv()"></div>
@@ -573,7 +572,7 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
       <div class="module" id="mod-sales">
         <div class="page-header">
           <div><div class="page-title">Sales Orders</div><div class="page-sub">All customer purchase transactions</div></div>
-          <div class="page-actions"><button class="btn btn-sm" onclick="openMigrationModal('sales')">Import</button><button class="btn btn-sm" onclick="exportCsv('sales')">Export</button><button class="btn btn-sm btn-primary">+ New Order</button></div>
+          <div class="page-actions"><button class="btn btn-sm" onclick="openMigrationModal('sales')">Import / Export</button><button class="btn btn-sm btn-primary">+ New Order</button></div>
         </div>
         <div class="ctrl-bar">
           <div class="search-wrap"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10 10l3.5 3.5"/></svg><input type="search" id="so-q" placeholder="Search order, customer, model..." oninput="filterSO()"></div>
@@ -597,7 +596,7 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
       <div class="module" id="mod-receivables">
         <div class="page-header">
           <div><div class="page-title">Receivables</div><div class="page-sub">Installment accounts &amp; collection monitoring</div></div>
-          <div class="page-actions"><button class="btn btn-sm" onclick="openMigrationModal('receivables')">Import</button><button class="btn btn-sm" onclick="exportCsv('receivables')">Export</button><button class="btn btn-sm btn-primary">+ Record Payment</button></div>
+          <div class="page-actions"><button class="btn btn-sm" onclick="openMigrationModal('receivables')">Import / Export</button><button class="btn btn-sm btn-primary">+ Record Payment</button></div>
         </div>
         <div class="ctrl-bar">
           <div class="search-wrap"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10 10l3.5 3.5"/></svg><input type="search" id="ar-q" placeholder="Search account, customer, invoice..." oninput="filterAR()"></div>
@@ -620,7 +619,7 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
       <div class="module" id="mod-customers">
         <div class="page-header">
           <div><div class="page-title">Customer Records</div><div class="page-sub">All registered customers</div></div>
-          <div class="page-actions"><button class="btn btn-sm" onclick="openMigrationModal('customers')">Import</button><button class="btn btn-sm" onclick="exportCsv('customers')">Export</button><button class="btn btn-sm btn-primary">+ New Customer</button></div>
+          <div class="page-actions"><button class="btn btn-sm" onclick="openMigrationModal('customers')">Import / Export</button><button class="btn btn-sm btn-primary">+ New Customer</button></div>
         </div>
         <div class="ctrl-bar">
           <div class="search-wrap"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10 10l3.5 3.5"/></svg><input type="search" id="cust-q" placeholder="Search name, ID, contact..." oninput="filterCust()"></div>
@@ -642,7 +641,7 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
       <div class="module" id="mod-purchases">
         <div class="page-header">
           <div><div class="page-title">Purchase Orders</div><div class="page-sub">Supplier orders &amp; delivery tracking</div></div>
-          <div class="page-actions"><button class="btn btn-sm" onclick="openMigrationModal('purchases')">Import</button><button class="btn btn-sm" onclick="exportCsv('purchases')">Export</button><button class="btn btn-sm btn-primary">+ New PO</button></div>
+          <div class="page-actions"><button class="btn btn-sm" onclick="openMigrationModal('purchases')">Import / Export</button><button class="btn btn-sm btn-primary">+ New PO</button></div>
         </div>
         <div class="ctrl-bar">
           <div class="search-wrap"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10 10l3.5 3.5"/></svg><input type="search" id="po-q" placeholder="Search PO, supplier, model..." oninput="filterPO()"></div>
@@ -665,7 +664,7 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
       <div class="module" id="mod-payables">
         <div class="page-header">
           <div><div class="page-title">Payables</div><div class="page-sub">Supplier invoices &amp; payment obligations</div></div>
-          <div class="page-actions"><button class="btn btn-sm" onclick="openMigrationModal('payables')">Import</button><button class="btn btn-sm" onclick="exportCsv('payables')">Export</button><button class="btn btn-sm btn-primary">+ Record Payment</button></div>
+          <div class="page-actions"><button class="btn btn-sm" onclick="openMigrationModal('payables')">Import / Export</button><button class="btn btn-sm btn-primary">+ Record Payment</button></div>
         </div>
         <div class="ctrl-bar">
           <div class="search-wrap"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10 10l3.5 3.5"/></svg><input type="search" id="ap-q" placeholder="Search invoice, vendor..." oninput="filterAP()"></div>
@@ -687,7 +686,7 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
       <div class="module" id="mod-cashfund">
         <div class="page-header">
           <div><div class="page-title">Cash Fund Management</div><div class="page-sub">Petty cash &amp; operational fund per branch</div></div>
-          <div class="page-actions"><button class="btn btn-sm" onclick="openMigrationModal('cashfund')">Import</button><button class="btn btn-sm" onclick="exportCsv('cashfund')">Export</button><button class="btn btn-sm btn-primary">+ Fund Transfer</button></div>
+          <div class="page-actions"><button class="btn btn-sm" onclick="openMigrationModal('cashfund')">Import / Export</button><button class="btn btn-sm btn-primary">+ Fund Transfer</button></div>
         </div>
         <div class="cf-grid" id="cf-grid"></div>
         <div class="section-header"><div class="section-title">Cash Fund Ledger — May 2026</div><button class="btn btn-sm">View Full History</button></div>
@@ -703,7 +702,7 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
       <div class="module" id="mod-banking">
         <div class="page-header">
           <div><div class="page-title">Banking</div><div class="page-sub">Bank accounts &amp; transaction reconciliation</div></div>
-          <div class="page-actions"><button class="btn btn-sm" onclick="openMigrationModal('banking')">Import</button><button class="btn btn-sm" onclick="exportCsv('banking')">Export</button><button class="btn btn-sm btn-primary">+ New Transaction</button></div>
+          <div class="page-actions"><button class="btn btn-sm" onclick="openMigrationModal('banking')">Import / Export</button><button class="btn btn-sm btn-primary">+ New Transaction</button></div>
         </div>
         <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr)">
           <div class="kpi-block"><div class="kpi-label">BPI — Main Account</div><div class="kpi-value" style="font-size:20px">&#8369;12,480,500</div><div class="kpi-sub">Acct No. <span class="tag">1234-5678-90</span></div></div>
@@ -730,7 +729,7 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
       <div class="module" id="mod-gl">
         <div class="page-header">
           <div><div class="page-title">General Ledger</div><div class="page-sub">Journal entries &amp; chart of accounts</div></div>
-          <div class="page-actions"><button class="btn btn-sm" onclick="openMigrationModal('accounting')">Import</button><button class="btn btn-sm" onclick="exportCsv('accounting')">Export</button><button class="btn btn-sm btn-primary">+ Journal Entry</button></div>
+          <div class="page-actions"><button class="btn btn-sm" onclick="openMigrationModal('accounting')">Import / Export</button><button class="btn btn-sm btn-primary">+ Journal Entry</button></div>
         </div>
         <div class="ctrl-bar">
           <div class="search-wrap"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10 10l3.5 3.5"/></svg><input type="search" id="gl-q" placeholder="Search journal entry, account..." oninput="filterGL()"></div>
@@ -777,7 +776,7 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
       <div class="module" id="mod-timeexp">
         <div class="page-header">
           <div><div class="page-title">Time &amp; Expenses</div><div class="page-sub">Staff attendance &amp; expense reimbursements</div></div>
-          <div class="page-actions"><button class="btn btn-sm" onclick="openMigrationModal('timeexp')">Import</button><button class="btn btn-sm" onclick="exportCsv('timeexp')">Export</button><button class="btn btn-sm btn-primary">+ Submit Expense</button></div>
+          <div class="page-actions"><button class="btn btn-sm" onclick="openMigrationModal('timeexp')">Import / Export</button><button class="btn btn-sm btn-primary">+ Submit Expense</button></div>
         </div>
         <div class="te-tabs">
           <div class="te-tab active" onclick="teTab('attendance',this)">Attendance Log</div>
@@ -814,7 +813,7 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
       <div class="module" id="mod-payroll">
         <div class="page-header">
           <div><div class="page-title">Payroll Management</div><div class="page-sub">Staff salary run, deductions, and payout monitoring &mdash; <span class="live-dot">Live</span></div></div>
-          <div class="page-actions"><button class="btn btn-sm" onclick="openMigrationModal('payroll')">Import</button><button class="btn btn-sm" onclick="exportPayroll()">Export Payroll</button><button class="btn btn-sm" onclick="approvePayroll()">Approve Run</button><button class="btn btn-sm btn-primary" onclick="processPayroll()">Process Payout</button></div>
+          <div class="page-actions"><button class="btn btn-sm" onclick="openMigrationModal('payroll')">Import / Export</button><button class="btn btn-sm" onclick="approvePayroll()">Approve Run</button><button class="btn btn-sm btn-primary" onclick="processPayroll()">Process Payout</button></div>
         </div>
         <div class="payroll-summary">
           <div class="payroll-card"><div class="payroll-label">Payroll Period</div><div class="payroll-value">May 1-15</div><div class="payroll-sub">Semi-monthly cycle</div></div>
@@ -844,7 +843,7 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
       <div class="module" id="mod-branches">
         <div class="page-header">
           <div><div class="page-title">Branch Directory</div><div class="page-sub">All NEXII BSM DEMO locations</div></div>
-          <div class="page-actions"><button class="btn btn-sm" onclick="openMigrationModal('branches')">Import</button><button class="btn btn-sm" onclick="exportCsv('branches')">Export</button><button class="btn btn-sm btn-primary">+ Add Branch</button></div>
+          <div class="page-actions"><button class="btn btn-sm" onclick="openMigrationModal('branches')">Import / Export</button><button class="btn btn-sm btn-primary">+ Add Branch</button></div>
         </div>
         <div class="ctrl-bar">
           <div class="search-wrap"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10 10l3.5 3.5"/></svg><input type="search" id="branch-q" placeholder="Search branch, manager, region..." oninput="renderBranches()"></div>
@@ -865,13 +864,13 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
       <div class="modal-overlay" id="migration-modal-overlay" onclick="if(event.target===this)closeMigrationModal()">
       <div class="migration-modal" role="dialog" aria-modal="true" aria-labelledby="migration-modal-title">
         <div class="page-header">
-          <div><div class="page-title" id="migration-modal-title">Import / Export Center</div><div class="page-sub">Migrate old database files, validate mappings, and export BSM-ready records without leaving the current module</div></div>
+          <div><div class="page-title" id="migration-modal-title">Import / Export Center</div><div class="page-sub" id="migration-modal-subtitle">Migrate old database files, validate mappings, and export BSM-ready records without leaving the current module</div></div>
           <div class="page-actions"><button class="btn btn-sm" onclick="exportMigrationReport()">Export Migration Report</button><button class="btn btn-sm btn-primary" onclick="simulateImport()">Import Sample Data</button><button class="sp-close" onclick="closeMigrationModal()" title="Close">&times;</button></div>
         </div>
         <div class="migration-card-grid">
           <div class="migration-card"><span>Imported Files</span><strong id="mig-files">0</strong><small>CSV, Excel, SQL dump, or legacy export</small></div>
           <div class="migration-card"><span>Validated Records</span><strong id="mig-records">0</strong><small>Inventory, customers, suppliers, accounting</small></div>
-          <div class="migration-card"><span>Imported to System</span><strong id="mig-imported">0</strong><small>Visible in the live demo modules</small></div>
+          <div class="migration-card"><span>Imported to This Page</span><strong id="mig-imported">0</strong><small>Visible in the active live module</small></div>
           <div class="migration-card"><span>Export Packages</span><strong id="mig-exports">0</strong><small>Generated for review or backup</small></div>
         </div>
         <div class="migration-grid">
@@ -1111,7 +1110,8 @@ function renderMigration(){
   if(!files)return;
   files.textContent=migrationState.files;
   document.getElementById('mig-records').textContent=migrationState.records;
-  document.getElementById('mig-imported').textContent=migrationState.imported.length;
+  const currentType=migrationState.sourceType||migrationTypeForModule(migrationState.activeModule);
+  document.getElementById('mig-imported').textContent=migrationState.imported.filter(row=>migrationRecordMatches(row,currentType)).length;
   document.getElementById('mig-exports').textContent=migrationState.exports;
   document.getElementById('migration-mapping').innerHTML=migrationState.mapping.map(row=>`
     <div class="mapping-row">
@@ -1125,7 +1125,7 @@ function renderMigration(){
   `).join('');
   const preview=document.getElementById('migration-preview');
   if(preview){
-    const rows=migrationState.imported.slice(0,12);
+    const rows=migrationState.imported.filter(row=>migrationRecordMatches(row,currentType)).slice(0,12);
     preview.innerHTML=rows.length?`
       <div class="table-wrap"><table>
         <thead><tr><th>Module</th><th>Record ID</th><th>Imported Record</th><th>Destination</th><th>Status</th></tr></thead>
@@ -1135,13 +1135,9 @@ function renderMigration(){
         </tr>`).join('')}</tbody>
       </table></div>
       <div class="import-actions">
-        <button class="btn btn-sm" onclick="closeMigrationModal();nav('inventory')">Open Inventory</button>
-        <button class="btn btn-sm" onclick="closeMigrationModal();nav('customers')">Open Customers</button>
-        <button class="btn btn-sm" onclick="closeMigrationModal();nav('sales')">Open Sales</button>
-        <button class="btn btn-sm" onclick="closeMigrationModal();nav('gl')">Open Accounting</button>
-        <button class="btn btn-sm" onclick="closeMigrationModal();nav('payroll')">Open Payroll</button>
+        <button class="btn btn-sm" onclick="closeMigrationModal();nav('${moduleForMigrationType(currentType)}')">Open ${migrationModuleTitle(currentType)}</button>
       </div>
-    `:'<div class="empty-state"><strong>No records imported yet</strong><p>Load a sample file, validate the mapping, then click Import Sample Data. Imported records will appear here and inside the matching live module.</p></div>';
+    `:`<div class="empty-state"><strong>No ${migrationModuleTitle(currentType).toLowerCase()} records imported yet</strong><p>Load a sample file, validate the mapping, then click Import Sample Data. Imported records will appear here and inside this page's live module.</p></div>`;
   }
   renderMigrationContext();
 }
@@ -1161,21 +1157,47 @@ function migrationLabel(type){
   return labels[type]||'Inventory CSV';
 }
 
+function moduleForMigrationType(type){
+  const map={accounting:'gl'};
+  return map[type]||type;
+}
+
+function migrationModuleTitle(type){
+  const moduleId=moduleForMigrationType(type);
+  const titles={cashfund:'Cash Fund Management',timeexp:'Time & Expenses'};
+  return titles[moduleId]||navMeta[moduleId]?.title||migrationLabel(type).replace(/ (CSV|XLSX|SQL)$/,'');
+}
+
+function migrationRecordMatches(row,type){
+  return !row.type||row.type===type;
+}
+
 function renderMigrationContext(){
   const title=document.getElementById('migration-context-title');
   if(!title)return;
   const importType=migrationState.sourceType||migrationTypeForModule(migrationState.activeModule);
   const exportType=exportTypeForModule(migrationState.activeModule);
+  const moduleTitle=migrationModuleTitle(importType);
+  document.getElementById('migration-modal-title').textContent=`${moduleTitle} Import / Export`;
+  document.getElementById('migration-modal-subtitle').textContent=`This modal belongs to the ${moduleTitle} page only. Imports, exports, previews, and reports stay scoped to this module.`;
   title.textContent=`Current target: ${migrationLabel(importType)}`;
-  document.getElementById('migration-context-copy').textContent=`This modal is tied to the current page. Importing will update ${migrationLabel(importType).replace(' CSV','').replace(' XLSX','').replace(' SQL','')} records in the live demo, and exporting will download ${migrationLabel(exportType)} from this page context.`;
+  document.getElementById('migration-context-copy').textContent=`Importing will update ${moduleTitle} records in the live demo, and exporting will download ${migrationLabel(exportType)} from this page context.`;
   document.getElementById('migration-load-context').textContent=`Load ${migrationLabel(importType)} Sample`;
   document.getElementById('migration-export-context').textContent=`Export ${migrationLabel(exportType)}`;
 }
 
 function openMigrationModal(sourceType){
   const active=document.querySelector('.module.active')?.id?.replace('mod-','')||'dashboard';
-  migrationState.activeModule=active;
-  migrationState.sourceType=sourceType||migrationTypeForModule(active);
+  const type=sourceType||migrationTypeForModule(active);
+  const sample=migrationSampleForType(type);
+  const isSameContext=migrationState.sourceType===type;
+  migrationState.activeModule=moduleForMigrationType(type)||active;
+  migrationState.sourceType=type;
+  if(!isSameContext){
+    migrationState.records=0;
+    migrationState.selected=sample.name;
+    migrationState.mapping=sample.mapping;
+  }
   renderMigrationContext();
   renderMigration();
   document.getElementById('migration-modal-overlay')?.classList.add('open');
@@ -1207,7 +1229,7 @@ function previewLegacyFile(input){
   showToast(`${file.name} ready for validation`);
 }
 
-function loadLegacySample(type){
+function migrationSampleForType(type){
   const samples={
     inventory:{name:'old_inventory_master.csv',records:1248,mapping:[['unit_code','Unit ID','Mapped'],['motor_model','Model','Mapped'],['engine_number','Engine No.','Mapped'],['dealer_branch','Branch','Mapped'],['unit_srp','SRP','Mapped']]},
     customers:{name:'legacy_customer_accounts.xlsx',records:360,mapping:[['customer_code','Customer ID','Mapped'],['full_name','Full Name','Mapped'],['mobile_no','Contact No.','Mapped'],['home_address','Address','Mapped'],['account_state','Account Status','Needs Review']]},
@@ -1222,10 +1244,18 @@ function loadLegacySample(type){
     payroll:{name:'old_payroll_register.xlsx',records:90,mapping:[['payroll_ref','Payroll No.','Mapped'],['employee_code','Employee ID','Mapped'],['gross_pay','Gross Pay','Mapped'],['deductions','Deductions','Mapped'],['net_pay','Net Pay','Mapped']]},
     branches:{name:'old_branch_directory.csv',records:12,mapping:[['branch_name','Branch Name','Mapped'],['region','Region','Mapped'],['address','Address','Mapped'],['manager_name','Manager','Mapped'],['cash_balance','Cash Fund','Mapped']]}
   };
-  const sample=samples[type]||samples.inventory;
+  return samples[type]||samples.inventory;
+}
+
+function isMigrationType(type){
+  return ['inventory','customers','accounting','sales','receivables','purchases','payables','cashfund','banking','timeexp','payroll','branches'].includes(type);
+}
+
+function loadLegacySample(type){
+  const sample=migrationSampleForType(type);
   migrationState.files+=1;
   migrationState.records=sample.records;
-  migrationState.sourceType=type in samples?type:'inventory';
+  migrationState.sourceType=isMigrationType(type)?type:'inventory';
   migrationState.selected=sample.name;
   migrationState.mapping=sample.mapping;
   migrationLog('Sample legacy file loaded',`${sample.name} with ${sample.records.toLocaleString()} records`);
@@ -1241,8 +1271,8 @@ function validateLegacyMapping(){
 }
 
 function simulateImport(){
-  if(!migrationState.records)loadLegacySample('inventory');
-  const type=migrationState.sourceType||'inventory';
+  if(!migrationState.records)loadLegacySample(migrationState.sourceType||migrationTypeForModule(migrationState.activeModule));
+  const type=migrationState.sourceType||migrationTypeForModule(migrationState.activeModule);
   let inserted=[];
   if(type==='customers'){
     const base=custData.length+1;
@@ -1254,7 +1284,7 @@ function simulateImport(){
     custData.unshift(...inserted);
     clearImportFilters('customers');
     filterCust();
-    migrationState.imported.unshift(...inserted.map(r=>({module:'Customers',id:r.id,title:r.name,destination:'Customer Management',status:r.status})));
+    migrationState.imported.unshift(...inserted.map(r=>({type,module:'Customers',id:r.id,title:r.name,destination:'Customer Management',status:r.status})));
     migrationLog('Import completed',`${inserted.length} customer records added to Customer Management`);
     showToast('Imported customers now visible in Customer Management');
   }else if(type==='receivables'){
@@ -1266,7 +1296,7 @@ function simulateImport(){
     arData.unshift(...inserted);
     clearImportFilters('receivables');
     filterAR();
-    migrationState.imported.unshift(...inserted.map(r=>({module:'Receivables',id:r.no,title:`${r.customer} - ${r.model}`,destination:'Receivables',status:r.status})));
+    migrationState.imported.unshift(...inserted.map(r=>({type,module:'Receivables',id:r.no,title:`${r.customer} - ${r.model}`,destination:'Receivables',status:r.status})));
     migrationLog('Import completed',`${inserted.length} receivable accounts added`);
     showToast('Imported receivables now visible');
   }else if(type==='sales'){
@@ -1280,7 +1310,7 @@ function simulateImport(){
     clearImportFilters('sales');
     filterSO();
     renderDashboard();
-    migrationState.imported.unshift(...inserted.map(r=>({module:'Sales',id:r.no,title:`${r.customer} - ${r.model}`,destination:'Sales Orders',status:r.status})));
+    migrationState.imported.unshift(...inserted.map(r=>({type,module:'Sales',id:r.no,title:`${r.customer} - ${r.model}`,destination:'Sales Orders',status:r.status})));
     migrationLog('Import completed',`${inserted.length} sales orders added to Sales Orders`);
     showToast('Imported sales orders now visible in Sales');
   }else if(type==='purchases'){
@@ -1292,7 +1322,7 @@ function simulateImport(){
     poData.unshift(...inserted);
     clearImportFilters('purchases');
     filterPO();
-    migrationState.imported.unshift(...inserted.map(r=>({module:'Purchases',id:r.no,title:`${r.supplier} - ${r.model}`,destination:'Purchase Orders',status:r.status})));
+    migrationState.imported.unshift(...inserted.map(r=>({type,module:'Purchases',id:r.no,title:`${r.supplier} - ${r.model}`,destination:'Purchase Orders',status:r.status})));
     migrationLog('Import completed',`${inserted.length} purchase orders added`);
     showToast('Imported purchase orders now visible');
   }else if(type==='payables'){
@@ -1304,7 +1334,7 @@ function simulateImport(){
     apData.unshift(...inserted);
     clearImportFilters('payables');
     filterAP();
-    migrationState.imported.unshift(...inserted.map(r=>({module:'Payables',id:r.inv,title:`${r.vendor} - ${r.desc}`,destination:'Payables',status:r.status})));
+    migrationState.imported.unshift(...inserted.map(r=>({type,module:'Payables',id:r.inv,title:`${r.vendor} - ${r.desc}`,destination:'Payables',status:r.status})));
     migrationLog('Import completed',`${inserted.length} supplier invoices added`);
     showToast('Imported payables now visible');
   }else if(type==='cashfund'){
@@ -1314,7 +1344,7 @@ function simulateImport(){
     ];
     cashFundData.unshift(...inserted);
     renderCashFund();
-    migrationState.imported.unshift(...inserted.map(r=>({module:'Cash Fund',id:r.ref,title:`${r.branch} - ${r.desc}`,destination:'Cash Fund Management',status:r.cashIn?'Credit':'Debit'})));
+    migrationState.imported.unshift(...inserted.map(r=>({type,module:'Cash Fund',id:r.ref,title:`${r.branch} - ${r.desc}`,destination:'Cash Fund Management',status:r.cashIn?'Credit':'Debit'})));
     migrationLog('Import completed',`${inserted.length} cash fund entries added`);
     showToast('Imported cash fund entries now visible');
   }else if(type==='banking'){
@@ -1324,7 +1354,7 @@ function simulateImport(){
     ];
     const bankTb=document.getElementById('bank-tb');
     if(bankTb)bankTb.insertAdjacentHTML('afterbegin',inserted.map(r=>`<tr><td class="mono dim">${r.date}</td><td>${r.bank}</td><td class="mono">${r.ref}</td><td>${r.desc}</td><td class="${r.debit?'amt':'dim'}" style="${r.debit?'color:var(--red)':''}">${r.debit?fmt(r.debit):'—'}</td><td class="${r.credit?'amt':'dim'}" style="${r.credit?'color:var(--green)':''}">${r.credit?fmt(r.credit):'—'}</td><td class="amt">${fmt(r.balance)}</td><td>${badge(r.type)}</td></tr>`).join(''));
-    migrationState.imported.unshift(...inserted.map(r=>({module:'Banking',id:r.ref,title:`${r.bank} - ${r.desc}`,destination:'Banking',status:r.type})));
+    migrationState.imported.unshift(...inserted.map(r=>({type,module:'Banking',id:r.ref,title:`${r.bank} - ${r.desc}`,destination:'Banking',status:r.type})));
     migrationLog('Import completed',`${inserted.length} bank transactions added`);
     showToast('Imported bank transactions now visible');
   }else if(type==='timeexp'){
@@ -1334,7 +1364,7 @@ function simulateImport(){
     ];
     employeeData.unshift(...inserted);
     renderEmployees();
-    migrationState.imported.unshift(...inserted.map(r=>({module:'Time & Expenses',id:r.id,title:`${r.name} - ${r.position}`,destination:'Time & Expenses',status:r.status})));
+    migrationState.imported.unshift(...inserted.map(r=>({type,module:'Time & Expenses',id:r.id,title:`${r.name} - ${r.position}`,destination:'Time & Expenses',status:r.status})));
     migrationLog('Import completed',`${inserted.length} attendance records added`);
     showToast('Imported attendance records now visible');
   }else if(type==='payroll'){
@@ -1347,7 +1377,7 @@ function simulateImport(){
     payrollData.unshift(...inserted);
     clearImportFilters('payroll');
     filterPayroll();
-    migrationState.imported.unshift(...inserted.map(r=>({module:'Payroll',id:r.no,title:`${r.employee} - ${r.position}`,destination:'Payroll Management',status:r.status})));
+    migrationState.imported.unshift(...inserted.map(r=>({type,module:'Payroll',id:r.no,title:`${r.employee} - ${r.position}`,destination:'Payroll Management',status:r.status})));
     migrationLog('Import completed',`${inserted.length} payroll records added to Payroll Management`);
     showToast('Imported payroll records now visible in Payroll');
   }else if(type==='accounting'){
@@ -1360,7 +1390,7 @@ function simulateImport(){
     glData.unshift(...inserted);
     clearImportFilters('accounting');
     filterGL();
-    migrationState.imported.unshift(...inserted.map(r=>({module:'Accounting',id:r.ref,title:r.desc,destination:'General Ledger',status:r.type})));
+    migrationState.imported.unshift(...inserted.map(r=>({type,module:'Accounting',id:r.ref,title:r.desc,destination:'General Ledger',status:r.type})));
     migrationLog('Import completed',`${inserted.length} ledger entries added to Accounting / GL`);
     showToast('Imported ledger entries now visible in Accounting');
   }else if(type==='branches'){
@@ -1371,7 +1401,7 @@ function simulateImport(){
     refreshBranchInventory();
     populateBranchSelects();
     renderBranches();
-    migrationState.imported.unshift(...inserted.map(r=>({module:'Branches',id:r.name,title:`${r.region} - ${r.address}`,destination:'Branch Directory',status:r.status})));
+    migrationState.imported.unshift(...inserted.map(r=>({type,module:'Branches',id:r.name,title:`${r.region} - ${r.address}`,destination:'Branch Directory',status:r.status})));
     migrationLog('Import completed',`${inserted.length} branch record added`);
     showToast('Imported branch now visible');
   }else{
@@ -1387,7 +1417,7 @@ function simulateImport(){
     filterInv();
     renderDashboard();
     renderBranches();
-    migrationState.imported.unshift(...inserted.map(r=>({module:'Inventory',id:r.id,title:`${r.brand} ${r.model}`,destination:'Inventory Management',status:r.status})));
+    migrationState.imported.unshift(...inserted.map(r=>({type,module:'Inventory',id:r.id,title:`${r.brand} ${r.model}`,destination:'Inventory Management',status:r.status})));
     migrationLog('Import completed',`${inserted.length} motorcycle units added to Inventory Management`);
     showToast('Imported units now visible in Inventory Management');
   }
@@ -1451,26 +1481,30 @@ function exportCsv(type){
 }
 
 function exportMigrationReport(){
+  const currentType=migrationState.sourceType||migrationTypeForModule(migrationState.activeModule);
+  const moduleTitle=migrationModuleTitle(currentType);
+  const importedRows=migrationState.imported.filter(row=>migrationRecordMatches(row,currentType));
   const content=[
-    'NEXII BSM IMPORT / EXPORT MIGRATION REPORT',
+    `NEXII BSM ${moduleTitle.toUpperCase()} IMPORT / EXPORT REPORT`,
     `Generated: ${new Date().toLocaleString('en-PH')}`,
     '',
     `Imported files: ${migrationState.files}`,
     `Validated records: ${migrationState.records}`,
     `Export packages: ${migrationState.exports}`,
     `Current source: ${migrationState.selected}`,
-    `Imported to system: ${migrationState.imported.length}`,
+    `Current page: ${moduleTitle}`,
+    `Imported to this page: ${importedRows.length}`,
     '',
     'Field mapping:',
     ...migrationState.mapping.map(row=>`- ${row[0]} -> ${row[1]} (${row[2]})`),
     '',
     'Imported records:',
-    ...(migrationState.imported.length?migrationState.imported.map(row=>`- ${row.module}: ${row.id} - ${row.title} -> ${row.destination} (${row.status})`):['- None yet']),
+    ...(importedRows.length?importedRows.map(row=>`- ${row.module}: ${row.id} - ${row.title} -> ${row.destination} (${row.status})`):['- None yet']),
     '',
     'Activity:',
     ...migrationState.logs.slice(-12).map(row=>`- ${row[0]}: ${row[1]}`)
   ].join('\n');
-  downloadFile('nexii-bsm-migration-report.txt',content);
+  downloadFile(`nexii-bsm-${currentType}-import-export-report.txt`,content);
   migrationState.exports+=1;
   migrationLog('Migration report exported','Client-ready import/export report downloaded');
   renderMigration();
