@@ -413,6 +413,69 @@ body.dark .login-right{background:var(--bg)}
 body.dark .login-demo-note,body.dark .lm-tag,body.dark .tag{background:var(--surface);border-color:var(--border-strong)}
 body.dark #coa-list .sub-header{background:var(--bg)!important}
 body.dark .badge-delivered{color:var(--status-approved-text);background:var(--status-approved-bg);border-color:#166534}
+
+/* Demo Process Modals */
+.demo-form-grid {
+  display: grid;
+  gap: 10px;
+}
+.demo-form-row {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  gap: 12px;
+  align-items: center;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--surface-2);
+}
+.demo-form-row label {
+  font-size: 11.5px;
+  color: var(--text-secondary);
+}
+.demo-form-row input,
+.demo-form-row select,
+.demo-form-row textarea {
+  width: 100%;
+  min-height: 30px;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 12.5px;
+  color: var(--text-primary);
+  background: var(--bg);
+  border: 1px solid var(--border-strong);
+  padding: 5px 10px;
+  outline: none;
+}
+.demo-form-row textarea {
+  min-height: 70px;
+  resize: vertical;
+}
+.demo-form-row input:focus,
+.demo-form-row select:focus,
+.demo-form-row textarea:focus {
+  border-color: var(--accent);
+}
+.demo-process-status {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+.demo-process-status > div {
+  padding: 10px 12px;
+  border-right: 1px solid var(--border);
+  font-size: 12.5px;
+}
+.demo-process-status > div:last-child {
+  border-right: none;
+}
+.demo-process-status strong {
+  display: block;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
 @media(max-width:1280px){:root{--sidebar-w:200px}.kpi-grid{grid-template-columns:repeat(3,1fr)}.cf-grid{grid-template-columns:repeat(2,1fr)}.payroll-summary,.migration-card-grid{grid-template-columns:repeat(2,1fr)}.migration-grid{grid-template-columns:1fr}.erp-menu-grid,.orcr-form-grid,.report-form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.erp-shortcuts{grid-template-columns:repeat(2,minmax(0,1fr))}.erp-menu-section:nth-child(3n){border-right:1px solid var(--border)}.erp-menu-section:nth-child(2n){border-right:none}}
 @media(max-width:760px){#app{overflow:auto}.erp-menu-grid,.orcr-form-grid,.report-form-grid,.erp-shortcuts{grid-template-columns:1fr}.erp-menu-section,.erp-menu-section:nth-child(2n),.erp-menu-section:nth-child(3n){border-right:none}.erp-menu-intro,.page-header,.orcr-summary,.report-result-bar{align-items:flex-start;flex-direction:column}.orcr-actions,.orcr-form,.orcr-results,.report-panel{padding-left:16px;padding-right:16px}.report-preview-head{flex-direction:column}}
 @media print{body>*:not(#orcr-preview-overlay){display:none!important}#orcr-preview-overlay{position:static!important;display:block!important;background:#fff!important;padding:0!important}.report-preview-modal{width:100%!important;max-height:none!important;box-shadow:none!important;border:none!important}.report-preview-actions,.sp-close{display:none!important}}
@@ -2529,7 +2592,17 @@ if(document.addEventListener){
     const item = e.target.closest('[data-action]');
     if (item && !item.getAttribute('onclick')) {
       e.preventDefault();
-      handleDemoAction(item.dataset.action, item.dataset.type, item.dataset.target);
+      
+      const action = item.dataset.action;
+      const type = item.dataset.type;
+      const target = item.dataset.target;
+      
+      if (type === 'process') {
+        openProcessDemo(action);
+        return;
+      }
+      
+      handleDemoAction(action, type, target);
       return;
     }
   
@@ -2774,24 +2847,212 @@ function openSalesPricesDemo() {
 }
 
 function openProcessDemo(action) {
+  if (action === 'Process Orders') return openProcessOrdersProcess();
+  if (action === 'Generate Intercompany Sales Orders') return openIntercompanySalesOrdersProcess();
+  if (action === 'Process Shipments') return openShipmentsProcess();
+  if (action === 'Process Invoices and Memos') return openInvoicesAndMemosProcess();
+  if (action === 'Create Transfer Orders') return openTransferOrdersProcess();
+  if (action === 'Print/Email Orders') return openPrintEmailOrdersProcess();
+
+  return openGenericProcessDemo(action);
+}
+
+function openProcessOrdersProcess() {
+  const branches = typeof branchData !== 'undefined' ? branchData.map(b => `<option value="${esc(b.name)}">${esc(b.name)}</option>`).join('') : '<option>Manila Main</option>';
+  const html = `
+    <div class="orcr-form-grid" style="margin-bottom: 16px;">
+      <div class="orcr-field"><label>Branch Filter</label><select><option>All Branches</option>${branches}</select></div>
+      <div class="orcr-field"><label>Order Date From</label><input type="date" value="${new Date(new Date().setDate(1)).toISOString().slice(0,10)}"></div>
+      <div class="orcr-field"><label>Order Date To</label><input type="date" value="${new Date().toISOString().slice(0,10)}"></div>
+      <div class="orcr-field"><label>Payment Mode</label><select><option>All Modes</option><option>Cash</option><option>Installment</option><option>Bank Financing</option></select></div>
+      <div class="orcr-field"><label>Order Status</label><select><option>Pending</option><option>Processing</option><option>Completed</option></select></div>
+    </div>
+    <div class="sp-section-label">Affected Records</div>
+    <div class="table-wrap" style="border:1px solid var(--border);">
+      <table>
+        <thead><tr><th>Sales Order No.</th><th>Customer</th><th>Unit Model</th><th>Payment Mode</th><th>Branch</th><th>Order Status</th></tr></thead>
+        <tbody id="demo-process-records">
+          <tr><td class="mono">SO-2026-0101</td><td>Maria Santos</td><td>Honda ADV 160</td><td>Cash</td><td>Manila Main</td><td class="rec-status">${badge('Pending')}</td></tr>
+          <tr><td class="mono">SO-2026-0102</td><td>Patrick Lim</td><td>Yamaha NMAX</td><td>Installment</td><td>Quezon City North</td><td class="rec-status">${badge('Pending')}</td></tr>
+        </tbody>
+      </table>
+    </div>
+  `;
+  const actions = `
+    <button class="btn btn-sm btn-primary" onclick="simulateSpecificProcess(this, 'Processed', 'Demo sales orders processed successfully.')">Process Selected Orders</button>
+    <button class="btn btn-sm" onclick="showToast('Demo only: Orders validated.')">Validate Orders</button>
+    <button class="btn btn-sm" onclick="printProcessLog()">Print Order Processing Log</button>
+    <button class="btn btn-sm" onclick="closeCenterModal()">Close</button>
+  `;
+  openDemoPanel('Process Orders', html, actions);
+}
+
+function openIntercompanySalesOrdersProcess() {
+  const branches = typeof branchData !== 'undefined' ? branchData.map(b => `<option value="${esc(b.name)}">${esc(b.name)}</option>`).join('') : '<option>Manila Main</option>';
+  const html = `
+    <div class="orcr-form-grid" style="margin-bottom: 16px;">
+      <div class="orcr-field"><label>Source Branch</label><select>${branches}</select></div>
+      <div class="orcr-field"><label>Destination Branch</label><select>${branches}</select></div>
+      <div class="orcr-field"><label>Transfer Reason</label><input type="text" value="Stock Replenishment"></div>
+      <div class="orcr-field"><label>Transaction Date</label><input type="date" value="${new Date().toISOString().slice(0,10)}"></div>
+      <div class="orcr-field" style="display:flex; align-items:center; gap:8px;">
+        <input type="checkbox" id="icso-avail" checked style="width:auto; margin:0;">
+        <label for="icso-avail" style="margin:0;">Include Available Units</label>
+      </div>
+    </div>
+    <div class="sp-section-label">Affected Records</div>
+    <div class="table-wrap" style="border:1px solid var(--border);">
+      <table>
+        <thead><tr><th>Source Branch</th><th>Destination Branch</th><th>Unit Model</th><th>Quantity</th><th>Intercompany Ref No.</th><th>Status</th></tr></thead>
+        <tbody id="demo-process-records">
+          <tr><td>Manila Main</td><td>Quezon City North</td><td>Honda Click 125i</td><td>5</td><td class="mono">IC-2026-001</td><td class="rec-status">${badge('Pending')}</td></tr>
+          <tr><td>Manila Main</td><td>Makati Ayala</td><td>Yamaha Mio Gear</td><td>3</td><td class="mono">IC-2026-002</td><td class="rec-status">${badge('Pending')}</td></tr>
+        </tbody>
+      </table>
+    </div>
+  `;
+  const actions = `
+    <button class="btn btn-sm btn-primary" onclick="simulateSpecificProcess(this, 'Generated', 'Demo intercompany sales orders generated.')">Generate Intercompany Orders</button>
+    <button class="btn btn-sm" onclick="exportCsv('sales')">Export Intercompany Log</button>
+    <button class="btn btn-sm" onclick="closeCenterModal()">Close</button>
+  `;
+  openDemoPanel('Generate Intercompany Sales Orders', html, actions);
+}
+
+function openShipmentsProcess() {
+  const branches = typeof branchData !== 'undefined' ? branchData.map(b => `<option value="${esc(b.name)}">${esc(b.name)}</option>`).join('') : '<option>Manila Main</option>';
+  const html = `
+    <div class="orcr-form-grid" style="margin-bottom: 16px;">
+      <div class="orcr-field"><label>Branch</label><select><option>All Branches</option>${branches}</select></div>
+      <div class="orcr-field"><label>Release Date</label><input type="date" value="${new Date().toISOString().slice(0,10)}"></div>
+      <div class="orcr-field"><label>Delivery Status</label><select><option>Pending</option><option>In Transit</option><option>Delivered</option></select></div>
+      <div class="orcr-field"><label>OR/CR Validation</label><select><option>Required</option><option>Optional</option></select></div>
+    </div>
+    <div class="sp-section-label">Affected Records</div>
+    <div class="table-wrap" style="border:1px solid var(--border);">
+      <table>
+        <thead><tr><th>Shipment No.</th><th>Sales Order No.</th><th>Customer</th><th>Unit Model</th><th>OR No.</th><th>CR No.</th><th>Release Status</th></tr></thead>
+        <tbody id="demo-process-records">
+          <tr><td class="mono">SHP-2026-01</td><td class="mono">SO-2026-0101</td><td>Maria Santos</td><td>Honda ADV 160</td><td class="mono">OR-1234</td><td class="mono">CR-5678</td><td class="rec-status">${badge('Pending')}</td></tr>
+          <tr><td class="mono">SHP-2026-02</td><td class="mono">SO-2026-0102</td><td>Patrick Lim</td><td>Yamaha NMAX</td><td class="mono">OR-1235</td><td class="mono">CR-5679</td><td class="rec-status">${badge('Pending')}</td></tr>
+        </tbody>
+      </table>
+    </div>
+  `;
+  const actions = `
+    <button class="btn btn-sm btn-primary" onclick="simulateSpecificProcess(this, 'Ready for Release', 'Demo shipments processed successfully.')">Process Shipments</button>
+    <button class="btn btn-sm" onclick="showToast('Demo only: OR/CR validated successfully.')">Validate OR/CR</button>
+    <button class="btn btn-sm" onclick="window.print()">Print Delivery Slip</button>
+    <button class="btn btn-sm" onclick="closeCenterModal()">Close</button>
+  `;
+  openDemoPanel('Process Shipments', html, actions);
+}
+
+function openInvoicesAndMemosProcess() {
+  const branches = typeof branchData !== 'undefined' ? branchData.map(b => `<option value="${esc(b.name)}">${esc(b.name)}</option>`).join('') : '<option>Manila Main</option>';
+  const html = `
+    <div class="orcr-form-grid" style="margin-bottom: 16px;">
+      <div class="orcr-field"><label>Invoice Date</label><input type="date" value="${new Date().toISOString().slice(0,10)}"></div>
+      <div class="orcr-field"><label>Customer Type</label><select><option>All Types</option><option>Retail</option><option>Corporate</option><option>Fleet</option></select></div>
+      <div class="orcr-field"><label>Branch</label><select><option>All Branches</option>${branches}</select></div>
+      <div class="orcr-field" style="display:flex; align-items:center; gap:8px;">
+        <input type="checkbox" id="iam-cm" checked style="width:auto; margin:0;">
+        <label for="iam-cm" style="margin:0;">Include Credit Memo</label>
+      </div>
+      <div class="orcr-field" style="display:flex; align-items:center; gap:8px;">
+        <input type="checkbox" id="iam-dm" checked style="width:auto; margin:0;">
+        <label for="iam-dm" style="margin:0;">Include Debit Memo</label>
+      </div>
+    </div>
+    <div class="sp-section-label">Affected Records</div>
+    <div class="table-wrap" style="border:1px solid var(--border);">
+      <table>
+        <thead><tr><th>Invoice No.</th><th>Sales Order No.</th><th>Customer</th><th>Invoice Amount</th><th>Memo Type</th><th>Invoice Status</th></tr></thead>
+        <tbody id="demo-process-records">
+          <tr><td class="mono">INV-2026-001</td><td class="mono">SO-2026-0101</td><td>Maria Santos</td><td class="amt">₱75,000</td><td>None</td><td class="rec-status">${badge('Pending')}</td></tr>
+          <tr><td class="mono">INV-2026-002</td><td class="mono">SO-2026-0102</td><td>Patrick Lim</td><td class="amt">₱140,000</td><td>Credit</td><td class="rec-status">${badge('Pending')}</td></tr>
+        </tbody>
+      </table>
+    </div>
+  `;
+  const actions = `
+    <button class="btn btn-sm btn-primary" onclick="simulateSpecificProcess(this, 'Generated', 'Demo invoices generated successfully.')">Generate Invoices</button>
+    <button class="btn btn-sm" onclick="showToast('Demo only: Memos applied successfully.')">Apply Memos</button>
+    <button class="btn btn-sm" onclick="window.print()">Print Invoice Batch</button>
+    <button class="btn btn-sm" onclick="closeCenterModal()">Close</button>
+  `;
+  openDemoPanel('Process Invoices and Memos', html, actions);
+}
+
+function openTransferOrdersProcess() {
+  const branches = typeof branchData !== 'undefined' ? branchData.map(b => `<option value="${esc(b.name)}">${esc(b.name)}</option>`).join('') : '<option>Manila Main</option>';
+  const html = `
+    <div class="orcr-form-grid" style="margin-bottom: 16px;">
+      <div class="orcr-field"><label>From Branch</label><select id="to-from-branch">${branches}</select></div>
+      <div class="orcr-field"><label>To Branch</label><select id="to-to-branch">${branches}</select></div>
+      <div class="orcr-field"><label>Unit Model</label><input type="text" id="to-model" placeholder="e.g. Honda Click 125i" value="Honda Click 125i"></div>
+      <div class="orcr-field"><label>Quantity</label><input type="number" id="to-qty" value="1"></div>
+      <div class="orcr-field"><label>Transfer Reason</label><input type="text" id="to-reason" value="Inventory Balancing"></div>
+      <div class="orcr-field"><label>Requested By</label><input type="text" id="to-requested" value="Admin User"></div>
+    </div>
+    <div class="sp-section-label">Affected Records</div>
+    <div class="table-wrap" style="border:1px solid var(--border);">
+      <table>
+        <thead><tr><th>Transfer Order No.</th><th>From Branch</th><th>To Branch</th><th>Unit Model</th><th>Quantity</th><th>Status</th></tr></thead>
+        <tbody id="demo-process-records">
+          <tr><td class="mono">TR-2026-001</td><td>Manila Main</td><td>Quezon City North</td><td>Yamaha NMAX</td><td>2</td><td class="rec-status">${badge('Pending')}</td></tr>
+        </tbody>
+      </table>
+    </div>
+  `;
+  const actions = `
+    <button class="btn btn-sm btn-primary" onclick="simulateCreateTransferOrder(this)">Create Transfer Order</button>
+    <button class="btn btn-sm" onclick="showToast('Demo only: Transfer order draft saved.')">Save Draft</button>
+    <button class="btn btn-sm" onclick="window.print()">Print Transfer Request</button>
+    <button class="btn btn-sm" onclick="closeCenterModal()">Close</button>
+  `;
+  openDemoPanel('Create Transfer Orders', html, actions);
+}
+
+function openPrintEmailOrdersProcess() {
+  const html = `
+    <div class="orcr-form-grid" style="margin-bottom: 16px;">
+      <div class="orcr-field"><label>Sales Order</label><select><option>SO-2026-0101 (Maria Santos)</option><option>SO-2026-0102 (Patrick Lim)</option></select></div>
+      <div class="orcr-field"><label>Document Type</label><select><option>Sales Order Form</option><option>Proforma Invoice</option><option>Delivery Receipt</option></select></div>
+      <div class="orcr-field"><label>Recipient Email</label><input type="email" value="customer@example.com"></div>
+      <div class="orcr-field" style="grid-column: span 3;">
+        <label>Message</label>
+        <textarea rows="3" style="width:100%; border:1px solid var(--border-strong); padding:5px; font-family:inherit;">Attached is your requested sales order document.</textarea>
+      </div>
+      <div class="orcr-field" style="display:flex; align-items:center; gap:8px;">
+        <input type="checkbox" id="peo-attach" checked style="width:auto; margin:0;">
+        <label for="peo-attach" style="margin:0;">Include Attachments</label>
+      </div>
+    </div>
+    <div class="sp-section-label">Affected Records</div>
+    <div class="table-wrap" style="border:1px solid var(--border);">
+      <table>
+        <thead><tr><th>Sales Order No.</th><th>Customer</th><th>Document Type</th><th>Recipient</th><th>Delivery Method</th><th>Status</th></tr></thead>
+        <tbody id="demo-process-records">
+          <tr><td class="mono">SO-2026-0101</td><td>Maria Santos</td><td>Sales Order Form</td><td>customer@example.com</td><td>Email</td><td class="rec-status">${badge('Pending')}</td></tr>
+        </tbody>
+      </table>
+    </div>
+  `;
+  const actions = `
+    <button class="btn btn-sm btn-primary" onclick="simulateSpecificProcess(this, 'Email Prepared', 'Demo only: sales order email prepared successfully.')">Send Demo Email</button>
+    <button class="btn btn-sm" onclick="showToast('Demo only: Email prepared and saved to drafts.')">Prepare Email</button>
+    <button class="btn btn-sm" onclick="window.print()">Print Preview</button>
+    <button class="btn btn-sm" onclick="closeCenterModal()">Close</button>
+  `;
+  openDemoPanel('Print/Email Orders', html, actions);
+}
+
+function openGenericProcessDemo(action) {
   const branches = typeof branchData !== 'undefined' ? branchData.map(b => `<option value="${esc(b.name)}">${esc(b.name)}</option>`).join('') : '<option>Manila Main</option>';
   let checklist = [];
   
-  if (action === 'Process Orders') {
-    checklist = ['Validate customer information', 'Check inventory availability', 'Confirm payment mode', 'Generate sales order document', 'Prepare order for invoicing'];
-  } else if (action === 'Generate Intercompany Sales Orders') {
-    checklist = ['Select source branch records', 'Validate destination branch', 'Generate intercompany order', 'Tag affected inventory units', 'Prepare intercompany report'];
-  } else if (action === 'Process Shipments') {
-    checklist = ['Confirm released units', 'Validate OR/CR documents', 'Assign delivery status', 'Generate shipment record', 'Prepare delivery slip'];
-  } else if (action === 'Process Invoices and Memos') {
-    checklist = ['Check completed sales orders', 'Generate customer invoice', 'Apply memo adjustments if needed', 'Update receivables preview', 'Prepare invoice batch'];
-  } else if (action === 'Create Transfer Orders') {
-    checklist = ['Select source branch', 'Select receiving branch', 'Check stock availability', 'Create transfer document', 'Prepare transfer approval'];
-  } else if (action === 'Print/Email Orders') {
-    checklist = ['Select sales order records', 'Generate printable order format', 'Prepare email recipient list', 'Attach order document', 'Queue demo email'];
-  } else {
-    checklist = ['Initialize process', 'Validate records', 'Execute update', 'Finish'];
-  }
+  checklist = ['Initialize process', 'Validate records', 'Execute update', 'Finish'];
 
   const html = `
     <div class="orcr-form-grid" style="margin-bottom: 16px;">
@@ -2833,6 +3094,30 @@ function openProcessDemo(action) {
     <button class="btn btn-sm" onclick="closeCenterModal()">Close</button>
   `;
   openDemoPanel(`Process: ${action}`, html, actions);
+}
+
+function simulateSpecificProcess(btn, targetStatus, message) {
+  flashButton(btn, 'Processing...');
+  const recStatuses = document.querySelectorAll('#demo-process-records .rec-status');
+  recStatuses.forEach(el => el.innerHTML = badge(targetStatus));
+  showToast(message);
+}
+
+function simulateCreateTransferOrder(btn) {
+  flashButton(btn, 'Creating...');
+  const tbody = document.getElementById('demo-process-records');
+  const fromBranch = document.getElementById('to-from-branch')?.value || 'Branch A';
+  const toBranch = document.getElementById('to-to-branch')?.value || 'Branch B';
+  const model = document.getElementById('to-model')?.value || 'Unit Model';
+  const qty = document.getElementById('to-qty')?.value || '1';
+  
+  if (tbody) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td class="mono">TR-2026-002</td><td>${esc(fromBranch)}</td><td>${esc(toBranch)}</td><td>${esc(model)}</td><td>${esc(qty)}</td><td class="rec-status">${badge('Created')}</td>`;
+    tbody.appendChild(tr);
+  }
+  
+  showToast('Demo transfer order created successfully.');
 }
 
 function simulateProcessStart(btn) {
