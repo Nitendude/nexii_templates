@@ -393,6 +393,17 @@ tbody td.amt{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:50
   display: flex;
   flex-direction: column;
 }
+.cm-footer {
+  display: flex;
+  gap: 8px;
+  padding: 10px 20px;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  flex-shrink: 0;
+}
 
 /* Time & Expenses */
 .te-tabs{display:flex;border-bottom:1px solid var(--border);background:var(--surface)}
@@ -766,7 +777,7 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
         <div class="table-container">
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Customer ID</th><th>Full Name</th><th>Contact No.</th><th>Address</th><th>Branch</th><th>Units Purchased</th><th>Total Spent</th><th>Account Status</th></tr></thead>
+              <thead><tr><th>Customer ID</th><th>Full Name</th><th>Contact No.</th><th>Address</th><th>Branch</th><th>Units Purchased</th><th>Total Spent</th><th>Account Status</th><th style="text-align:center">Action</th></tr></thead>
               <tbody id="cust-tb"></tbody>
             </table>
           </div>
@@ -1912,12 +1923,339 @@ function filterCust(){
   let d=custData.filter(r=>(!b||r.branch===b)&&(!q||[r.id,r.name,r.contact,r.address].join(' ').toLowerCase().includes(q)));
   document.getElementById('cust-count').textContent=`${d.length} customers`;
   document.getElementById('cust-ft').textContent=`${d.length} of ${custData.length} customers`;
-  document.getElementById('cust-tb').innerHTML=d.map(r=>`<tr>
+  document.getElementById('cust-tb').innerHTML=d.map(r=>`<tr class="row-link" style="cursor:pointer" onclick="openCustomerProfile('${r.id}')">
     <td class="mono">${r.id}</td><td><strong>${r.name}</strong></td>
     <td class="mono dim">${r.contact}</td><td class="dim">${r.address}</td>
     <td class="dim">${r.branch}</td><td class="mono" style="text-align:center">${r.units}</td>
     <td class="amt">&#8369;${fmt(r.total)}</td><td>${badge(r.status)}</td>
+    <td style="text-align:center"><button class="btn btn-sm" onclick="event.stopPropagation(); openCustomerProfile('${r.id}')" style="font-size:10.5px;padding:3px 10px;min-height:24px">View Profile</button></td>
   </tr>`).join('');
+}
+
+// --- NEW CUSTOMER PROFILE LOGIC ---
+function initCustomerProfileData(customerId) {
+  let stored = JSON.parse(localStorage.getItem('customerProfileDemoData')) || {};
+  if (stored[customerId]) return stored[customerId];
+
+  const cust = custData.find(c => c.id === customerId);
+  if (!cust) return null;
+
+  // Generate orders based on units purchased
+  const orders = [];
+  let totalPurchased = 0;
+  for (let i = 0; i < cust.units; i++) {
+    const unit = catalog[Math.floor(Math.random() * catalog.length)];
+    const qty = 1;
+    const price = unit.price;
+    const amount = qty * price;
+    totalPurchased += amount;
+    const isPaid = cust.status === 'Active' && Math.random() > 0.5;
+    const status = isPaid ? 'Completed' : (Math.random() > 0.5 ? 'Processing' : 'Pending');
+    const mode = ['Cash', 'GCash', 'Bank Transfer', 'Check', 'Financing'][Math.floor(Math.random() * 5)];
+    orders.push({
+      no: `ORD-2026-${pad(Math.floor(Math.random() * 9999), 4)}`,
+      date: dateLong(Math.floor(Math.random() * 30)),
+      model: `${unit.brand} ${unit.model}`,
+      qty,
+      price,
+      amount,
+      mode,
+      status
+    });
+  }
+
+  let totalPaid = 0;
+  let remainingBalance = 0;
+  let nextDueDate = '—';
+  let monthlyDue = 0;
+  let schedule = [];
+  let payments = [];
+
+  if (cust.status === 'Overdue') {
+    remainingBalance = totalPurchased * 0.4;
+    totalPaid = totalPurchased - remainingBalance;
+    nextDueDate = isoDate(1); // past date
+    monthlyDue = Math.round(remainingBalance / 6);
+  } else if (cust.status === 'Active') {
+    remainingBalance = Math.random() > 0.5 ? totalPurchased * 0.2 : 0;
+    totalPaid = totalPurchased - remainingBalance;
+    if (remainingBalance > 0) {
+      nextDueDate = isoDate(15); // future date
+      monthlyDue = Math.round(remainingBalance / 6);
+    }
+  }
+
+  // Generate some payments if totalPaid > 0
+  if (totalPaid > 0) {
+    payments.push({
+      no: `PAY-2026-${pad(Math.floor(Math.random() * 9999), 4)}`,
+      date: dateLong(Math.floor(Math.random() * 10)),
+      method: ['Cash', 'GCash', 'Bank Transfer'][Math.floor(Math.random() * 3)],
+      ref: `REF-${pad(Math.floor(Math.random() * 99999), 5)}`,
+      amount: totalPaid,
+      appliedTo: orders.length > 0 ? orders[0].no : 'Balance',
+      status: 'Applied'
+    });
+  }
+
+  // Generate payment schedule
+  if (remainingBalance > 0) {
+    schedule.push({
+      dueDate: nextDueDate,
+      amountDue: monthlyDue,
+      amountPaid: 0,
+      balance: monthlyDue,
+      status: cust.status === 'Overdue' ? 'Overdue' : 'Due Soon'
+    });
+  }
+
+  const profile = {
+    customerId: cust.id,
+    fullName: cust.name,
+    contact: cust.contact,
+    address: cust.address,
+    branch: cust.branch,
+    accountStatus: cust.status,
+    orders,
+    totalPurchased,
+    totalPaid,
+    remainingBalance,
+    nextDueDate,
+    monthlyDue,
+    paymentSchedule: schedule,
+    payments
+  };
+
+  stored[customerId] = profile;
+  localStorage.setItem('customerProfileDemoData', JSON.stringify(stored));
+  return profile;
+}
+
+function getDueStatus(dueDate, balance) {
+  if (balance <= 0) return 'Paid';
+  if (dueDate === '—') return 'Pending';
+  const today = new Date('2026-05-15');
+  const due = new Date(dueDate);
+  const diffDays = Math.ceil((due - today) / (1000 * 60 * 60 * 24));
+  if (diffDays < 0) return Math.abs(diffDays) + ' Days Overdue';
+  if (diffDays === 0) return 'Due Today';
+  return 'Due in ' + diffDays + ' Days';
+}
+
+function openCustomerProfile(customerId) {
+  const profile = initCustomerProfileData(customerId);
+  if (!profile) return;
+  const html = renderCustomerProfile(profile);
+  const actions = `
+    <button class="btn btn-sm btn-primary" onclick="openRecordCustomerPayment('${profile.customerId}')">Record Demo Payment</button>
+    <button class="btn btn-sm" onclick="showToast('Demo customer profile prepared for printing.'); setTimeout(()=>window.print(),500)">Print Profile</button>
+    <button class="btn btn-sm" onclick="exportCustomerProfileCsv('${profile.customerId}')">Export Customer CSV</button>
+    <button class="btn btn-sm" onclick="closeCenterModal()">Close</button>
+  `;
+  openCenterModal('Customer Profile: ' + profile.fullName, html, actions, { width: 'min(980px, calc(100vw - 48px))' });
+}
+
+function renderCustomerProfile(profile) {
+  const dueStatus = getDueStatus(profile.nextDueDate, profile.remainingBalance);
+  const isOverdue = dueStatus.includes('Overdue');
+
+  const ordersHtml = profile.orders.length ? profile.orders.map(o => `<tr>
+    <td class="mono">${o.no}</td><td class="dim">${o.date}</td><td>${o.model}</td><td class="mono" style="text-align:center">${o.qty}</td>
+    <td class="amt">&#8369;${fmt(o.price)}</td><td class="amt">&#8369;${fmt(o.amount)}</td><td>${o.mode}</td><td>${badge(o.status)}</td>
+  </tr>`).join('') : '<tr><td colspan="8" style="text-align:center;color:var(--text-tertiary)">No orders found</td></tr>';
+
+  const scheduleHtml = profile.paymentSchedule.length ? profile.paymentSchedule.map(s => `<tr>
+    <td class="mono">${s.dueDate}</td><td class="amt">&#8369;${fmt(s.amountDue)}</td><td class="amt" style="color:var(--green)">&#8369;${fmt(s.amountPaid)}</td>
+    <td class="amt" style="${s.balance > 0 && s.status === 'Overdue' ? 'color:var(--red)' : ''}">&#8369;${fmt(s.balance)}</td><td>${badge(s.status)}</td>
+  </tr>`).join('') : '<tr><td colspan="5" style="text-align:center;color:var(--text-tertiary)">No schedule</td></tr>';
+
+  const historyHtml = profile.payments.length ? profile.payments.map(p => `<tr>
+    <td class="mono">${p.no}</td><td class="dim">${p.date}</td><td>${p.method}</td><td class="mono dim">${p.ref}</td>
+    <td class="amt" style="color:var(--green)">&#8369;${fmt(p.amount)}</td><td class="mono">${p.appliedTo}</td><td>${badge(p.status)}</td>
+  </tr>`).join('') : '<tr><td colspan="7" style="text-align:center;color:var(--text-tertiary)">No payment history</td></tr>';
+
+  return `
+    <div class="sp-section">
+      <div class="sp-section-label">Basic Information</div>
+      <div class="sp-row"><span class="sp-key">Customer ID</span><span class="sp-val mono">${profile.customerId}</span></div>
+      <div class="sp-row"><span class="sp-key">Full Name</span><span class="sp-val">${profile.fullName}</span></div>
+      <div class="sp-row"><span class="sp-key">Contact Number</span><span class="sp-val mono">${profile.contact}</span></div>
+      <div class="sp-row"><span class="sp-key">Address</span><span class="sp-val">${profile.address}</span></div>
+      <div class="sp-row"><span class="sp-key">Branch</span><span class="sp-val">${profile.branch}</span></div>
+      <div class="sp-row"><span class="sp-key">Account Status</span><span class="sp-val">${badge(profile.accountStatus)}</span></div>
+    </div>
+
+    <div class="sp-section">
+      <div class="sp-section-label">Purchase / Order Summary</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Order No.</th><th>Date</th><th>Unit Model</th><th style="text-align:center">Qty</th><th>Unit Price</th><th>Total Amount</th><th>Payment Mode</th><th>Status</th></tr></thead>
+          <tbody>${ordersHtml}</tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="sp-section">
+      <div class="sp-section-label">Balance Summary</div>
+      <div class="sp-row"><span class="sp-key">Total Purchased Amount</span><span class="sp-val mono">&#8369;${fmt(profile.totalPurchased)}</span></div>
+      <div class="sp-row"><span class="sp-key">Total Paid</span><span class="sp-val mono" style="color:var(--green)">&#8369;${fmt(profile.totalPaid)}</span></div>
+      <div class="sp-row"><span class="sp-key">Remaining Balance</span><span class="sp-val mono" style="${profile.remainingBalance>0?'color:var(--red)':''}">&#8369;${fmt(profile.remainingBalance)}</span></div>
+      <div class="sp-row"><span class="sp-key">Next Due Date</span><span class="sp-val mono">${profile.nextDueDate}</span></div>
+      <div class="sp-row"><span class="sp-key">Monthly Due</span><span class="sp-val mono">&#8369;${fmt(profile.monthlyDue)}</span></div>
+      <div class="sp-row"><span class="sp-key">Payment Status</span><span class="sp-val" style="${isOverdue?'color:var(--red);font-weight:600':''}">${dueStatus}</span></div>
+    </div>
+
+    <div class="sp-section">
+      <div class="sp-section-label">Payment Schedule</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Due Date</th><th>Amount Due</th><th>Amount Paid</th><th>Balance</th><th>Status</th></tr></thead>
+          <tbody>${scheduleHtml}</tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="sp-section">
+      <div class="sp-section-label">Payment History</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Payment No.</th><th>Date</th><th>Method</th><th>Reference No.</th><th>Amount Paid</th><th>Applied To</th><th>Status</th></tr></thead>
+          <tbody>${historyHtml}</tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="sp-section">
+      <div class="sp-section-label">Activity Log</div>
+      <div style="border-left:2px solid var(--accent);padding-left:14px;margin-top:6px">
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;align-items:flex-start;gap:8px">
+            <span style="width:6px;height:6px;min-width:6px;border-radius:50%;background:var(--accent);margin-top:5px"></span>
+            <div><span style="font-size:11px;color:var(--text-primary)">Customer profile created</span></div>
+          </div>
+          ${profile.orders.length ? `<div style="display:flex;align-items:flex-start;gap:8px">
+            <span style="width:6px;height:6px;min-width:6px;border-radius:50%;background:var(--green);margin-top:5px"></span>
+            <div><span style="font-size:11px;color:var(--text-primary)">Sales order created</span></div>
+          </div>` : ''}
+          ${profile.payments.length ? `<div style="display:flex;align-items:flex-start;gap:8px">
+            <span style="width:6px;height:6px;min-width:6px;border-radius:50%;background:var(--green);margin-top:5px"></span>
+            <div><span style="font-size:11px;color:var(--text-primary)">Payment recorded</span></div>
+          </div>` : ''}
+          ${profile.remainingBalance > 0 ? `<div style="display:flex;align-items:flex-start;gap:8px">
+            <span style="width:6px;height:6px;min-width:6px;border-radius:50%;background:var(--text-tertiary);margin-top:5px"></span>
+            <div><span style="font-size:11px;color:var(--text-primary)">Statement generated</span></div>
+          </div>` : ''}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function openRecordCustomerPayment(customerId) {
+  let stored = JSON.parse(localStorage.getItem('customerProfileDemoData')) || {};
+  const profile = stored[customerId];
+  if (!profile) return;
+
+  const html = `
+    <div class="demo-form-grid">
+      <div class="demo-form-row"><label>Payment Date</label><input type="date" id="rcp-date" value="2026-05-15"></div>
+      <div class="demo-form-row"><label>Payment Method</label><select id="rcp-method"><option>Cash</option><option>GCash</option><option>Bank Transfer</option><option>Check</option></select></div>
+      <div class="demo-form-row"><label>Reference Number</label><input type="text" id="rcp-ref" placeholder="e.g. TXN-12345"></div>
+      <div class="demo-form-row"><label>Amount Paid (&#8369;)</label><input type="number" id="rcp-amount" placeholder="0.00" value="${profile.remainingBalance > 0 ? profile.monthlyDue || profile.remainingBalance : ''}"></div>
+      <div class="demo-form-row"><label>Apply To</label><select id="rcp-apply"><option>Balance</option>${profile.orders.map(o=>`<option value="${o.no}">${o.no}</option>`).join('')}</select></div>
+    </div>
+  `;
+  const actions = `
+    <button class="btn btn-sm btn-primary" onclick="saveCustomerDemoPayment('${customerId}', this)">Save Payment</button>
+    <button class="btn btn-sm" onclick="openCustomerProfile('${customerId}')">Cancel</button>
+  `;
+  openCenterModal('Record Payment: ' + profile.fullName, html, actions);
+}
+
+function saveCustomerDemoPayment(customerId, btn) {
+  const amtInput = document.getElementById('rcp-amount');
+  const amt = parseFloat(amtInput.value);
+  if (isNaN(amt) || amt <= 0) { showToast('Please enter a valid amount'); return; }
+
+  setButtonLoading(btn, 'Saving...');
+  setTimeout(() => {
+    let stored = JSON.parse(localStorage.getItem('customerProfileDemoData')) || {};
+    const profile = stored[customerId];
+    if (profile) {
+      profile.totalPaid += amt;
+      profile.remainingBalance = Math.max(0, profile.remainingBalance - amt);
+      
+      profile.payments.unshift({
+        no: `PAY-2026-${pad(profile.payments.length + 8000, 4)}`,
+        date: document.getElementById('rcp-date').value,
+        method: document.getElementById('rcp-method').value,
+        ref: document.getElementById('rcp-ref').value || 'N/A',
+        amount: amt,
+        appliedTo: document.getElementById('rcp-apply').value,
+        status: 'Applied'
+      });
+
+      if (profile.remainingBalance === 0) {
+        profile.accountStatus = 'Paid';
+        profile.nextDueDate = '—';
+        profile.monthlyDue = 0;
+        profile.paymentSchedule.forEach(s => {
+          if(s.balance > 0) {
+            s.amountPaid += s.balance;
+            s.balance = 0;
+            s.status = 'Paid';
+          }
+        });
+      } else if (profile.paymentSchedule.length > 0) {
+         let sched = profile.paymentSchedule[0];
+         sched.amountPaid += amt;
+         sched.balance = Math.max(0, sched.amountDue - sched.amountPaid);
+         if (sched.balance === 0) sched.status = 'Paid';
+      }
+
+      stored[customerId] = profile;
+      localStorage.setItem('customerProfileDemoData', JSON.stringify(stored));
+      
+      // Update the main custData to reflect changes in UI
+      const cust = custData.find(c => c.id === customerId);
+      if(cust) {
+          cust.status = profile.accountStatus;
+      }
+      refreshCustomerTableAfterProfileUpdate();
+    }
+    resetButtonLoading(btn);
+    showToast('Demo payment recorded successfully.');
+    openCustomerProfile(customerId);
+  }, 500);
+}
+
+function refreshCustomerTableAfterProfileUpdate() {
+  filterCust();
+}
+
+function exportCustomerProfileCsv(customerId) {
+  let stored = JSON.parse(localStorage.getItem('customerProfileDemoData')) || {};
+  const p = stored[customerId];
+  if (!p) return;
+
+  let csv = 'CUSTOMER PROFILE\\n';
+  csv += 'Customer ID,Name,Contact,Address,Branch,Account Status\\n';
+  csv += `${p.customerId},"${p.fullName}","${p.contact}","${p.address}","${p.branch}",${p.accountStatus}\\n\\n`;
+  
+  csv += 'BALANCE SUMMARY\\n';
+  csv += 'Total Purchased,Total Paid,Remaining Balance,Next Due Date,Monthly Due\\n';
+  csv += `${p.totalPurchased},${p.totalPaid},${p.remainingBalance},${p.nextDueDate},${p.monthlyDue}\\n\\n`;
+
+  csv += 'ORDERS\\n';
+  csv += 'Order No,Date,Model,Qty,Price,Amount,Mode,Status\\n';
+  p.orders.forEach(o => { csv += `${o.no},${o.date},"${o.model}",${o.qty},${o.price},${o.amount},${o.mode},${o.status}\\n`; });
+
+  csv += '\\nPAYMENT HISTORY\\n';
+  csv += 'Payment No,Date,Method,Ref,Amount,Applied To,Status\\n';
+  p.payments.forEach(pay => { csv += `${pay.no},${pay.date},${pay.method},${pay.ref},${pay.amount},${pay.appliedTo},${pay.status}\\n`; });
+
+  downloadFile(\`customer-\${p.customerId}.csv\`, csv, 'text/csv;charset=utf-8');
+  showToast('Customer profile exported successfully.');
 }
 
 function filterPO(){
@@ -2085,11 +2423,48 @@ function closePanel(){
 }
 
 // ===== CENTER MODAL =====
-function openCenterModal(id = 'cm-overlay'){
-  document.getElementById(id)?.classList.add('open');
+function openCenterModal(titleOrId, html, footerHtml, options) {
+  // New signature: openCenterModal(title, bodyHtml, footerHtml, options)
+  if (html !== undefined) {
+    const overlay = document.getElementById('cm-overlay');
+    const modal = overlay?.querySelector('.demo-center-modal');
+    document.getElementById('cm-title').textContent = titleOrId;
+    const bodyEl = document.getElementById('cm-body');
+    bodyEl.innerHTML = `<div class="sp-section">${html}</div>`;
+    // Footer
+    let footer = overlay?.querySelector('.cm-footer');
+    if (footerHtml) {
+      if (!footer) {
+        footer = document.createElement('div');
+        footer.className = 'cm-footer';
+        modal?.appendChild(footer);
+      }
+      footer.innerHTML = footerHtml;
+      footer.style.display = 'flex';
+    } else if (footer) {
+      footer.style.display = 'none';
+    }
+    // Width option
+    if (modal && options?.width) {
+      modal.style.width = options.width;
+    } else if (modal) {
+      modal.style.width = '';
+    }
+    overlay?.classList.add('open');
+    return;
+  }
+  // Legacy signature: openCenterModal(id)
+  document.getElementById(titleOrId || 'cm-overlay')?.classList.add('open');
 }
-function closeCenterModal(id = 'cm-overlay'){
-  document.getElementById(id)?.classList.remove('open');
+function closeCenterModal(id) {
+  if (id) {
+    document.getElementById(id)?.classList.remove('open');
+  } else {
+    document.getElementById('cm-overlay')?.classList.remove('open');
+    // Reset width
+    const modal = document.querySelector('#cm-overlay .demo-center-modal');
+    if (modal) modal.style.width = '';
+  }
 }
 
 // ===== NAVIGATION =====
@@ -2137,7 +2512,7 @@ function nav(id){
 }
 
 // ===== ERP MENU VIEWS =====
-function renderErpMenuLink(item, heading){
+function renderErpMenuLink(item, heading, typePrefix = ''){
   const link=typeof item==='string'?{label:item}:item;
   const click=link.nav?` onclick="nav('${link.nav}')"`:'';
   
@@ -2154,16 +2529,18 @@ function renderErpMenuLink(item, heading){
     else if (headingLower.includes('service')) type = 'service';
     else if (headingLower.includes('integration')) type = 'integration';
   }
+  type = typePrefix + type;
 
   return `<button class="erp-menu-link"${click} data-action="${esc(link.label)}" data-type="${type}" ${link.nav ? `data-target="${link.nav}"` : ''} type="button">${esc(link.label)}</button>`;
 }
 function renderErpMenuPage(id,config){
   const host=document.getElementById(`mod-${id}`);
   if(!host)return;
+  const typePrefix = id === 'receivables-menu' ? 'ar-' : '';
   const shortcutHtml=(config.shortcuts||[]).length?`
     <div class="erp-shortcuts">
       ${config.shortcuts.map((label,index)=>`
-        <button class="erp-shortcut-card" type="button" data-action="${esc(label)}" data-type="shortcut">
+        <button class="erp-shortcut-card" type="button" data-action="${esc(label)}" data-type="${typePrefix}shortcut">
           <span class="erp-shortcut-icon">${index+1}</span>
           <strong>${esc(label)}</strong>
         </button>
@@ -2183,7 +2560,7 @@ function renderErpMenuPage(id,config){
         ${Object.entries(config.sections).map(([heading,links])=>`
           <section class="erp-menu-section">
             <h3 class="erp-menu-heading">${esc(heading)}</h3>
-            <div class="erp-link-list">${links.map(l => renderErpMenuLink(l, heading)).join('')}</div>
+            <div class="erp-link-list">${links.map(l => renderErpMenuLink(l, heading, typePrefix)).join('')}</div>
           </section>
         `).join('')}
       </div>
@@ -2352,6 +2729,10 @@ function openActionPanel(title,sections,actions=''){
       ${section.rows.map(row=>`<div class="sp-row"><span class="sp-key">${row[0]}</span><span class="sp-val ${row[2]||''}">${row[1]}</span></div>`).join('')}
     </div>
   `).join('')+(actions?`<div class="sp-actions">${actions}</div>`:'');
+  const footer = document.querySelector('#cm-overlay .cm-footer');
+  if (footer) footer.style.display = 'none';
+  const modal = document.querySelector('#cm-overlay .demo-center-modal');
+  if (modal) modal.style.width = '';
   openCenterModal();
 }
 
@@ -2584,8 +2965,8 @@ if(document.addEventListener){
   document.addEventListener('click',e=>{
     const btn=e.target.closest?.('.btn');
     if(!btn||btn.closest('.sp-close'))return;
-    flashButton(btn);
     if(btn.getAttribute('onclick'))return;
+    flashButton(btn);
     liveAction(btn);
   });
   document.addEventListener('click', function(e) {
@@ -2599,6 +2980,11 @@ if(document.addEventListener){
       
       if (type === 'process') {
         openProcessDemo(action);
+        return;
+      }
+      
+      if (type && type.startsWith('ar-')) {
+        openReceivablesDemo(action, type);
         return;
       }
       
@@ -2651,6 +3037,12 @@ function openDemoPanel(title, html, actionsHtml) {
     </div>
     ${actionsHtml ? `<div class="sp-actions">${actionsHtml}</div>` : ''}
   `;
+  // Hide the new-style footer if it exists
+  const footer = document.querySelector('#cm-overlay .cm-footer');
+  if (footer) footer.style.display = 'none';
+  // Reset modal width
+  const modal = document.querySelector('#cm-overlay .demo-center-modal');
+  if (modal) modal.style.width = '';
   openCenterModal();
 }
 
@@ -3141,6 +3533,820 @@ function printProcessLog() {
   setTimeout(() => {
     window.print();
   }, 500);
+}
+
+// ===== RECEIVABLES HELPERS =====
+function demoToday() {
+  return new Date().toISOString().slice(0, 10);
+}
+function demoRef(prefix, num) {
+  return `${prefix}-2026-${String(num).padStart(4, '0')}`;
+}
+function setButtonLoading(btn, text) {
+  if (!btn) return;
+  btn._origText = btn.textContent;
+  btn.textContent = text || 'Processing...';
+  btn.classList.add('busy');
+  btn.disabled = true;
+}
+function resetButtonLoading(btn) {
+  if (!btn) return;
+  btn.textContent = btn._origText || 'Done';
+  btn.classList.remove('busy');
+  btn.disabled = false;
+}
+function exportRowsToCsv(filename, rows) {
+  if (!rows || !rows.length) { showToast('No data to export.'); return; }
+  const headers = Object.keys(rows[0]);
+  const csv = [headers.join(','), ...rows.map(r => headers.map(h => csvEscape(r[h])).join(','))].join('\n');
+  downloadFile(filename, csv, 'text/csv;charset=utf-8');
+  showToast(`${filename} exported with ${rows.length} records.`);
+}
+
+// ===== RECEIVABLES DEMO DATA & LOGIC =====
+let demoReceivablesData = JSON.parse(localStorage.getItem('demoReceivablesData')) || {
+  invoices: [
+    { no: 'INV-2026-1001', soNo: 'SO-2026-0501', customer: 'Maria Santos', customerId: 'CUST-001', date: '2026-05-01', due: '2026-05-15', amount: 45000, balance: 45000, memoType: 'None', status: 'Open', printStatus: 'Pending', eligible: 'Yes' },
+    { no: 'INV-2026-1002', soNo: 'SO-2026-0505', customer: 'Juan Reyes', customerId: 'CUST-002', date: '2026-05-03', due: '2026-05-18', amount: 120000, balance: 0, memoType: 'None', status: 'Paid', printStatus: 'Printed', eligible: 'No' },
+    { no: 'INV-2026-1003', soNo: 'SO-2026-0420', customer: 'Patrick Lim', customerId: 'CUST-003', date: '2026-04-20', due: '2026-05-05', amount: 3500, balance: 3500, memoType: 'None', status: 'Overdue', printStatus: 'Pending', eligible: 'Yes' },
+    { no: 'INV-2026-1004', soNo: 'SO-2026-0510', customer: 'Carlos Reyes', customerId: 'CUST-004', date: '2026-05-05', due: '2026-05-20', amount: 82900, balance: 42900, memoType: 'None', status: 'Partial', printStatus: 'Printed', eligible: 'No' },
+    { no: 'INV-2026-1005', soNo: 'SO-2026-0515', customer: 'Angela Dizon', customerId: 'CUST-005', date: '2026-05-07', due: '2026-05-22', amount: 166900, balance: 0, memoType: 'None', status: 'Paid', printStatus: 'Printed', eligible: 'No' },
+    { no: 'INV-2026-1006', soNo: 'SO-2026-0518', customer: 'Carlos Reyes', customerId: 'CUST-004', date: '2026-05-10', due: '2026-05-25', amount: 25000, balance: 25000, memoType: 'None', status: 'Open', printStatus: 'Pending', eligible: 'Yes' },
+    { no: 'INV-2026-1007', soNo: 'SO-2026-0520', customer: 'Angela Dizon', customerId: 'CUST-005', date: '2026-05-12', due: '2026-05-27', amount: 15500, balance: 15500, memoType: 'None', status: 'Open', printStatus: 'Pending', eligible: 'Yes' },
+    { no: 'INV-2026-1008', soNo: 'SO-2026-0498', customer: 'Maria Santos', customerId: 'CUST-001', date: '2026-04-25', due: '2026-05-10', amount: 22000, balance: 0, memoType: 'None', status: 'Paid', printStatus: 'Printed', eligible: 'No' }
+  ],
+  payments: [
+    { no: 'PAY-2026-8001', customer: 'Juan Reyes', customerId: 'CUST-002', invNo: 'INV-2026-1002', date: '2026-05-10', method: 'Bank Transfer', ref: 'TXN-99123', amount: 120000, status: 'Applied' },
+    { no: 'PAY-2026-8002', customer: 'Carlos Reyes', customerId: 'CUST-004', invNo: 'INV-2026-1004', date: '2026-05-12', method: 'Cash', ref: 'REC-44210', amount: 40000, status: 'Applied' },
+    { no: 'PAY-2026-8003', customer: 'Angela Dizon', customerId: 'CUST-005', invNo: 'INV-2026-1005', date: '2026-05-14', method: 'Check', ref: 'CHK-10045', amount: 166900, status: 'Applied' },
+    { no: 'PAY-2026-8004', customer: 'Maria Santos', customerId: 'CUST-001', invNo: 'INV-2026-1008', date: '2026-05-08', method: 'Bank Transfer', ref: 'TXN-99180', amount: 22000, status: 'Applied' }
+  ],
+  customers: [
+    { id: 'CUST-001', name: 'Maria Santos', contact: '0917 123 4567', email: 'maria@example.com', branch: 'Manila Main', type: 'Retail', creditTerm: 'NET15', balance: 45000, status: 'Active', createdDate: '2025-11-15', notes: 'Loyal customer since 2025. Prefers bank transfer payments.' },
+    { id: 'CUST-002', name: 'Juan Reyes', contact: '0918 987 6543', email: 'juan@example.com', branch: 'Makati Ayala', type: 'Retail', creditTerm: 'NET30', balance: 0, status: 'Active', createdDate: '2025-12-01', notes: 'Fully paid customer. Referred by Maria Santos.' },
+    { id: 'CUST-003', name: 'Patrick Lim', contact: '0919 444 5555', email: 'patrick@example.com', branch: 'Quezon City North', type: 'Corporate', creditTerm: '2/10N30', balance: 3500, status: 'Overdue', createdDate: '2026-01-10', notes: 'Corporate fleet account. Overdue on INV-2026-1003.' },
+    { id: 'CUST-004', name: 'Carlos Reyes', contact: '0920 888 9999', email: 'carlos.reyes@example.com', branch: 'Cebu Main', type: 'Retail', creditTerm: 'NET30', balance: 67900, status: 'Partial', createdDate: '2026-02-20', notes: 'Partial payment made on Honda Click 125i. Additional open invoice for accessories.' },
+    { id: 'CUST-005', name: 'Angela Dizon', contact: '0921 222 3333', email: 'angela.dizon@example.com', branch: 'Davao South', type: 'Corporate', creditTerm: 'NET15', balance: 15500, status: 'Active', createdDate: '2026-03-05', notes: 'Corporate account. ADV 160 fully paid. Open balance on accessories invoice.' }
+  ],
+  creditTerms: [
+    { code: 'NET15', desc: 'Net 15 Days', days: 15, discount: '0%', status: 'Active' },
+    { code: 'NET30', desc: 'Net 30 Days', days: 30, discount: '0%', status: 'Active' },
+    { code: '2/10N30', desc: '2% 10 Days, Net 30', days: 30, discount: '2%', status: 'Active' }
+  ],
+  salesPrices: [
+    { model: 'Honda Click 125i', srp: 82900, cashDisc: 2000, instPrice: 95000, date: '2026-01-01' },
+    { model: 'Yamaha NMAX', srp: 151900, cashDisc: 3000, instPrice: 170000, date: '2026-02-15' },
+    { model: 'Honda ADV 160', srp: 166900, cashDisc: 5000, instPrice: 185000, date: '2026-01-01' }
+  ]
+};
+function saveDemoReceivablesData() {
+  localStorage.setItem('demoReceivablesData', JSON.stringify(demoReceivablesData));
+}
+
+function openReceivablesDemo(action, type) {
+  if (action === 'New Invoice') return openArNewInvoiceDemo();
+  if (action === 'New Payment') return openArNewPaymentDemo();
+  if (action === 'New Customer') return openArNewCustomerDemo();
+  if (action === 'Customer Details' && type === 'ar-shortcut') return openArCustomersDemo();
+
+  if (action === 'Invoices and Memos') return openArInvoicesDemo();
+  if (action === 'Payments and Applications') return openArPaymentsDemo();
+  if (action === 'Customers' || action === 'Customer Details') return openArCustomersDemo();
+  if (action === 'Credit Terms') return openArCreditTermsDemo();
+  if (action === 'Sales Prices') return openArSalesPricesDemo();
+
+  if (action === 'Release AR Documents') return openArReleaseDocsProcess();
+  if (action === 'Print Invoices and Memos') return openArPrintInvoicesProcess();
+  if (action === 'Write Off Balances and Credits') return openArWriteOffProcess();
+  if (action === 'Prepare Statements') return openArPrepareStatementsProcess();
+  if (action === 'Print Statements') return openArPrintStatementsProcess();
+  if (action === 'Close Financial Periods') return openArClosePeriodsProcess();
+
+  if (action === 'Customer Summary') return openArCustomerSummaryDemo();
+  if (action === 'Statement History Summary') return openArStatementHistoryDemo();
+  if (type === 'ar-printed-form') return openArPrintedFormDemo(action);
+  if (type === 'ar-report') return openArReportDemo(action);
+  if (type === 'ar-profitability') return openArProfitabilityDemo(action);
+
+  return openGenericProcessDemo(action);
+}
+
+function openArNewInvoiceDemo() {
+  const customers = demoReceivablesData.customers.map(c => `<option value="${esc(c.name)}">${esc(c.name)}</option>`).join('');
+  const html = `
+    <div class="demo-form-grid">
+      <div class="demo-form-row"><label>Customer</label><select id="ar-inv-cust">${customers}</select></div>
+      <div class="demo-form-row"><label>Sales Order No.</label><input type="text" id="ar-inv-so" placeholder="e.g. SO-2026-0599"></div>
+      <div class="demo-form-row"><label>Invoice Date</label><input type="date" id="ar-inv-date" value="${demoToday()}"></div>
+      <div class="demo-form-row"><label>Due Date</label><input type="date" id="ar-inv-due" value="${new Date(Date.now() + 15 * 86400000).toISOString().slice(0,10)}"></div>
+      <div class="demo-form-row"><label>Invoice Amount</label><input type="number" id="ar-inv-amt" value="0"></div>
+      <div class="demo-form-row"><label>Memo Type</label><select id="ar-inv-memo"><option>None</option><option>Debit Memo</option><option>Credit Memo</option></select></div>
+    </div>
+  `;
+  const actions = `
+    <button class="btn btn-sm btn-primary" onclick="createArInvoice(this)">Create Invoice</button>
+    <button class="btn btn-sm" onclick="showToast('Demo only: Invoice draft saved.'); closeCenterModal();">Save Draft</button>
+    <button class="btn btn-sm" onclick="closeCenterModal()">Close</button>
+  `;
+  openCenterModal('New Invoice', html, actions);
+}
+
+function createArInvoice(btn) {
+  const cust = document.getElementById('ar-inv-cust').value;
+  const so = document.getElementById('ar-inv-so').value || 'Manual';
+  const date = document.getElementById('ar-inv-date').value;
+  const due = document.getElementById('ar-inv-due').value;
+  const amt = Number(document.getElementById('ar-inv-amt').value) || 0;
+  const memo = document.getElementById('ar-inv-memo').value;
+
+  setButtonLoading(btn, 'Saving...');
+  setTimeout(() => {
+    const invNo = demoRef('INV', demoReceivablesData.invoices.length + 1000);
+    demoReceivablesData.invoices.unshift({ no: invNo, soNo: so, customer: cust, date, due, amount: amt, balance: amt, memoType: memo, status: 'Draft', printStatus: 'Pending', eligible: 'No' });
+    
+    const c = demoReceivablesData.customers.find(x => x.name === cust);
+    if (c) c.balance += amt;
+
+    saveDemoReceivablesData();
+    resetButtonLoading(btn);
+    showToast('Demo invoice created successfully.');
+    closeCenterModal();
+  }, 600);
+}
+
+function openArNewPaymentDemo() {
+  const invoices = demoReceivablesData.invoices.filter(i => i.balance > 0).map(i => `<option value="${esc(i.no)}">${esc(i.no)} - ₱${fmt(i.balance)}</option>`).join('');
+  const html = `
+    <div class="demo-form-grid">
+      <div class="demo-form-row"><label>Invoice</label><select id="ar-pay-inv">${invoices}</select></div>
+      <div class="demo-form-row"><label>Customer Name</label><input type="text" id="ar-pay-cust" placeholder="Auto-filled"></div>
+      <div class="demo-form-row"><label>Payment Date</label><input type="date" id="ar-pay-date" value="${demoToday()}"></div>
+      <div class="demo-form-row"><label>Payment Method</label><select id="ar-pay-method"><option>Cash</option><option>Bank Transfer</option><option>Check</option><option>Credit Card</option></select></div>
+      <div class="demo-form-row"><label>Reference Number</label><input type="text" id="ar-pay-ref" placeholder="e.g. TXN-12345"></div>
+      <div class="demo-form-row"><label>Amount Paid</label><input type="number" id="ar-pay-amt" value="0"></div>
+    </div>
+  `;
+  const actions = `
+    <button class="btn btn-sm btn-primary" onclick="createArPayment(this)">Save Payment</button>
+    <button class="btn btn-sm" onclick="window.print()">Print Receipt</button>
+    <button class="btn btn-sm" onclick="closeCenterModal()">Close</button>
+  `;
+  openCenterModal('New Payment', html, actions);
+  
+  document.getElementById('ar-pay-inv')?.addEventListener('change', (e) => {
+    const inv = demoReceivablesData.invoices.find(i => i.no === e.target.value);
+    if (inv) {
+      document.getElementById('ar-pay-cust').value = inv.customer;
+      document.getElementById('ar-pay-amt').value = inv.balance;
+    }
+  });
+}
+
+function createArPayment(btn) {
+  const invNo = document.getElementById('ar-pay-inv').value;
+  const cust = document.getElementById('ar-pay-cust').value;
+  const date = document.getElementById('ar-pay-date').value;
+  const method = document.getElementById('ar-pay-method').value;
+  const ref = document.getElementById('ar-pay-ref').value;
+  const amt = Number(document.getElementById('ar-pay-amt').value) || 0;
+
+  if (!invNo || amt <= 0) { showToast('Please select an invoice and enter an amount.'); return; }
+
+  setButtonLoading(btn, 'Saving...');
+  setTimeout(() => {
+    const payNo = demoRef('PAY', demoReceivablesData.payments.length + 8000);
+    demoReceivablesData.payments.unshift({ no: payNo, customer: cust, invNo, date, method, ref, amount: amt, status: 'Applied' });
+    
+    const inv = demoReceivablesData.invoices.find(i => i.no === invNo);
+    if (inv) {
+      inv.balance = Math.max(0, inv.balance - amt);
+      if (inv.balance === 0) inv.status = 'Paid';
+    }
+    const c = demoReceivablesData.customers.find(x => x.name === cust);
+    if (c) c.balance = Math.max(0, c.balance - amt);
+
+    saveDemoReceivablesData();
+    resetButtonLoading(btn);
+    showToast('Demo payment recorded successfully.');
+    closeCenterModal();
+  }, 600);
+}
+
+function openArCustomersDemo() {
+  const html = `
+    <div id="ar-customer-records-wrap">
+      ${renderCustomerRecords()}
+    </div>
+  `;
+  const actions = `<button class="btn btn-sm" onclick="exportRowsToCsv('customers.csv', demoReceivablesData.customers)">Export All CSV</button><button class="btn btn-sm btn-primary" onclick="closeCenterModal()">Close</button>`;
+  openCenterModal('Customer Records', html, actions, { width: 'min(1040px, calc(100vw - 48px))' });
+}
+
+function renderCustomerRecords() {
+  return `
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Customer ID</th><th>Name</th><th>Contact</th><th>Email</th><th>Branch</th><th>Balance</th><th>Status</th><th style="text-align:center">Action</th></tr></thead>
+        <tbody>
+          ${demoReceivablesData.customers.map(c => `<tr style="cursor:pointer" onclick="openCustomerProfile('${esc(c.id)}')" title="Click to view profile">
+            <td class="mono">${esc(c.id)}</td><td><strong>${esc(c.name)}</strong></td><td class="mono dim">${esc(c.contact)}</td>
+            <td class="dim">${esc(c.email)}</td><td>${esc(c.branch)}</td><td class="amt" style="${c.balance>0?'color:var(--red)':'color:var(--green)'}">₱${fmt(c.balance)}</td>
+            <td>${badge(c.status)}</td>
+            <td style="text-align:center"><button class="btn btn-sm" onclick="event.stopPropagation(); openCustomerProfile('${esc(c.id)}')" style="font-size:10.5px;padding:3px 10px;min-height:24px">View Profile</button></td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function getCustomerInvoices(customerId) {
+  const c = demoReceivablesData.customers.find(x => x.id === customerId);
+  if (!c) return [];
+  return demoReceivablesData.invoices.filter(i => i.customerId === customerId || i.customer === c.name);
+}
+
+function getCustomerPayments(customerId) {
+  const c = demoReceivablesData.customers.find(x => x.id === customerId);
+  if (!c) return [];
+  return demoReceivablesData.payments.filter(p => p.customerId === customerId || p.customer === c.name);
+}
+
+function openCustomerProfile(customerId) {
+  const c = demoReceivablesData.customers.find(x => x.id === customerId);
+  if (!c) { showToast('Customer not found.'); return; }
+
+  const invoices = getCustomerInvoices(customerId);
+  const payments = getCustomerPayments(customerId);
+  const totalInvoiced = invoices.reduce((s, i) => s + i.amount, 0);
+  const totalPaid = payments.reduce((s, p) => s + p.amount, 0);
+  const remainingBalance = c.balance;
+  const lastPayment = payments.length ? payments.sort((a, b) => b.date.localeCompare(a.date))[0] : null;
+  const creditTermObj = demoReceivablesData.creditTerms.find(t => t.code === (c.creditTerm || 'NET30'));
+  const creditTermLabel = creditTermObj ? creditTermObj.desc : (c.creditTerm || 'Net 30 Days');
+
+  let agingStatus = 'Current';
+  if (c.status === 'Overdue') agingStatus = 'Overdue';
+  else if (c.balance > 0 && invoices.some(i => i.status === 'Overdue')) agingStatus = 'Overdue';
+  else if (c.balance > 0) agingStatus = 'Outstanding';
+
+  const html = `
+    <div class="sp-section">
+      <div class="sp-section-label">Basic Information</div>
+      <div class="sp-row"><span class="sp-key">Customer ID</span><span class="sp-val mono">${esc(c.id)}</span></div>
+      <div class="sp-row"><span class="sp-key">Full Name</span><span class="sp-val">${esc(c.name)}</span></div>
+      <div class="sp-row"><span class="sp-key">Contact Number</span><span class="sp-val mono">${esc(c.contact)}</span></div>
+      <div class="sp-row"><span class="sp-key">Email Address</span><span class="sp-val">${esc(c.email)}</span></div>
+      <div class="sp-row"><span class="sp-key">Branch</span><span class="sp-val">${esc(c.branch)}</span></div>
+      <div class="sp-row"><span class="sp-key">Customer Type</span><span class="sp-val">${esc(c.type || 'Retail')}</span></div>
+      <div class="sp-row"><span class="sp-key">Status</span><span class="sp-val">${badge(c.status)}</span></div>
+    </div>
+
+    <div class="sp-section">
+      <div class="sp-section-label">Account Summary</div>
+      <div class="sp-row"><span class="sp-key">Total Invoice Amount</span><span class="sp-val mono">₱${fmt(totalInvoiced)}</span></div>
+      <div class="sp-row"><span class="sp-key">Total Paid</span><span class="sp-val mono" style="color:var(--green)">₱${fmt(totalPaid)}</span></div>
+      <div class="sp-row"><span class="sp-key">Remaining Balance</span><span class="sp-val mono" style="${remainingBalance>0?'color:var(--red)':''}">₱${fmt(remainingBalance)}</span></div>
+      <div class="sp-row"><span class="sp-key">Credit Term</span><span class="sp-val">${esc(creditTermLabel)}</span></div>
+      <div class="sp-row"><span class="sp-key">Last Payment Date</span><span class="sp-val mono">${lastPayment ? lastPayment.date : '—'}</span></div>
+      <div class="sp-row"><span class="sp-key">Aging Status</span><span class="sp-val">${badge(agingStatus)}</span></div>
+    </div>
+
+    <div class="sp-section">
+      <div class="sp-section-label">Related Invoices</div>
+      ${invoices.length ? `<div class="table-wrap"><table>
+        <thead><tr><th>Invoice No.</th><th>SO No.</th><th>Invoice Date</th><th>Due Date</th><th>Amount</th><th>Paid</th><th>Balance</th><th>Status</th></tr></thead>
+        <tbody>${invoices.map(i => {
+          const paid = i.amount - i.balance;
+          return `<tr>
+            <td class="mono">${esc(i.no)}</td><td class="mono dim">${esc(i.soNo)}</td><td class="dim">${esc(i.date)}</td><td class="dim">${esc(i.due)}</td>
+            <td class="amt">₱${fmt(i.amount)}</td><td class="amt" style="color:var(--green)">₱${fmt(paid)}</td>
+            <td class="amt" style="${i.balance>0?'color:var(--red)':''}">₱${fmt(i.balance)}</td><td>${badge(i.status)}</td>
+          </tr>`;
+        }).join('')}</tbody>
+      </table></div>` : '<p style="color:var(--text-secondary);font-size:12px;margin:8px 0">No invoices found for this customer.</p>'}
+    </div>
+
+    <div class="sp-section">
+      <div class="sp-section-label">Payment History</div>
+      ${payments.length ? `<div class="table-wrap"><table>
+        <thead><tr><th>Payment No.</th><th>Invoice No.</th><th>Payment Date</th><th>Method</th><th>Reference No.</th><th>Amount</th><th>Status</th></tr></thead>
+        <tbody>${payments.map(p => `<tr>
+          <td class="mono">${esc(p.no)}</td><td class="mono dim">${esc(p.invNo)}</td><td class="dim">${esc(p.date)}</td>
+          <td>${esc(p.method)}</td><td class="mono">${esc(p.ref)}</td>
+          <td class="amt" style="color:var(--green)">₱${fmt(p.amount)}</td><td>${badge(p.status)}</td>
+        </tr>`).join('')}</tbody>
+      </table></div>` : '<p style="color:var(--text-secondary);font-size:12px;margin:8px 0">No payments found for this customer.</p>'}
+    </div>
+
+    <div class="sp-section">
+      <div class="sp-section-label">Notes / Activity Log</div>
+      <div style="border-left:2px solid var(--accent);padding-left:14px;margin-top:6px">
+        ${c.notes ? `<div style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;font-style:italic">${esc(c.notes)}</div>` : ''}
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;align-items:flex-start;gap:8px">
+            <span style="width:6px;height:6px;min-width:6px;border-radius:50%;background:var(--accent);margin-top:5px"></span>
+            <div><span style="font-size:11px;color:var(--text-primary)">Customer profile created</span><span style="font-size:10px;color:var(--text-tertiary);margin-left:8px">${esc(c.createdDate || '2025-11-15')}</span></div>
+          </div>
+          ${invoices.length ? `<div style="display:flex;align-items:flex-start;gap:8px">
+            <span style="width:6px;height:6px;min-width:6px;border-radius:50%;background:var(--green);margin-top:5px"></span>
+            <div><span style="font-size:11px;color:var(--text-primary)">Invoice generated — ${esc(invoices[invoices.length-1].no)}</span><span style="font-size:10px;color:var(--text-tertiary);margin-left:8px">${esc(invoices[invoices.length-1].date)}</span></div>
+          </div>` : ''}
+          ${payments.length ? `<div style="display:flex;align-items:flex-start;gap:8px">
+            <span style="width:6px;height:6px;min-width:6px;border-radius:50%;background:var(--green);margin-top:5px"></span>
+            <div><span style="font-size:11px;color:var(--text-primary)">Payment applied — ${esc(payments[payments.length-1].no)}</span><span style="font-size:10px;color:var(--text-tertiary);margin-left:8px">${esc(payments[payments.length-1].date)}</span></div>
+          </div>` : ''}
+          <div style="display:flex;align-items:flex-start;gap:8px">
+            <span style="width:6px;height:6px;min-width:6px;border-radius:50%;background:var(--text-tertiary);margin-top:5px"></span>
+            <div><span style="font-size:11px;color:var(--text-primary)">Statement prepared</span><span style="font-size:10px;color:var(--text-tertiary);margin-left:8px">${demoToday()}</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const actions = `
+    <button class="btn btn-sm btn-primary" onclick="openEditCustomerProfile('${esc(c.id)}')">Edit Demo Profile</button>
+    <button class="btn btn-sm" onclick="showToast('Demo customer profile prepared for printing.'); setTimeout(()=>window.print(),500)">Print Profile</button>
+    <button class="btn btn-sm" onclick="exportSingleCustomerProfileCsv('${esc(c.id)}')">Export Customer CSV</button>
+    <button class="btn btn-sm" onclick="openArCustomersDemo()">Back to List</button>
+    <button class="btn btn-sm" onclick="closeCenterModal()">Close</button>
+  `;
+  openCenterModal('Customer Profile: ' + c.name, html, actions, { width: 'min(920px, calc(100vw - 48px))' });
+}
+
+function openEditCustomerProfile(customerId) {
+  const c = demoReceivablesData.customers.find(x => x.id === customerId);
+  if (!c) { showToast('Customer not found.'); return; }
+
+  const branches = typeof branchData !== 'undefined' ? branchData.map(b => `<option value="${esc(b.name)}" ${b.name===c.branch?'selected':''}>${esc(b.name)}</option>`).join('') : `<option ${c.branch==='Manila Main'?'selected':''}>Manila Main</option><option ${c.branch==='Makati Ayala'?'selected':''}>Makati Ayala</option><option ${c.branch==='Quezon City North'?'selected':''}>Quezon City North</option><option ${c.branch==='Cebu Main'?'selected':''}>Cebu Main</option><option ${c.branch==='Davao South'?'selected':''}>Davao South</option>`;
+  const html = `
+    <div class="demo-form-grid">
+      <div class="demo-form-row"><label>Full Name</label><input type="text" id="ecp-name" value="${esc(c.name)}"></div>
+      <div class="demo-form-row"><label>Contact Number</label><input type="text" id="ecp-contact" value="${esc(c.contact)}"></div>
+      <div class="demo-form-row"><label>Email Address</label><input type="email" id="ecp-email" value="${esc(c.email)}"></div>
+      <div class="demo-form-row"><label>Branch</label><select id="ecp-branch">${branches}</select></div>
+      <div class="demo-form-row"><label>Customer Type</label><select id="ecp-type"><option ${c.type==='Retail'?'selected':''}>Retail</option><option ${c.type==='Corporate'?'selected':''}>Corporate</option><option ${c.type==='Fleet'?'selected':''}>Fleet</option></select></div>
+      <div class="demo-form-row"><label>Status</label><select id="ecp-status"><option ${c.status==='Active'?'selected':''}>Active</option><option ${c.status==='Overdue'?'selected':''}>Overdue</option><option ${c.status==='Partial'?'selected':''}>Partial</option><option ${c.status==='Paid'?'selected':''}>Paid</option><option ${c.status==='Inactive'?'selected':''}>Inactive</option></select></div>
+    </div>
+  `;
+  const actions = `
+    <button class="btn btn-sm btn-primary" onclick="saveCustomerProfileChanges('${esc(c.id)}', this)">Save Changes</button>
+    <button class="btn btn-sm" onclick="openCustomerProfile('${esc(c.id)}')">Cancel</button>
+  `;
+  openCenterModal('Edit Customer: ' + c.name, html, actions);
+}
+
+function saveCustomerProfileChanges(customerId, btn) {
+  const c = demoReceivablesData.customers.find(x => x.id === customerId);
+  if (!c) { showToast('Customer not found.'); return; }
+
+  const oldName = c.name;
+  setButtonLoading(btn, 'Saving...');
+  setTimeout(() => {
+    c.name = document.getElementById('ecp-name').value || c.name;
+    c.contact = document.getElementById('ecp-contact').value || c.contact;
+    c.email = document.getElementById('ecp-email').value || c.email;
+    c.branch = document.getElementById('ecp-branch').value || c.branch;
+    c.type = document.getElementById('ecp-type').value || c.type;
+    c.status = document.getElementById('ecp-status').value || c.status;
+
+    // Update linked invoices/payments if name changed
+    if (oldName !== c.name) {
+      demoReceivablesData.invoices.forEach(i => { if (i.customer === oldName || i.customerId === customerId) { i.customer = c.name; i.customerId = customerId; } });
+      demoReceivablesData.payments.forEach(p => { if (p.customer === oldName || p.customerId === customerId) { p.customer = c.name; p.customerId = customerId; } });
+    }
+
+    saveDemoReceivablesData();
+    resetButtonLoading(btn);
+    showToast('Demo customer profile updated successfully.');
+    openCustomerProfile(customerId);
+  }, 600);
+}
+
+function exportSingleCustomerProfileCsv(customerId) {
+  const c = demoReceivablesData.customers.find(x => x.id === customerId);
+  if (!c) { showToast('Customer not found.'); return; }
+
+  const invoices = getCustomerInvoices(customerId);
+  const payments = getCustomerPayments(customerId);
+  const totalInvoiced = invoices.reduce((s, i) => s + i.amount, 0);
+  const totalPaid = payments.reduce((s, p) => s + p.amount, 0);
+
+  let csv = 'CUSTOMER PROFILE\n';
+  csv += 'Customer ID,Name,Contact,Email,Branch,Type,Credit Term,Balance,Status,Created Date\n';
+  csv += `${c.id},${csvEscape(c.name)},${csvEscape(c.contact)},${csvEscape(c.email)},${csvEscape(c.branch)},${csvEscape(c.type)},${csvEscape(c.creditTerm||'')},${c.balance},${c.status},${c.createdDate||''}\n`;
+  csv += `\nACCOUNT SUMMARY\n`;
+  csv += `Total Invoiced,Total Paid,Remaining Balance\n`;
+  csv += `${totalInvoiced},${totalPaid},${c.balance}\n`;
+  csv += `\nINVOICES\n`;
+  csv += 'Invoice No,SO No,Date,Due Date,Amount,Balance,Status\n';
+  invoices.forEach(i => { csv += `${i.no},${i.soNo},${i.date},${i.due},${i.amount},${i.balance},${i.status}\n`; });
+  csv += `\nPAYMENTS\n`;
+  csv += 'Payment No,Invoice No,Date,Method,Reference,Amount,Status\n';
+  payments.forEach(p => { csv += `${p.no},${p.invNo},${p.date},${csvEscape(p.method)},${p.ref},${p.amount},${p.status}\n`; });
+
+  downloadFile(`customer-${c.id}.csv`, csv, 'text/csv;charset=utf-8');
+  showToast('Customer profile exported successfully.');
+}
+
+function openArNewCustomerDemo() {
+  const branches = typeof branchData !== 'undefined' ? branchData.map(b => `<option value="${esc(b.name)}">${esc(b.name)}</option>`).join('') : '<option>Manila Main</option>';
+  const html = `
+    <div class="demo-form-grid">
+      <div class="demo-form-row"><label>Full Name</label><input type="text" id="ar-nc-name" placeholder="Enter customer name"></div>
+      <div class="demo-form-row"><label>Contact Number</label><input type="text" id="ar-nc-contact" placeholder="e.g. 0917 123 4567"></div>
+      <div class="demo-form-row"><label>Email Address</label><input type="email" id="ar-nc-email" placeholder="customer@example.com"></div>
+      <div class="demo-form-row"><label>Preferred Branch</label><select id="ar-nc-branch">${branches}</select></div>
+      <div class="demo-form-row"><label>Customer Type</label><select id="ar-nc-type"><option>Retail</option><option>Corporate</option><option>Fleet</option></select></div>
+    </div>
+  `;
+  const actions = `<button class="btn btn-sm btn-primary" onclick="createArCustomer(this)">Save Customer</button><button class="btn btn-sm" onclick="closeCenterModal()">Close</button>`;
+  openCenterModal('New Customer', html, actions);
+}
+
+function createArCustomer(btn) {
+  const name = document.getElementById('ar-nc-name').value || 'Demo Customer';
+  const contact = document.getElementById('ar-nc-contact').value;
+  const email = document.getElementById('ar-nc-email').value;
+  const branch = document.getElementById('ar-nc-branch').value;
+  const type = document.getElementById('ar-nc-type').value;
+
+  setButtonLoading(btn, 'Saving...');
+  setTimeout(() => {
+    const custId = demoRef('CUST', demoReceivablesData.customers.length);
+    demoReceivablesData.customers.unshift({ id: custId, name, contact, email, branch, type, balance: 0, status: 'Active' });
+    saveDemoReceivablesData();
+    resetButtonLoading(btn);
+    showToast('Demo customer saved successfully.');
+    closeCenterModal();
+  }, 600);
+}
+
+function openArInvoicesDemo() {
+  const html = `
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Invoice No.</th><th>SO No.</th><th>Customer</th><th>Invoice Date</th><th>Due Date</th><th>Amount</th><th>Balance</th><th>Status</th></tr></thead>
+        <tbody id="ar-invoices-body">
+          ${demoReceivablesData.invoices.map(i => `<tr>
+            <td class="mono">${i.no}</td><td class="mono dim">${i.soNo}</td><td><strong>${i.customer}</strong></td>
+            <td class="dim">${i.date}</td><td class="dim">${i.due}</td><td class="amt">₱${fmt(i.amount)}</td>
+            <td class="amt" style="${i.balance>0?'color:var(--red)':''}">${i.balance > 0 ? '₱'+fmt(i.balance) : '₱0.00'}</td>
+            <td>${badge(i.status)}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+  const actions = `<button class="btn btn-sm" onclick="window.print()">Print</button><button class="btn btn-sm" onclick="exportRowsToCsv('invoices.csv', demoReceivablesData.invoices)">Export CSV</button><button class="btn btn-sm btn-primary" onclick="closeCenterModal()">Close</button>`;
+  openCenterModal('Invoices and Memos', html, actions, { width: 'min(980px, calc(100vw - 48px))' });
+}
+
+function openArPaymentsDemo() {
+  const html = `
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Payment No.</th><th>Customer</th><th>Invoice No.</th><th>Payment Date</th><th>Method</th><th>Reference No.</th><th>Amount</th><th>Status</th></tr></thead>
+        <tbody id="ar-payments-body">
+          ${demoReceivablesData.payments.map(p => `<tr>
+            <td class="mono">${p.no}</td><td><strong>${p.customer}</strong></td><td class="mono dim">${p.invNo}</td>
+            <td class="dim">${p.date}</td><td>${p.method}</td><td class="mono">${p.ref}</td>
+            <td class="amt" style="color:var(--green)">₱${fmt(p.amount)}</td><td>${badge(p.status)}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+  const actions = `<button class="btn btn-sm" onclick="exportRowsToCsv('payments.csv', demoReceivablesData.payments)">Export CSV</button><button class="btn btn-sm btn-primary" onclick="closeCenterModal()">Close</button>`;
+  openCenterModal('Payments and Applications', html, actions, { width: 'min(980px, calc(100vw - 48px))' });
+}
+
+function openArCreditTermsDemo() {
+  const html = `
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Term Code</th><th>Description</th><th>Due Days</th><th>Discount</th><th>Status</th></tr></thead>
+        <tbody>
+          ${demoReceivablesData.creditTerms.map(t => `<tr>
+            <td class="mono"><strong>${t.code}</strong></td><td>${t.desc}</td><td class="mono" style="text-align:center">${t.days}</td>
+            <td class="mono" style="text-align:center">${t.discount}</td><td>${badge(t.status)}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+  const actions = `<button class="btn btn-sm btn-primary" onclick="closeCenterModal()">Close</button>`;
+  openCenterModal('Credit Terms', html, actions);
+}
+
+function openArSalesPricesDemo() {
+  const html = `
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Unit Model</th><th>SRP</th><th>Cash Discount</th><th>Installment Price</th><th>Effective Date</th></tr></thead>
+        <tbody>
+          ${demoReceivablesData.salesPrices.map(p => `<tr>
+            <td><strong>${p.model}</strong></td><td class="amt">₱${fmt(p.srp)}</td><td class="amt" style="color:var(--red)">₱${fmt(p.cashDisc)}</td>
+            <td class="amt">₱${fmt(p.instPrice)}</td><td class="dim">${p.date}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+  const actions = `<button class="btn btn-sm" onclick="exportRowsToCsv('sales-prices.csv', demoReceivablesData.salesPrices)">Export CSV</button><button class="btn btn-sm btn-primary" onclick="closeCenterModal()">Close</button>`;
+  openCenterModal('Sales Prices', html, actions, { width: 'min(820px, calc(100vw - 48px))' });
+}
+
+// ===== PROCESSES =====
+function openArReleaseDocsProcess() {
+  const branches = typeof branchData !== 'undefined' ? branchData.map(b => `<option value="${esc(b.name)}">${esc(b.name)}</option>`).join('') : '<option>Manila Main</option>';
+  const docs = demoReceivablesData.invoices.filter(i => i.status === 'Draft' || i.status === 'Pending');
+  const html = `
+    <div class="demo-form-grid">
+      <div class="demo-form-row"><label>Branch</label><select><option>All Branches</option>${branches}</select></div>
+      <div class="demo-form-row"><label>Document Status</label><select><option>Draft</option><option>Pending</option></select></div>
+      <div class="demo-form-row"><label>Date From</label><input type="date" value="${new Date(new Date().setDate(1)).toISOString().slice(0,10)}"></div>
+      <div class="demo-form-row"><label>Date To</label><input type="date" value="${new Date().toISOString().slice(0,10)}"></div>
+    </div>
+    <div class="sp-section-label" style="margin-top:16px;">Documents to Release</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Document No.</th><th>Customer</th><th>Amount</th><th>Status</th></tr></thead>
+        <tbody id="ar-process-records">
+          ${docs.length ? docs.map(d => `<tr><td class="mono">${d.no}</td><td>${d.customer}</td><td class="amt">₱${fmt(d.amount)}</td><td class="rec-status">${badge(d.status)}</td></tr>`).join('') : `<tr><td colspan="4" style="text-align:center" class="dim">No pending documents to release. Create a draft invoice first.</td></tr>`}
+        </tbody>
+      </table>
+    </div>
+  `;
+  const actions = `
+    <button class="btn btn-sm btn-primary" onclick="processArAction(this, 'invoices', ['Draft','Pending'], 'Open', 'Documents released successfully.')">Release Documents</button>
+    <button class="btn btn-sm" onclick="printProcessLog('Release AR Documents')">Print Log</button>
+    <button class="btn btn-sm" onclick="closeCenterModal()">Close</button>
+  `;
+  openCenterModal('Release AR Documents', html, actions, { width: 'min(760px, calc(100vw - 48px))' });
+}
+
+function openArPrintInvoicesProcess() {
+  const docs = demoReceivablesData.invoices.filter(i => i.printStatus === 'Pending');
+  const html = `
+    <div class="demo-form-grid">
+      <div class="demo-form-row"><label>Invoice Batch</label><input type="text" value="BATCH-${demoToday().replace(/-/g,'')}"></div>
+      <div class="demo-form-row"><label>Document Type</label><select><option>Invoices</option><option>Credit Memos</option><option>Debit Memos</option></select></div>
+      <div class="demo-form-row"><label>Output Format</label><select><option>PDF Download</option><option>Direct to Printer</option></select></div>
+    </div>
+    <div class="sp-section-label" style="margin-top:16px;">Documents to Print</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Invoice No.</th><th>Customer</th><th>Amount</th><th>Print Status</th></tr></thead>
+        <tbody id="ar-process-records">
+          ${docs.length ? docs.map(d => `<tr><td class="mono">${d.no}</td><td>${d.customer}</td><td class="amt">₱${fmt(d.amount)}</td><td class="rec-status">${badge(d.printStatus)}</td></tr>`).join('') : `<tr><td colspan="4" style="text-align:center" class="dim">All documents have been printed.</td></tr>`}
+        </tbody>
+      </table>
+    </div>
+  `;
+  const actions = `
+    <button class="btn btn-sm btn-primary" onclick="processArAction(this, 'invoices', ['Pending'], 'Printed', 'Print batch prepared.', 'printStatus')">Prepare Print Batch</button>
+    <button class="btn btn-sm" onclick="window.print()">Print Preview</button>
+    <button class="btn btn-sm" onclick="closeCenterModal()">Close</button>
+  `;
+  openCenterModal('Print Invoices and Memos', html, actions, { width: 'min(760px, calc(100vw - 48px))' });
+}
+
+function openArWriteOffProcess() {
+  const docs = demoReceivablesData.invoices.filter(i => i.balance > 0 && i.balance <= 5000 && i.eligible === 'Yes');
+  const html = `
+    <div class="demo-form-grid">
+      <div class="demo-form-row"><label>Customer</label><select><option>All Customers</option></select></div>
+      <div class="demo-form-row"><label>Write Off Limit</label><input type="number" value="5000"></div>
+      <div class="demo-form-row"><label>Reason Code</label><select><option>Small Balance</option><option>Bad Debt</option></select></div>
+    </div>
+    <div class="sp-section-label" style="margin-top:16px;">Eligible Balances</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Customer</th><th>Invoice No.</th><th>Balance</th><th>Eligible</th><th>Status</th></tr></thead>
+        <tbody id="ar-process-records">
+          ${docs.length ? docs.map(d => `<tr><td><strong>${d.customer}</strong></td><td class="mono">${d.no}</td><td class="amt" style="color:var(--red)">₱${fmt(d.balance)}</td><td>Yes</td><td class="rec-status">${badge('Pending')}</td></tr>`).join('') : `<tr><td colspan="5" style="text-align:center" class="dim">No eligible small balances to write off.</td></tr>`}
+        </tbody>
+      </table>
+    </div>
+  `;
+  const actions = `
+    <button class="btn btn-sm btn-primary" onclick="processArAction(this, 'invoices', ['Open', 'Overdue'], 'Written Off', 'Selected balances written off.')">Write Off Selected</button>
+    <button class="btn btn-sm" onclick="exportCsv('receivables')">Export Log</button>
+    <button class="btn btn-sm" onclick="closeCenterModal()">Close</button>
+  `;
+  openCenterModal('Write Off Balances and Credits', html, actions, { width: 'min(820px, calc(100vw - 48px))' });
+}
+
+function openArPrepareStatementsProcess() {
+  const branches = typeof branchData !== 'undefined' ? branchData.map(b => `<option value="${esc(b.name)}">${esc(b.name)}</option>`).join('') : '<option>Manila Main</option>';
+  const html = `
+    <div class="demo-form-grid">
+      <div class="demo-form-row"><label>Statement Date</label><input type="date" value="${demoToday()}"></div>
+      <div class="demo-form-row"><label>Customer Type</label><select><option>All Types</option><option>Retail</option><option>Corporate</option></select></div>
+      <div class="demo-form-row"><label>Branch</label><select><option>All Branches</option>${branches}</select></div>
+    </div>
+    <div class="sp-section-label" style="margin-top:16px;">Customers with Open Balances</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Customer</th><th>Open Invoices</th><th>Balance</th><th>Statement Status</th></tr></thead>
+        <tbody id="ar-process-records">
+          <tr><td><strong>Maria Santos</strong></td><td class="mono">1</td><td class="amt" style="color:var(--red)">₱45,000.00</td><td class="rec-status">${badge('Pending')}</td></tr>
+          <tr><td><strong>Patrick Lim</strong></td><td class="mono">1</td><td class="amt" style="color:var(--red)">₱3,500.00</td><td class="rec-status">${badge('Pending')}</td></tr>
+        </tbody>
+      </table>
+    </div>
+  `;
+  const actions = `
+    <button class="btn btn-sm btn-primary" onclick="processArAction(this, null, null, 'Prepared', 'Customer statements prepared successfully.')">Prepare Statements</button>
+    <button class="btn btn-sm" onclick="window.print()">Print Preview</button>
+    <button class="btn btn-sm" onclick="closeCenterModal()">Close</button>
+  `;
+  openCenterModal('Prepare Statements', html, actions, { width: 'min(760px, calc(100vw - 48px))' });
+}
+
+function openArPrintStatementsProcess() {
+  const html = `
+    <div class="demo-form-grid">
+      <div class="demo-form-row"><label>Statement Batch</label><input type="text" value="STMT-${demoToday().replace(/-/g,'')}"></div>
+      <div class="demo-form-row"><label>Output Type</label><select><option>Print</option><option>Email</option></select></div>
+    </div>
+    <div class="sp-section-label" style="margin-top:16px;">Prepared Statements</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Statement No.</th><th>Customer</th><th>Balance</th><th>Print Status</th></tr></thead>
+        <tbody id="ar-process-records">
+          <tr><td class="mono">STMT-2026-001</td><td><strong>Maria Santos</strong></td><td class="amt">₱45,000.00</td><td class="rec-status">${badge('Pending')}</td></tr>
+          <tr><td class="mono">STMT-2026-002</td><td><strong>Patrick Lim</strong></td><td class="amt">₱3,500.00</td><td class="rec-status">${badge('Pending')}</td></tr>
+        </tbody>
+      </table>
+    </div>
+  `;
+  const actions = `
+    <button class="btn btn-sm btn-primary" onclick="processArAction(this, null, null, 'Printed', 'Statements printed/emailed successfully.')">Print Statements</button>
+    <button class="btn btn-sm" onclick="showToast('Demo only: PDF exported.')">Export PDF Demo</button>
+    <button class="btn btn-sm" onclick="closeCenterModal()">Close</button>
+  `;
+  openCenterModal('Print Statements', html, actions, { width: 'min(760px, calc(100vw - 48px))' });
+}
+
+function openArClosePeriodsProcess() {
+  const html = `
+    <div class="demo-form-grid">
+      <div class="demo-form-row"><label>Financial Period</label><select><option>05-2026</option><option>04-2026</option></select></div>
+      <div class="demo-form-row"><label>Module</label><input type="text" value="Receivables (AR)" disabled style="background:var(--surface)"></div>
+    </div>
+    <div class="sp-section-label" style="margin-top:16px;">Period Closing Status</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Period</th><th>Open Documents</th><th>Validation Status</th><th>Closing Status</th></tr></thead>
+        <tbody id="ar-process-records">
+          <tr><td class="mono">05-2026</td><td class="mono">2</td><td><span class="badge badge-approved">Valid</span></td><td class="rec-status">${badge('Open')}</td></tr>
+        </tbody>
+      </table>
+    </div>
+  `;
+  const actions = `
+    <button class="btn btn-sm" onclick="showToast('Period validation passed. Ready to close.')">Validate Period</button>
+    <button class="btn btn-sm btn-primary" onclick="processArAction(this, null, null, 'Closed', 'Financial period closed for Receivables.')">Close Period</button>
+    <button class="btn btn-sm" onclick="printProcessLog('Period Closing')">Print Closing Log</button>
+    <button class="btn btn-sm" onclick="closeCenterModal()">Close</button>
+  `;
+  openCenterModal('Close Financial Periods', html, actions, { width: 'min(760px, calc(100vw - 48px))' });
+}
+
+function processArAction(btn, arrayName, statusMatchArray, newStatus, successMsg, statusField = 'status') {
+  setButtonLoading(btn, 'Processing...');
+  setTimeout(() => {
+    if (arrayName && demoReceivablesData[arrayName]) {
+      demoReceivablesData[arrayName].forEach(r => {
+        if (statusMatchArray.includes(r[statusField])) r[statusField] = newStatus;
+        if (newStatus === 'Written Off') r.balance = 0;
+      });
+      saveDemoReceivablesData();
+    }
+    const recStatuses = document.querySelectorAll('#ar-process-records .rec-status');
+    recStatuses.forEach(el => el.innerHTML = badge(newStatus));
+    resetButtonLoading(btn);
+    showToast(successMsg);
+  }, 800);
+}
+
+// ===== INQUIRIES & REPORTS =====
+function openArCustomerSummaryDemo() {
+  const html = `
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Customer</th><th>Total Invoices</th><th>Total Paid</th><th>Balance</th><th>Status</th></tr></thead>
+        <tbody>
+          ${demoReceivablesData.customers.map(c => `<tr><td><strong>${c.name}</strong></td><td class="mono">₱${fmt(c.balance + (c.balance===0?120000:0))}</td><td class="amt" style="color:var(--green)">₱${fmt(c.balance===0?120000:0)}</td><td class="amt" style="${c.balance>0?'color:var(--red)':''}">₱${fmt(c.balance)}</td><td>${badge(c.status)}</td></tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+  const actions = `<button class="btn btn-sm" onclick="exportCsv('receivables')">Export CSV</button><button class="btn btn-sm btn-primary" onclick="closeCenterModal()">Close</button>`;
+  openCenterModal('Customer Summary', html, actions, { width: 'min(820px, calc(100vw - 48px))' });
+}
+
+function openArStatementHistoryDemo() {
+  const html = `
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Statement No.</th><th>Customer</th><th>Statement Date</th><th>Balance</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">STMT-2026-0401</td><td><strong>Maria Santos</strong></td><td class="dim">Apr 30, 2026</td><td class="amt">₱45,000</td><td>${badge('Prepared')}</td></tr>
+          <tr><td class="mono">STMT-2026-0402</td><td><strong>Juan Reyes</strong></td><td class="dim">Apr 30, 2026</td><td class="amt">₱120,000</td><td>${badge('Printed')}</td></tr>
+        </tbody>
+      </table>
+    </div>
+  `;
+  const actions = `<button class="btn btn-sm btn-primary" onclick="closeCenterModal()">Close</button>`;
+  openCenterModal('Statement History Summary', html, actions, { width: 'min(820px, calc(100vw - 48px))' });
+}
+
+function openArPrintedFormDemo(action) {
+  const html = `
+    <div style="padding:20px; border:1px solid var(--border-strong); background:#fff; text-align:center; min-height: 250px;">
+      <h2 style="margin-bottom:20px">NEXII BSM DEMO INC.</h2>
+      <h3 style="margin-bottom:10px; color:var(--text-secondary)">INVOICE / MEMO</h3>
+      <div style="display:flex; justify-content:space-between; margin-bottom:20px; text-align:left; font-size:12px;">
+        <div><strong>To:</strong> Maria Santos<br>Manila Main Branch</div>
+        <div><strong>Invoice No:</strong> INV-2026-1001<br><strong>Date:</strong> May 01, 2026<br><strong>Due:</strong> May 15, 2026</div>
+      </div>
+      <table style="width:100%; border-collapse:collapse; text-align:left; font-size:12px; margin-bottom:20px;">
+        <tr style="border-bottom:1px solid #ccc"><th style="padding:8px">Description</th><th style="padding:8px; text-align:right">Amount</th></tr>
+        <tr style="border-bottom:1px solid #eee"><td style="padding:8px">Honda Click 125i (SO-2026-0501)</td><td style="padding:8px; text-align:right">₱45,000.00</td></tr>
+        <tr><td style="padding:8px; text-align:right"><strong>Total Balance Due</strong></td><td style="padding:8px; text-align:right; font-weight:bold; color:var(--red)">₱45,000.00</td></tr>
+      </table>
+      <div style="font-size:11px; color:var(--text-tertiary)">This is a system-generated printable document preview.</div>
+    </div>
+  `;
+  const actions = `
+    <button class="btn btn-sm btn-primary" onclick="window.print()">Print Invoice/Memo</button>
+    <button class="btn btn-sm" onclick="closeCenterModal()">Close</button>
+  `;
+  openCenterModal(action, html, actions, { width: 'min(720px, calc(100vw - 48px))' });
+}
+
+function openArReportDemo(action) {
+  const branches = typeof branchData !== 'undefined' ? branchData.map(b => `<option value="${esc(b.name)}">${esc(b.name)}</option>`).join('') : '<option>All Branches</option>';
+  const html = `
+    <div class="demo-form-grid">
+      <div class="demo-form-row"><label>Date From</label><input type="date" value="2026-05-01"></div>
+      <div class="demo-form-row"><label>Date To</label><input type="date" value="2026-05-31"></div>
+      <div class="demo-form-row"><label>Branch Filter</label><select><option>All Branches</option>${branches}</select></div>
+      <div class="demo-form-row"><label>Customer Status</label><select><option>All</option><option>Active</option><option>Overdue</option></select></div>
+    </div>
+    <div id="demo-report-results" style="display:none; margin-top:16px;">
+      <div class="sp-section-label">Generated Data - ${action}</div>
+      <div class="table-wrap" style="border:1px solid var(--border);">
+        <table>
+          <thead><tr><th>Reference / Account</th><th>Customer</th><th>Balance</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">1100-AR</td><td>Maria Santos</td><td class="amt">₱45,000.00</td><td>${badge('Overdue')}</td></tr>
+            <tr><td class="mono">1100-AR</td><td>Patrick Lim</td><td class="amt">₱3,500.00</td><td>${badge('Active')}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+  const actions = `
+    <button class="btn btn-sm btn-primary" onclick="simulateReportRun(this)">Run Report</button>
+    <button class="btn btn-sm" onclick="exportCsv('receivables')">Export CSV</button>
+    <button class="btn btn-sm" onclick="window.print()">Print Preview</button>
+    <button class="btn btn-sm" onclick="showToast('Demo only: report email prepared successfully.')">Email Report</button>
+  `;
+  openCenterModal(`Report: ${action}`, html, actions, { width: 'min(760px, calc(100vw - 48px))' });
+}
+
+function openArProfitabilityDemo(action) {
+  const html = `
+    <div class="demo-form-grid">
+      <div class="demo-form-row"><label>Date From</label><input type="date" value="2026-05-01"></div>
+      <div class="demo-form-row"><label>Date To</label><input type="date" value="2026-05-31"></div>
+      <div class="demo-form-row"><label>Profitability View</label><input type="text" value="${action}" disabled style="background:var(--surface)"></div>
+    </div>
+    <div id="demo-report-results" style="display:none; margin-top:16px;">
+      <div class="sp-section-label">Analysis Result</div>
+      <div class="table-wrap" style="border:1px solid var(--border);">
+        <table>
+          <thead><tr><th>Category / Item</th><th>Gross Sales</th><th>Cost</th><th>Gross Profit</th><th>Margin</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Honda Click 125i</strong></td><td class="amt">₱1,243,500</td><td class="amt">₱965,000</td><td class="amt" style="color:var(--green)">₱278,500</td><td class="mono">22.4%</td></tr>
+            <tr><td><strong>Yamaha NMAX</strong></td><td class="amt">₱2,126,600</td><td class="amt">₱1,680,000</td><td class="amt" style="color:var(--green)">₱446,600</td><td class="mono">21.0%</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+  const actions = `
+    <button class="btn btn-sm btn-primary" onclick="simulateReportRun(this)">Run Analysis</button>
+    <button class="btn btn-sm" onclick="exportCsv('receivables')">Export CSV</button>
+    <button class="btn btn-sm" onclick="window.print()">Print Preview</button>
+    <button class="btn btn-sm" onclick="closeCenterModal()">Close</button>
+  `;
+  openCenterModal(`Analysis: ${action}`, html, actions, { width: 'min(860px, calc(100vw - 48px))' });
 }
 
 function openReportDemo(action) {
