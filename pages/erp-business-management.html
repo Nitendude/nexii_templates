@@ -2774,91 +2774,88 @@ function openSalesPricesDemo() {
 }
 
 function openProcessDemo(action) {
-  if (action === 'Create Transfer Orders') return openCreateTransferOrderDemo();
-  if (action === 'Print/Email Orders') return openPrintEmailOrdersDemo();
-
+  const branches = typeof branchData !== 'undefined' ? branchData.map(b => `<option value="${esc(b.name)}">${esc(b.name)}</option>`).join('') : '<option>Manila Main</option>';
   let checklist = [];
+  
   if (action === 'Process Orders') {
-    checklist = ['Validate customer information', 'Check inventory availability', 'Confirm payment mode', 'Generate order document', 'Prepare for invoicing'];
-  } else if (action === 'Process Shipments') {
-    checklist = ['Confirm released units', 'Validate OR/CR', 'Assign delivery status', 'Generate shipment record'];
-  } else if (action === 'Process Invoices and Memos') {
-    checklist = ['Check completed orders', 'Generate invoice', 'Apply memo if needed', 'Mark for receivables'];
+    checklist = ['Validate customer information', 'Check inventory availability', 'Confirm payment mode', 'Generate sales order document', 'Prepare order for invoicing'];
   } else if (action === 'Generate Intercompany Sales Orders') {
-    checklist = ['Identify branch-to-branch requests', 'Calculate internal pricing', 'Create intercompany SO', 'Update inventory allocations'];
+    checklist = ['Select source branch records', 'Validate destination branch', 'Generate intercompany order', 'Tag affected inventory units', 'Prepare intercompany report'];
+  } else if (action === 'Process Shipments') {
+    checklist = ['Confirm released units', 'Validate OR/CR documents', 'Assign delivery status', 'Generate shipment record', 'Prepare delivery slip'];
+  } else if (action === 'Process Invoices and Memos') {
+    checklist = ['Check completed sales orders', 'Generate customer invoice', 'Apply memo adjustments if needed', 'Update receivables preview', 'Prepare invoice batch'];
+  } else if (action === 'Create Transfer Orders') {
+    checklist = ['Select source branch', 'Select receiving branch', 'Check stock availability', 'Create transfer document', 'Prepare transfer approval'];
+  } else if (action === 'Print/Email Orders') {
+    checklist = ['Select sales order records', 'Generate printable order format', 'Prepare email recipient list', 'Attach order document', 'Queue demo email'];
   } else {
     checklist = ['Initialize process', 'Validate records', 'Execute update', 'Finish'];
   }
 
   const html = `
-    <div class="sp-section-label">Process Details</div>
-    <div class="sp-row"><span class="sp-key">Process Name</span><span class="sp-val">${esc(action)}</span></div>
-    <div class="sp-row"><span class="sp-key">Status</span><span class="sp-val" id="demo-process-status">${badge('Ready')}</span></div>
-    
-    <div class="sp-section-label" style="margin-top:16px;">Checklist</div>
-    <ul style="padding-left:20px; font-size:12.5px; color:var(--text-secondary); line-height:1.6;">
-      ${checklist.map(item => `<li>${item}</li>`).join('')}
-    </ul>
+    <div class="orcr-form-grid" style="margin-bottom: 16px;">
+      <div class="orcr-field"><label>Branch</label><select><option>All Branches</option>${branches}</select></div>
+      <div class="orcr-field"><label>Date From</label><input type="date" value="${new Date(new Date().setDate(1)).toISOString().slice(0,10)}"></div>
+      <div class="orcr-field"><label>Date To</label><input type="date" value="${new Date().toISOString().slice(0,10)}"></div>
+      <div class="orcr-field"><label>Status</label><select><option>Pending</option><option>Processing</option><option>Completed</option><option>All</option></select></div>
+    </div>
+    <div class="sp-row" style="margin-bottom: 16px; background: var(--surface); padding: 10px 14px; border: 1px solid var(--border); border-radius: 4px;">
+      <span class="sp-key" style="font-size:13px;">Process Name: <strong style="color:var(--text-primary)">${esc(action)}</strong></span>
+      <span class="sp-val" style="font-size:13px;">Status: <span id="demo-process-status">${badge('Ready')}</span></span>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <div>
+        <div class="sp-section-label">Checklist</div>
+        <ul style="padding-left:20px; font-size:12.5px; color:var(--text-secondary); line-height:1.6;">
+          ${checklist.map(item => `<li>${item}</li>`).join('')}
+        </ul>
+      </div>
+      <div>
+        <div class="sp-section-label">Affected Records</div>
+        <div class="table-wrap" style="border:1px solid var(--border);">
+          <table>
+            <thead><tr><th>Record ID</th><th>Description</th><th>Status</th></tr></thead>
+            <tbody id="demo-process-records">
+              <tr><td class="mono">REC-2026-01</td><td>Batch item 1</td><td class="rec-status">${badge('Pending')}</td></tr>
+              <tr><td class="mono">REC-2026-02</td><td>Batch item 2</td><td class="rec-status">${badge('Pending')}</td></tr>
+              <tr><td class="mono">REC-2026-03</td><td>Batch item 3</td><td class="rec-status">${badge('Pending')}</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   `;
   const actions = `
     <button class="btn btn-sm btn-primary" onclick="simulateProcessStart(this)">Start Process</button>
     <button class="btn btn-sm" onclick="simulateProcessComplete(this)">Complete Process</button>
-    <button class="btn btn-sm" onclick="showToast('Demo only: Print log downloaded.')">Print Log</button>
+    <button class="btn btn-sm" onclick="printProcessLog()">Print Log</button>
+    <button class="btn btn-sm" onclick="closeCenterModal()">Close</button>
   `;
   openDemoPanel(`Process: ${action}`, html, actions);
-}
-
-function openCreateTransferOrderDemo() {
-  const branches = typeof branchData !== 'undefined' ? branchData.map(b => `<option value="${esc(b.name)}">${esc(b.name)}</option>`).join('') : '<option>Manila Main</option>';
-  const html = `
-    <div class="orcr-field" style="margin-bottom:12px">
-      <label>From Branch</label><select>${branches}</select>
-    </div>
-    <div class="orcr-field" style="margin-bottom:12px">
-      <label>To Branch</label><select>${branches}</select>
-    </div>
-    <div class="orcr-field" style="margin-bottom:12px">
-      <label>Unit Model</label><input type="text" placeholder="e.g. Honda Click 125i">
-    </div>
-    <div class="orcr-field" style="margin-bottom:12px">
-      <label>Quantity</label><input type="number" value="1">
-    </div>
-    <div class="orcr-field" style="margin-bottom:12px">
-      <label>Transfer Reason</label><textarea rows="2" style="width:100%; border:1px solid var(--border-strong); padding:5px; font-family:inherit;"></textarea>
-    </div>
-  `;
-  const actions = `<button class="btn btn-sm btn-primary" onclick="showToast('Demo transfer order created successfully.'); closeCenterModal();">Create Transfer Order</button>`;
-  openDemoPanel('Create Transfer Order', html, actions);
-}
-
-function openPrintEmailOrdersDemo() {
-  const html = `
-    <div class="orcr-field" style="margin-bottom:12px">
-      <label>Select Sales Order</label><select><option>SO-2026-0101 (Maria Santos)</option><option>SO-2026-0102 (Patrick Lim)</option></select>
-    </div>
-    <div class="orcr-field" style="margin-bottom:12px">
-      <label>Email Recipient</label><input type="email" placeholder="customer@example.com">
-    </div>
-    <div class="orcr-field" style="margin-bottom:12px">
-      <label>Message</label><textarea rows="4" style="width:100%; border:1px solid var(--border-strong); padding:5px; font-family:inherit;">Attached is your requested sales order document.</textarea>
-    </div>
-  `;
-  const actions = `<button class="btn btn-sm btn-primary" onclick="showToast('Demo only: order email prepared successfully.'); closeCenterModal();">Send Demo Email</button><button class="btn btn-sm" onclick="window.print()">Print Preview</button>`;
-  openDemoPanel('Print/Email Orders', html, actions);
 }
 
 function simulateProcessStart(btn) {
   flashButton(btn, 'Processing...');
   const statusEl = document.getElementById('demo-process-status');
   if (statusEl) statusEl.innerHTML = badge('Processing');
-  showToast('Process started. Status changed to Processing.');
+  showToast('Demo process started.');
 }
 
 function simulateProcessComplete(btn) {
   flashButton(btn, 'Completing...');
   const statusEl = document.getElementById('demo-process-status');
   if (statusEl) statusEl.innerHTML = badge('Completed');
-  showToast('Process completed successfully.');
+  const recStatuses = document.querySelectorAll('#demo-process-records .rec-status');
+  recStatuses.forEach(el => el.innerHTML = badge('Completed'));
+  showToast('Demo process completed successfully.');
+}
+
+function printProcessLog() {
+  showToast('Demo process log prepared for printing.');
+  setTimeout(() => {
+    window.print();
+  }, 500);
 }
 
 function openReportDemo(action) {
