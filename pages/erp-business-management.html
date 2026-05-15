@@ -2263,65 +2263,6 @@ function refreshCurrentModule(){
   showToast('Current module refreshed');
 }
 
-function openNewSalesOrderForm() {
-  const branches = typeof branchData !== 'undefined'
-    ? branchData.map(b => `<option value="${esc(b.name)}">${esc(b.name)}</option>`).join('')
-    : `<option>Manila Main</option><option>Quezon City North</option><option>Cebu Branch</option><option>Davao Branch</option><option>Taguig Branch</option>`;
-
-  document.getElementById('sp-title').textContent = 'New Sales Order';
-  document.getElementById('sp-body').innerHTML = `
-    <div class="sp-section">
-      <div class="sp-section-label">Order Details</div>
-      <div class="orcr-field" style="margin-bottom:12px">
-        <label>Customer Name</label>
-        <input type="text" id="nso-customer" placeholder="Enter customer name">
-      </div>
-      <div class="orcr-field" style="margin-bottom:12px">
-        <label>Unit Model</label>
-        <select id="nso-model">
-          <option>Honda ADV 160</option>
-          <option>Honda Click 125i</option>
-          <option>Yamaha NMAX</option>
-          <option>Yamaha Mio Gear</option>
-          <option>Kawasaki Ninja 400</option>
-          <option>Suzuki Raider R150</option>
-        </select>
-      </div>
-      <div class="orcr-field" style="margin-bottom:12px">
-        <label>Branch</label>
-        <select id="nso-branch">
-          ${branches}
-        </select>
-      </div>
-      <div class="orcr-field" style="margin-bottom:12px">
-        <label>Payment Mode</label>
-        <select id="nso-mode">
-          <option>Cash</option>
-          <option>Installment</option>
-          <option>Bank Financing</option>
-        </select>
-      </div>
-      <div class="orcr-field" style="margin-bottom:12px">
-        <label>Salesperson</label>
-        <input type="text" id="nso-salesperson" placeholder="Enter salesperson name">
-      </div>
-      <div class="orcr-field" style="margin-bottom:12px">
-        <label>Estimated Total</label>
-        <input type="number" id="nso-total" value="166900">
-      </div>
-      <div class="orcr-field" style="margin-bottom:12px">
-        <label>Down Payment</label>
-        <input type="number" id="nso-dp" value="0">
-      </div>
-    </div>
-    <div class="sp-actions">
-      <button class="btn btn-sm btn-primary" onclick="submitNewSalesOrder()">Submit Order</button>
-      <button class="btn btn-sm" onclick="showToast('Demo only: sales order draft saved.')">Save Draft</button>
-    </div>
-  `;
-  openPanel();
-}
-
 function addDemoUnit(){
   const r={id:`UNIT-DEMO-${pad(invData.length+1,4)}`,brand:'Honda',model:'Demo ADV 160',color:'Pearl White',engine:`ENG-DEMO-${pad(9000+invData.length,5)}`,chassis:`CHS-DEMO-${pad(9500+invData.length,5)}`,branch:branchData[0].name,status:'Available',price:166900,date:'May 14, 2026'};
   invData.unshift(r);refreshBranchInventory();clearImportFilters('inventory');filterInv();renderDashboard();renderBranches();
@@ -2329,7 +2270,7 @@ function addDemoUnit(){
 }
 
 function addDemoOrder(){
-  openNewSalesOrderForm();
+  openNewSalesOrderDemo();
 }
 
 function recordDemoPayment(){
@@ -2467,36 +2408,6 @@ function exportPayroll(){
   exportCsv('payroll');
 }
 
-function submitNewSalesOrder() {
-  const customerName = document.getElementById('nso-customer').value || 'Demo Customer';
-  const unitModel = document.getElementById('nso-model').value;
-  const branch = document.getElementById('nso-branch').value;
-  const paymentMode = document.getElementById('nso-mode').value;
-  const estimatedTotal = document.getElementById('nso-total').value || 0;
-  const downPayment = document.getElementById('nso-dp').value || 0;
-
-  if (typeof soData !== 'undefined') {
-    const r = {
-      no: `SO-DEMO-${pad(soData.length + 1, 4)}`,
-      date: new Date().toLocaleDateString('en-PH', { month: 'short', day: '2-digit', year: 'numeric' }),
-      customer: customerName,
-      model: unitModel,
-      srp: Number(estimatedTotal),
-      dp: Number(downPayment),
-      mode: paymentMode,
-      branch: branch,
-      status: 'Pending'
-    };
-    soData.unshift(r);
-    if (typeof clearImportFilters === 'function') clearImportFilters('sales');
-    if (typeof filterSO === 'function') filterSO();
-    if (typeof renderDashboard === 'function') renderDashboard();
-  }
-
-  closePanel();
-  showToast('Demo sales order submitted successfully.');
-}
-
 function liveAction(btn){
   const label=(btn.textContent||'Action').trim().replace(/\s+/g,' ');
   const clean=label.replace(/^[+]\s*/,'');
@@ -2581,17 +2492,10 @@ if(document.addEventListener){
     liveAction(btn);
   });
   document.addEventListener('click', function(e) {
-    const shortcut = e.target.closest('.erp-shortcut-card');
-    if (shortcut) {
+    const item = e.target.closest('[data-action]');
+    if (item && !item.getAttribute('onclick')) {
       e.preventDefault();
-      handleErpAction(shortcut.dataset.action, shortcut.dataset.type, shortcut.dataset.target);
-      return;
-    }
-  
-    const link = e.target.closest('.erp-menu-link');
-    if (link && !link.getAttribute('onclick')) {
-      e.preventDefault();
-      handleErpAction(link.dataset.action, link.dataset.type, link.dataset.target);
+      handleDemoAction(item.dataset.action, item.dataset.type, item.dataset.target);
       return;
     }
   
@@ -2607,240 +2511,410 @@ if(document.addEventListener){
   });
 }
 
-function handleErpAction(action, type, target) {
-  if (target) {
-    nav(target);
-    return;
+function handleDemoAction(action, type, target) {
+  if (target) { nav(target); return; }
+  if (action === 'OTHER FINANCING OR/CR TRANSMITTAL') { nav('orcr'); return; }
+  if (action === 'CSB OR/CR TRANSMITTAL' || action === 'SUMISHO OR/CR TRANSMITTAL') { openReportDemo(action); return; }
+
+  if (action === 'New Sales Order') return openNewSalesOrderDemo();
+  if (action === 'New Quote') return openNewQuoteDemo();
+  if (action === 'New Payment') return openNewPaymentDemo();
+  if (action === 'New Customer') return openNewCustomerDemo();
+
+  if (action === 'Sales Orders') { nav('sales'); return; }
+  if (action === 'Invoices') return openInvoicesDemo();
+  if (action === 'Shipments') return openShipmentsDemo();
+  if (action === 'Customers') { nav('customers'); return; }
+  if (action === 'Sales Prices') return openSalesPricesDemo();
+
+  if (type === 'process') return openProcessDemo(action);
+  if (type === 'report') return openReportDemo(action);
+  if (type === 'printed-form') return openDemoPrintedForm(action);
+  if (type === 'profile') return openDemoProfile(action);
+  if (type === 'preference') return openDemoPreference(action);
+
+  return openGenericDemo(action, type || 'Feature');
+}
+
+function openDemoPanel(title, html, actionsHtml) {
+  document.getElementById('sp-title').textContent = title;
+  document.getElementById('sp-body').innerHTML = `
+    <div class="sp-section">
+      ${html}
+    </div>
+    ${actionsHtml ? `<div class="sp-actions">${actionsHtml}</div>` : ''}
+  `;
+  openPanel();
+}
+
+function openNewSalesOrderDemo() {
+  const branches = typeof branchData !== 'undefined' ? branchData.map(b => `<option value="${esc(b.name)}">${esc(b.name)}</option>`).join('') : '<option>Manila Main</option>';
+  const html = `
+    <div class="orcr-field" style="margin-bottom:12px">
+      <label>Customer Name</label><input type="text" id="nso-customer" placeholder="Enter customer name">
+    </div>
+    <div class="orcr-field" style="margin-bottom:12px">
+      <label>Unit Model</label><select id="nso-model"><option>Honda ADV 160</option><option>Honda Click 125i</option><option>Yamaha NMAX</option><option>Yamaha Mio Gear</option><option>Kawasaki Ninja 400</option><option>Suzuki Raider R150</option></select>
+    </div>
+    <div class="orcr-field" style="margin-bottom:12px">
+      <label>Branch</label><select id="nso-branch">${branches}</select>
+    </div>
+    <div class="orcr-field" style="margin-bottom:12px">
+      <label>Payment Mode</label><select id="nso-mode"><option>Cash</option><option>Installment</option><option>Bank Financing</option></select>
+    </div>
+    <div class="orcr-field" style="margin-bottom:12px">
+      <label>Salesperson</label><input type="text" placeholder="Enter salesperson name">
+    </div>
+    <div class="orcr-field" style="margin-bottom:12px">
+      <label>Down Payment</label><input type="number" id="nso-dp" value="0">
+    </div>
+    <div class="orcr-field" style="margin-bottom:12px">
+      <label>Estimated Total</label><input type="number" id="nso-total" value="166900">
+    </div>
+  `;
+  const actions = `<button class="btn btn-sm btn-primary" onclick="submitNewSalesOrder()">Submit Order</button><button class="btn btn-sm" onclick="showToast('Demo only: sales order draft saved.')">Save Draft</button>`;
+  openDemoPanel('New Sales Order', html, actions);
+}
+
+function submitNewSalesOrder() {
+  const customerName = document.getElementById('nso-customer').value || 'Demo Customer';
+  const unitModel = document.getElementById('nso-model').value;
+  const branch = document.getElementById('nso-branch').value;
+  const paymentMode = document.getElementById('nso-mode').value;
+  const estimatedTotal = document.getElementById('nso-total').value || 0;
+  const downPayment = document.getElementById('nso-dp').value || 0;
+
+  if (typeof soData !== 'undefined') {
+    const r = {
+      no: `SO-DEMO-${pad(soData.length + 1, 4)}`,
+      date: new Date().toLocaleDateString('en-PH', { month: 'short', day: '2-digit', year: 'numeric' }),
+      customer: customerName,
+      model: unitModel,
+      srp: Number(estimatedTotal),
+      dp: Number(downPayment),
+      mode: paymentMode,
+      branch: branch,
+      status: 'Pending'
+    };
+    soData.unshift(r);
+    if (typeof clearImportFilters === 'function') clearImportFilters('sales');
+    if (typeof filterSO === 'function') filterSO();
+    if (typeof renderDashboard === 'function') renderDashboard();
   }
-  if (action === 'OTHER FINANCING OR/CR TRANSMITTAL') {
-    nav('orcr');
-    return;
-  }
-  if (action === 'CSB OR/CR TRANSMITTAL' || action === 'SUMISHO OR/CR TRANSMITTAL') {
-    openDemoReport(action);
-    return;
-  }
-  if (type === 'transaction' || type === 'data-view') {
-    openDemoGeneric(action, type);
-  } else if (type === 'report') {
-    openDemoReport(action);
-  } else if (type === 'process') {
-    openDemoProcess(action);
-  } else if (type === 'printed-form') {
-    openDemoPrintedForm(action);
-  } else if (type === 'profile') {
-    openDemoProfile(action);
-  } else if (type === 'preference') {
-    openDemoPreference(action);
-  } else if (type === 'shortcut') {
-    openDemoShortcut(action);
+
+  closePanel();
+  showToast('Demo sales order submitted successfully.');
+}
+
+function openNewQuoteDemo() {
+  const branches = typeof branchData !== 'undefined' ? branchData.map(b => `<option value="${esc(b.name)}">${esc(b.name)}</option>`).join('') : '<option>Manila Main</option>';
+  const html = `
+    <div class="orcr-field" style="margin-bottom:12px">
+      <label>Customer Name</label><input type="text" placeholder="Enter customer name">
+    </div>
+    <div class="orcr-field" style="margin-bottom:12px">
+      <label>Unit Model</label><input type="text" placeholder="e.g. Honda ADV 160">
+    </div>
+    <div class="orcr-field" style="margin-bottom:12px">
+      <label>Branch</label><select>${branches}</select>
+    </div>
+    <div class="orcr-field" style="margin-bottom:12px">
+      <label>Quote Amount</label><input type="number" value="0">
+    </div>
+    <div class="orcr-field" style="margin-bottom:12px">
+      <label>Valid Until</label><input type="date" value="${new Date(Date.now() + 14 * 86400000).toISOString().slice(0,10)}">
+    </div>
+    <div class="orcr-field" style="margin-bottom:12px">
+      <label>Salesperson</label><input type="text" placeholder="Enter salesperson name">
+    </div>
+  `;
+  const actions = `<button class="btn btn-sm btn-primary" onclick="showToast('Demo quote converted to sales order.'); closePanel();">Convert to Sales Order</button><button class="btn btn-sm" onclick="showToast('Demo quote saved successfully.'); closePanel();">Save Quote</button>`;
+  openDemoPanel('New Quote', html, actions);
+}
+
+function openNewPaymentDemo() {
+  const html = `
+    <div class="orcr-field" style="margin-bottom:12px">
+      <label>Customer Name</label><input type="text" placeholder="Enter customer name">
+    </div>
+    <div class="orcr-field" style="margin-bottom:12px">
+      <label>Sales Order No.</label><input type="text" placeholder="e.g. SO-2026-0123">
+    </div>
+    <div class="orcr-field" style="margin-bottom:12px">
+      <label>Payment Method</label>
+      <select><option>Cash</option><option>Bank Transfer</option><option>Check</option><option>Credit Card</option></select>
+    </div>
+    <div class="orcr-field" style="margin-bottom:12px">
+      <label>Reference Number</label><input type="text" placeholder="e.g. TXN-99812">
+    </div>
+    <div class="orcr-field" style="margin-bottom:12px">
+      <label>Amount Paid</label><input type="number" value="0">
+    </div>
+    <div class="orcr-field" style="margin-bottom:12px">
+      <label>Payment Date</label><input type="date" value="${new Date().toISOString().slice(0,10)}">
+    </div>
+  `;
+  const actions = `<button class="btn btn-sm btn-primary" onclick="showToast('Demo payment recorded successfully.'); closePanel();">Save Payment</button><button class="btn btn-sm" onclick="window.print()">Print Receipt</button>`;
+  openDemoPanel('New Payment', html, actions);
+}
+
+function openNewCustomerDemo() {
+  const branches = typeof branchData !== 'undefined' ? branchData.map(b => `<option value="${esc(b.name)}">${esc(b.name)}</option>`).join('') : '<option>Manila Main</option>';
+  const html = `
+    <div class="orcr-field" style="margin-bottom:12px">
+      <label>Full Name</label><input type="text" placeholder="Enter customer name">
+    </div>
+    <div class="orcr-field" style="margin-bottom:12px">
+      <label>Contact Number</label><input type="text" placeholder="e.g. 0917 123 4567">
+    </div>
+    <div class="orcr-field" style="margin-bottom:12px">
+      <label>Email Address</label><input type="email" placeholder="customer@example.com">
+    </div>
+    <div class="orcr-field" style="margin-bottom:12px">
+      <label>Address</label><textarea rows="2" style="width:100%; border:1px solid var(--border-strong); padding:5px; font-family:inherit;"></textarea>
+    </div>
+    <div class="orcr-field" style="margin-bottom:12px">
+      <label>Preferred Branch</label><select>${branches}</select>
+    </div>
+    <div class="orcr-field" style="margin-bottom:12px">
+      <label>Customer Type</label><select><option>Retail</option><option>Corporate</option><option>Fleet</option></select>
+    </div>
+  `;
+  const actions = `<button class="btn btn-sm btn-primary" onclick="showToast('Demo customer saved successfully.'); closePanel();">Save Customer</button>`;
+  openDemoPanel('New Customer', html, actions);
+}
+
+function openInvoicesDemo() {
+  const html = `
+    <div class="sp-section-label">Recent Invoices</div>
+    <div class="table-wrap" style="border:1px solid var(--border); margin-top:12px;">
+      <table>
+        <thead><tr><th>Invoice No.</th><th>Sales Order No.</th><th>Customer</th><th>Invoice Date</th><th>Due Date</th><th>Amount</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">INV-2026-001</td><td class="mono">SO-2026-0101</td><td>Maria Santos</td><td>May 10, 2026</td><td>May 25, 2026</td><td class="amt">₱75,000</td><td>${badge('Paid')}</td></tr>
+          <tr><td class="mono">INV-2026-002</td><td class="mono">SO-2026-0102</td><td>Patrick Lim</td><td>May 12, 2026</td><td>May 27, 2026</td><td class="amt">₱140,000</td><td>${badge('Pending')}</td></tr>
+          <tr><td class="mono">INV-2026-003</td><td class="mono">SO-2026-0098</td><td>Jessa Cruz</td><td>May 01, 2026</td><td>May 15, 2026</td><td class="amt">₱85,000</td><td>${badge('Overdue')}</td></tr>
+        </tbody>
+      </table>
+    </div>
+  `;
+  const actions = `<button class="btn btn-sm btn-primary" onclick="showToast('Demo invoice opened.')">View Invoice</button><button class="btn btn-sm" onclick="window.print()">Print Invoice</button><button class="btn btn-sm" onclick="exportCsv('sales')">Export CSV</button>`;
+  openDemoPanel('Invoices List', html, actions);
+}
+
+function openShipmentsDemo() {
+  const html = `
+    <div class="sp-section-label">Tracking Summary</div>
+    <div class="table-wrap" style="border:1px solid var(--border); margin-top:12px;">
+      <table>
+        <thead><tr><th>Shipment No.</th><th>Sales Order No.</th><th>Customer</th><th>Unit Model</th><th>Branch</th><th>Release Date</th><th>Delivery Status</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">SHP-2026-051</td><td class="mono">SO-2026-0101</td><td>Maria Santos</td><td>Honda ADV 160</td><td>Manila Main</td><td>May 14, 2026</td><td>${badge('Processing')}</td></tr>
+          <tr><td class="mono">SHP-2026-052</td><td class="mono">SO-2026-0102</td><td>Patrick Lim</td><td>Yamaha NMAX</td><td>Quezon City North</td><td>May 15, 2026</td><td>${badge('Pending')}</td></tr>
+          <tr><td class="mono">SHP-2026-048</td><td class="mono">SO-2026-0098</td><td>Jessa Cruz</td><td>Suzuki Raider R150</td><td>Cebu Branch</td><td>May 12, 2026</td><td>${badge('Delivered')}</td></tr>
+        </tbody>
+      </table>
+    </div>
+  `;
+  const actions = `<button class="btn btn-sm btn-primary" onclick="showToast('Shipment marked as delivered.')">Mark as Delivered</button><button class="btn btn-sm" onclick="showToast('Demo shipment opened.')">View Shipment</button><button class="btn btn-sm" onclick="window.print()">Print Delivery Slip</button>`;
+  openDemoPanel('Shipment Tracking', html, actions);
+}
+
+function openSalesPricesDemo() {
+  const html = `
+    <div class="sp-section-label">Price List Configuration</div>
+    <div class="table-wrap" style="border:1px solid var(--border); margin-top:12px;">
+      <table>
+        <thead><tr><th>Unit Model</th><th>SRP</th><th>Cash Discount</th><th>Installment Price</th><th>Effective Date</th></tr></thead>
+        <tbody>
+          <tr><td>Honda ADV 160</td><td class="amt">₱166,900</td><td class="amt">₱5,000</td><td class="amt">₱185,000</td><td>Jan 1, 2026</td></tr>
+          <tr><td>Honda Click 125i</td><td class="amt">₱82,900</td><td class="amt">₱2,500</td><td class="amt">₱95,000</td><td>Jan 1, 2026</td></tr>
+          <tr><td>Yamaha NMAX</td><td class="amt">₱151,900</td><td class="amt">₱4,000</td><td class="amt">₱170,000</td><td>Mar 15, 2026</td></tr>
+          <tr><td>Suzuki Raider R150</td><td class="amt">₱115,900</td><td class="amt">₱3,000</td><td class="amt">₱130,000</td><td>Feb 10, 2026</td></tr>
+        </tbody>
+      </table>
+    </div>
+  `;
+  const actions = `<button class="btn btn-sm btn-primary" onclick="showToast('Demo price editor opened.')">Edit Price</button><button class="btn btn-sm" onclick="exportCsv('sales')">Export CSV</button>`;
+  openDemoPanel('Sales Prices', html, actions);
+}
+
+function openProcessDemo(action) {
+  if (action === 'Create Transfer Orders') return openCreateTransferOrderDemo();
+  if (action === 'Print/Email Orders') return openPrintEmailOrdersDemo();
+
+  let checklist = [];
+  if (action === 'Process Orders') {
+    checklist = ['Validate customer information', 'Check inventory availability', 'Confirm payment mode', 'Generate order document', 'Prepare for invoicing'];
+  } else if (action === 'Process Shipments') {
+    checklist = ['Confirm released units', 'Validate OR/CR', 'Assign delivery status', 'Generate shipment record'];
+  } else if (action === 'Process Invoices and Memos') {
+    checklist = ['Check completed orders', 'Generate invoice', 'Apply memo if needed', 'Mark for receivables'];
+  } else if (action === 'Generate Intercompany Sales Orders') {
+    checklist = ['Identify branch-to-branch requests', 'Calculate internal pricing', 'Create intercompany SO', 'Update inventory allocations'];
   } else {
-    openDemoGeneric(action, type);
+    checklist = ['Initialize process', 'Validate records', 'Execute update', 'Finish'];
   }
+
+  const html = `
+    <div class="sp-section-label">Process Details</div>
+    <div class="sp-row"><span class="sp-key">Process Name</span><span class="sp-val">${esc(action)}</span></div>
+    <div class="sp-row"><span class="sp-key">Status</span><span class="sp-val" id="demo-process-status">${badge('Ready')}</span></div>
+    
+    <div class="sp-section-label" style="margin-top:16px;">Checklist</div>
+    <ul style="padding-left:20px; font-size:12.5px; color:var(--text-secondary); line-height:1.6;">
+      ${checklist.map(item => `<li>${item}</li>`).join('')}
+    </ul>
+  `;
+  const actions = `
+    <button class="btn btn-sm btn-primary" onclick="simulateProcessStart(this)">Start Process</button>
+    <button class="btn btn-sm" onclick="simulateProcessComplete(this)">Complete Process</button>
+    <button class="btn btn-sm" onclick="showToast('Demo only: Print log downloaded.')">Print Log</button>
+  `;
+  openDemoPanel(`Process: ${action}`, html, actions);
 }
 
-function openDemoShortcut(action) {
-  if (action === 'New Sales Order') {
-    openNewSalesOrderForm();
-    return;
-  }
-  if (action === 'New Quote') {
-    openActionPanel(`New Quote`, [
-      {
-        label: 'Quote Details',
-        rows: [
-          ['Customer', 'Select Customer...'],
-          ['Valid Until', new Date(Date.now() + 14 * 86400000).toLocaleDateString('en-PH')],
-          ['Estimated Total', '₱0.00', 'mono']
-        ]
-      }
-    ], `<button class="btn btn-sm btn-primary" onclick="showToast('Demo only: Quote saved successfully.')">Save Quote</button><button class="btn btn-sm" onclick="showToast('Demo only: Quote converted to Sales Order.')">Convert to Sales Order</button>`);
-    return;
-  }
-  if (action === 'New Payment') {
-    openActionPanel(`New Payment`, [
-      {
-        label: 'Payment Details',
-        rows: [
-          ['Customer', 'Select Customer...'],
-          ['Amount', '₱0.00', 'mono'],
-          ['Payment Method', 'Cash / Transfer'],
-          ['Reference', 'Auto-generated']
-        ]
-      }
-    ], `<button class="btn btn-sm btn-primary" onclick="showToast('Demo only: Payment saved successfully.')">Save Payment</button><button class="btn btn-sm" onclick="showToast('Demo only: Receipt prepared for printing.')">Print Receipt</button>`);
-    return;
-  }
-  if (action === 'New Customer') {
-    openActionPanel(`New Customer`, [
-      {
-        label: 'Customer Profile',
-        rows: [
-          ['Full Name', 'Enter name...'],
-          ['Contact No.', 'Enter phone...'],
-          ['Address', 'Enter address...'],
-          ['Branch', 'Select branch...']
-        ]
-      }
-    ], `<button class="btn btn-sm btn-primary" onclick="showToast('Demo only: Customer saved successfully.')">Save Customer</button>`);
-    return;
-  }
-  openActionPanel(`Shortcut: ${action}`, [
-    {
-      label: 'New Record Details',
-      rows: [
-        ['Status', badge('Draft')],
-        ['Created By', 'Demo User'],
-        ['Date', new Date().toLocaleDateString('en-PH')],
-      ]
-    },
-    {
-      label: 'Sample Fields',
-      rows: [
-        ['Reference', `REF-${Math.floor(Math.random()*10000)}`, 'mono'],
-        ['Amount', `₱${fmt(Math.floor(Math.random()*50000)+1000)}`, 'mono'],
-        ['Notes', 'Sample data entry for demo purposes.']
-      ]
-    }
-  ], `<button class="btn btn-sm btn-primary" onclick="showToast('Demo only: ${action.replace(/'/g, "\\'")} saved successfully.')">Save</button><button class="btn btn-sm" onclick="showToast('Demo only: ${action.replace(/'/g, "\\'")} submitted successfully.')">Submit</button>`);
+function openCreateTransferOrderDemo() {
+  const branches = typeof branchData !== 'undefined' ? branchData.map(b => `<option value="${esc(b.name)}">${esc(b.name)}</option>`).join('') : '<option>Manila Main</option>';
+  const html = `
+    <div class="orcr-field" style="margin-bottom:12px">
+      <label>From Branch</label><select>${branches}</select>
+    </div>
+    <div class="orcr-field" style="margin-bottom:12px">
+      <label>To Branch</label><select>${branches}</select>
+    </div>
+    <div class="orcr-field" style="margin-bottom:12px">
+      <label>Unit Model</label><input type="text" placeholder="e.g. Honda Click 125i">
+    </div>
+    <div class="orcr-field" style="margin-bottom:12px">
+      <label>Quantity</label><input type="number" value="1">
+    </div>
+    <div class="orcr-field" style="margin-bottom:12px">
+      <label>Transfer Reason</label><textarea rows="2" style="width:100%; border:1px solid var(--border-strong); padding:5px; font-family:inherit;"></textarea>
+    </div>
+  `;
+  const actions = `<button class="btn btn-sm btn-primary" onclick="showToast('Demo transfer order created successfully.'); closePanel();">Create Transfer Order</button>`;
+  openDemoPanel('Create Transfer Order', html, actions);
 }
 
-function openDemoReport(action) {
-  openActionPanel(`Report: ${action}`, [
-    {
-      label: 'Report Parameters',
-      rows: [
-        ['Date Range', 'May 1, 2026 - May 31, 2026'],
-        ['Branch', 'All Branches'],
-        ['Status', 'All Statuses']
-      ]
-    },
-    {
-      label: 'Generated Data',
-      rows: [
-        ['Total Records', '42'],
-        ['Last Run', 'Not run yet', 'dim']
-      ]
-    }
-  ], '<button class="btn btn-sm btn-primary" onclick="simulateReportRun(this)">Run Report</button><button class="btn btn-sm" onclick="exportCsv(\'sales\')">Export CSV</button><button class="btn btn-sm" onclick="window.print()">Print Preview</button><button class="btn btn-sm" onclick="showToast(\'Demo only: report email prepared successfully.\')">Email Report</button>');
+function openPrintEmailOrdersDemo() {
+  const html = `
+    <div class="orcr-field" style="margin-bottom:12px">
+      <label>Select Sales Order</label><select><option>SO-2026-0101 (Maria Santos)</option><option>SO-2026-0102 (Patrick Lim)</option></select>
+    </div>
+    <div class="orcr-field" style="margin-bottom:12px">
+      <label>Email Recipient</label><input type="email" placeholder="customer@example.com">
+    </div>
+    <div class="orcr-field" style="margin-bottom:12px">
+      <label>Message</label><textarea rows="4" style="width:100%; border:1px solid var(--border-strong); padding:5px; font-family:inherit;">Attached is your requested sales order document.</textarea>
+    </div>
+  `;
+  const actions = `<button class="btn btn-sm btn-primary" onclick="showToast('Demo only: order email prepared successfully.'); closePanel();">Send Demo Email</button><button class="btn btn-sm" onclick="window.print()">Print Preview</button>`;
+  openDemoPanel('Print/Email Orders', html, actions);
+}
+
+function simulateProcessStart(btn) {
+  flashButton(btn, 'Processing...');
+  const statusEl = document.getElementById('demo-process-status');
+  if (statusEl) statusEl.innerHTML = badge('Processing');
+  showToast('Process started. Status changed to Processing.');
+}
+
+function simulateProcessComplete(btn) {
+  flashButton(btn, 'Completing...');
+  const statusEl = document.getElementById('demo-process-status');
+  if (statusEl) statusEl.innerHTML = badge('Completed');
+  showToast('Process completed successfully.');
+}
+
+function openReportDemo(action) {
+  const branches = typeof branchData !== 'undefined' ? branchData.map(b => `<option value="${esc(b.name)}">${esc(b.name)}</option>`).join('') : '<option>All Branches</option>';
+  const html = `
+    <div class="orcr-field" style="margin-bottom:12px">
+      <label>Date From</label><input type="date" value="2026-05-01">
+    </div>
+    <div class="orcr-field" style="margin-bottom:12px">
+      <label>Date To</label><input type="date" value="2026-05-31">
+    </div>
+    <div class="orcr-field" style="margin-bottom:12px">
+      <label>Branch Filter</label><select><option>All Branches</option>${branches}</select>
+    </div>
+    <div id="demo-report-results" style="display:none; margin-top:16px;">
+      <div class="sp-section-label">Generated Data</div>
+      <div class="table-wrap" style="border:1px solid var(--border);">
+        <table>
+          <thead><tr><th>Reference</th><th>Date</th><th>Amount</th></tr></thead>
+          <tbody>
+            <tr><td>DEMO-001</td><td>May 10, 2026</td><td class="amt">₱15,000</td></tr>
+            <tr><td>DEMO-002</td><td>May 12, 2026</td><td class="amt">₱42,500</td></tr>
+            <tr><td>DEMO-003</td><td>May 14, 2026</td><td class="amt">₱8,900</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+  const actions = `
+    <button class="btn btn-sm btn-primary" onclick="simulateReportRun(this)">Run Report</button>
+    <button class="btn btn-sm" onclick="exportCsv('sales')">Export CSV</button>
+    <button class="btn btn-sm" onclick="window.print()">Print Preview</button>
+    <button class="btn btn-sm" onclick="showToast('Demo only: report email prepared successfully.')">Email Report</button>
+  `;
+  openDemoPanel(`Report: ${action}`, html, actions);
 }
 
 function simulateReportRun(btn) {
   flashButton(btn, 'Running...');
   setTimeout(() => {
+    const results = document.getElementById('demo-report-results');
+    if (results) results.style.display = 'block';
     showToast('Report generated successfully.');
   }, 1000);
 }
 
-function openDemoProcess(action) {
-  openActionPanel(`Process: ${action}`, [
-    {
-      label: 'Process Checklist',
-      rows: [
-        ['Status', badge('Ready')],
-        ['Pending Records', Math.floor(Math.random()*50) + 5],
-        ['Validation', 'Passed'],
-      ]
-    },
-    {
-      label: 'Affected Modules',
-      rows: [
-        ['General Ledger', 'Pending Updates'],
-        ['Inventory', 'Pending Updates']
-      ]
-    }
-  ], '<button class="btn btn-sm btn-primary" onclick="simulateProcessStart(this)">Start Process</button><button class="btn btn-sm" onclick="simulateProcessComplete(this)">Simulate Completion</button><button class="btn btn-sm" onclick="showToast(\'Demo only: Print log downloaded.\')">Print Log</button>');
-}
-
-function simulateProcessStart(btn) {
-  flashButton(btn, 'Processing...');
-  showToast(`Process started. Status changed to Processing.`);
-}
-
-function simulateProcessComplete(btn) {
-  flashButton(btn, 'Completing...');
-  showToast(`Process completed successfully.`);
-}
-
 function openDemoPrintedForm(action) {
-  openActionPanel(`Printed Form: ${action}`, [
-    {
-      label: 'Document Preview',
-      rows: [
-        ['Document Type', action],
-        ['Template', 'Standard Corporate Layout'],
-        ['Pages', '1']
-      ]
-    }
-  ], '<button class="btn btn-sm btn-primary" onclick="window.print()">Print</button><button class="btn btn-sm" onclick="showToast(\'Demo only: Form downloaded as PDF.\')">Download PDF</button>');
+  openDemoPanel(`Printed Form: ${action}`, `
+    <div class="sp-section-label">Document Preview</div>
+    <div class="sp-row"><span class="sp-key">Document Type</span><span class="sp-val">${esc(action)}</span></div>
+    <div class="sp-row"><span class="sp-key">Template</span><span class="sp-val">Standard Corporate Layout</span></div>
+    <div class="sp-row"><span class="sp-key">Pages</span><span class="sp-val">1</span></div>
+  `, `<button class="btn btn-sm btn-primary" onclick="window.print()">Print</button><button class="btn btn-sm" onclick="showToast('Demo only: Form downloaded as PDF.')">Download PDF</button>`);
 }
 
 function openDemoProfile(action) {
   if (action === 'Sales Prices') {
-    openActionPanel(`Price List`, [
-      {
-        label: 'Current Pricing',
-        rows: [
-          ['Base Price', badge('Active')],
-          ['Promo Price', 'Scheduled for next month'],
-          ['Last Updated', new Date().toLocaleDateString('en-PH')]
-        ]
-      }
-    ], `<button class="btn btn-sm btn-primary" onclick="showToast('Demo only: Price list updated.')">Update Prices</button><button class="btn btn-sm" onclick="exportCsv('sales')">Export List</button>`);
+    openDemoPanel(`Price List`, `
+      <div class="sp-section-label">Current Pricing</div>
+      <div class="sp-row"><span class="sp-key">Base Price</span><span class="sp-val">${badge('Active')}</span></div>
+      <div class="sp-row"><span class="sp-key">Promo Price</span><span class="sp-val">Scheduled for next month</span></div>
+      <div class="sp-row"><span class="sp-key">Last Updated</span><span class="sp-val">${new Date().toLocaleDateString('en-PH')}</span></div>
+    `, `<button class="btn btn-sm btn-primary" onclick="showToast('Demo only: Price list updated.')">Update Prices</button><button class="btn btn-sm" onclick="exportCsv('sales')">Export List</button>`);
     return;
   }
-  openActionPanel(`Profile Setup: ${action}`, [
-    {
-      label: 'Entity Details',
-      rows: [
-        ['Total Records', Math.floor(Math.random()*200) + 10],
-        ['Active', badge('Active')],
-        ['Last Synced', new Date().toLocaleDateString('en-PH')]
-      ]
-    }
-  ], '<button class="btn btn-sm btn-primary" onclick="showToast(\'Demo only: New record form opened.\')">Add New Record</button><button class="btn btn-sm" onclick="exportCsv(\'sales\')">Export List</button>');
+  openDemoPanel(`Profile Setup: ${action}`, `
+    <div class="sp-section-label">Entity Details</div>
+    <div class="sp-row"><span class="sp-key">Total Records</span><span class="sp-val">${Math.floor(Math.random()*200) + 10}</span></div>
+    <div class="sp-row"><span class="sp-key">Active</span><span class="sp-val">${badge('Active')}</span></div>
+    <div class="sp-row"><span class="sp-key">Last Synced</span><span class="sp-val">${new Date().toLocaleDateString('en-PH')}</span></div>
+  `, `<button class="btn btn-sm btn-primary" onclick="showToast('Demo only: New record form opened.')">Add New Record</button><button class="btn btn-sm" onclick="exportCsv('sales')">Export List</button>`);
 }
 
 function openDemoPreference(action) {
-  openActionPanel(`Preferences: ${action}`, [
-    {
-      label: 'Configuration Settings',
-      rows: [
-        ['Module', action.split(' ')[0]],
-        ['Auto-Approval', 'Enabled'],
-        ['Default Currency', 'PHP'],
-        ['Sync Frequency', 'Real-time']
-      ]
-    }
-  ], '<button class="btn btn-sm btn-primary" onclick="showToast(\'Demo only: Preferences saved.\')">Save Settings</button><button class="btn btn-sm" onclick="showToast(\'Demo only: Settings reset.\')">Reset to Default</button>');
+  openDemoPanel(`Preferences: ${action}`, `
+    <div class="sp-section-label">Configuration Settings</div>
+    <div class="sp-row"><span class="sp-key">Module</span><span class="sp-val">${esc(action.split(' ')[0])}</span></div>
+    <div class="sp-row"><span class="sp-key">Auto-Approval</span><span class="sp-val">Enabled</span></div>
+    <div class="sp-row"><span class="sp-key">Default Currency</span><span class="sp-val">PHP</span></div>
+    <div class="sp-row"><span class="sp-key">Sync Frequency</span><span class="sp-val">Real-time</span></div>
+  `, `<button class="btn btn-sm btn-primary" onclick="showToast('Demo only: Preferences saved.')">Save Settings</button><button class="btn btn-sm" onclick="showToast('Demo only: Settings reset.')">Reset to Default</button>`);
 }
 
-function openDemoGeneric(action, type) {
-  if (action === 'Invoices') {
-    openDemoReport('Invoices List');
-    return;
-  }
-  if (action === 'Shipments') {
-    openActionPanel(`Shipment Tracking`, [
-      {
-        label: 'Recent Shipments',
-        rows: [
-          ['SHP-2026-001', badge('In Transit')],
-          ['SHP-2026-002', badge('Delivered')],
-          ['SHP-2026-003', badge('Pending')]
-        ]
-      }
-    ], `<button class="btn btn-sm btn-primary" onclick="showToast('Demo only: Tracking updated.')">Refresh Status</button><button class="btn btn-sm" onclick="closePanel()">Close</button>`);
-    return;
-  }
-  openActionPanel(`${type.charAt(0).toUpperCase() + type.slice(1)}: ${action}`, [
-    {
-      label: 'Demo Preview',
-      rows: [
-        ['Description', 'This screen is available in the full implementation. Demo preview only.']
-      ]
-    }
-  ], '<button class="btn btn-sm btn-primary" onclick="closePanel()">Close</button>');
+function openGenericDemo(action, type) {
+  openDemoPanel(
+    `${type.charAt(0).toUpperCase() + type.slice(1)}: ${action}`,
+    `<div class="sp-section-label">Demo Preview</div>
+     <p style="font-size:12.5px; color:var(--text-secondary); line-height:1.5;">This screen is available in the full implementation. Demo preview only for <strong>${esc(action)}</strong>.</p>`,
+    `<button class="btn btn-sm btn-primary" onclick="closePanel()">Close</button>`
+  );
 }
 
 // ===== CLOCK =====
