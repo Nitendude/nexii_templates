@@ -382,6 +382,18 @@ tbody td.amt{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:50
 .sp-val.mono{font-family:'IBM Plex Mono',monospace;font-size:11.5px}
 .sp-actions{display:flex;gap:8px;margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
 
+/* Center Modal */
+.demo-center-modal {
+  width: min(520px, calc(100vw - 48px));
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+  background: var(--bg);
+  border: 1px solid var(--border-strong);
+  box-shadow: 0 24px 70px rgba(15,23,42,.28);
+  display: flex;
+  flex-direction: column;
+}
+
 /* Time & Expenses */
 .te-tabs{display:flex;border-bottom:1px solid var(--border);background:var(--surface)}
 .te-tab{padding:10px 20px;font-size:12.5px;font-weight:500;color:var(--text-secondary);cursor:pointer;border-bottom:2px solid transparent}
@@ -1119,6 +1131,17 @@ body.dark .badge-delivered{color:var(--status-approved-text);background:var(--st
   <div class="sp-body" id="sp-body"></div>
 </div>
 
+<!-- Center Demo Modal -->
+<div class="modal-overlay" id="cm-overlay" onclick="if(event.target===this)closeCenterModal()">
+  <div class="demo-center-modal" role="dialog" aria-modal="true">
+    <div class="sp-header">
+      <div class="sp-title" id="cm-title">Details</div>
+      <div class="sp-close" onclick="closeCenterModal()">&#215;</div>
+    </div>
+    <div class="sp-body" id="cm-body"></div>
+  </div>
+</div>
+
 <!-- OR/CR Report Preview -->
 <div class="modal-overlay" id="orcr-preview-overlay" onclick="if(event.target===this)closeOrcrPreview()">
   <div class="report-preview-modal" role="dialog" aria-modal="true" aria-labelledby="orcr-preview-title">
@@ -1442,11 +1465,11 @@ function openMigrationModal(sourceType){
   }
   renderMigrationContext();
   renderMigration();
-  document.getElementById('migration-modal-overlay')?.classList.add('open');
+  openCenterModal('migration-modal-overlay');
 }
 
 function closeMigrationModal(){
-  document.getElementById('migration-modal-overlay')?.classList.remove('open');
+  closeCenterModal('migration-modal-overlay');
 }
 
 function loadContextSample(){
@@ -1884,8 +1907,8 @@ function filterGL(){
 
 // ===== PANELS =====
 function openInvPanel(r){
-  document.getElementById('sp-title').textContent=r.id+' — '+r.model;
-  document.getElementById('sp-body').innerHTML=`
+  document.getElementById('cm-title').textContent=r.id+' — '+r.model;
+  document.getElementById('cm-body').innerHTML=`
     <div class="sp-section"><div class="sp-section-label">Unit Information</div>
       <div class="sp-row"><span class="sp-key">Unit ID</span><span class="sp-val mono">${r.id}</span></div>
       <div class="sp-row"><span class="sp-key">Brand</span><span class="sp-val">${r.brand}</span></div>
@@ -1907,12 +1930,12 @@ function openInvPanel(r){
       <button class="btn btn-sm">Transfer Unit</button>
       <button class="btn btn-sm">Edit</button>
     </div>`;
-  openPanel();
+  openCenterModal();
 }
 
 function openSOPanel(r){
-  document.getElementById('sp-title').textContent=r.no;
-  document.getElementById('sp-body').innerHTML=`
+  document.getElementById('cm-title').textContent=r.no;
+  document.getElementById('cm-body').innerHTML=`
     <div class="sp-section"><div class="sp-section-label">Order Details</div>
       <div class="sp-row"><span class="sp-key">Order No.</span><span class="sp-val mono">${r.no}</span></div>
       <div class="sp-row"><span class="sp-key">Date</span><span class="sp-val mono">${r.date}</span></div>
@@ -1933,12 +1956,12 @@ function openSOPanel(r){
       <button class="btn btn-sm btn-primary">Print OR</button>
       <button class="btn btn-sm">View Account</button>
     </div>`;
-  openPanel();
+  openCenterModal();
 }
 
 function openPOPanel(r){
-  document.getElementById('sp-title').textContent=r.no;
-  document.getElementById('sp-body').innerHTML=`
+  document.getElementById('cm-title').textContent=r.no;
+  document.getElementById('cm-body').innerHTML=`
     <div class="sp-section"><div class="sp-section-label">Purchase Order</div>
       <div class="sp-row"><span class="sp-key">PO No.</span><span class="sp-val mono">${r.no}</span></div>
       <div class="sp-row"><span class="sp-key">Date Issued</span><span class="sp-val mono">${r.date}</span></div>
@@ -1958,14 +1981,14 @@ function openPOPanel(r){
       <button class="btn btn-sm btn-primary">Mark Delivered</button>
       <button class="btn btn-sm">Print PO</button>
     </div>`;
-  openPanel();
+  openCenterModal();
 }
 
 function openPayrollPanel(no){
   const r=payrollData.find(x=>x.no===no);
   if(!r)return;
-  document.getElementById('sp-title').textContent=r.no;
-  document.getElementById('sp-body').innerHTML=`
+  document.getElementById('cm-title').textContent=r.no;
+  document.getElementById('cm-body').innerHTML=`
     <div class="sp-section"><div class="sp-section-label">Employee Payroll</div>
       <div class="sp-row"><span class="sp-key">Employee</span><span class="sp-val">${r.employee}</span></div>
       <div class="sp-row"><span class="sp-key">Employee ID</span><span class="sp-val mono">${r.employeeId}</span></div>
@@ -1985,7 +2008,7 @@ function openPayrollPanel(no){
       <button class="btn btn-sm" onclick="updateOnePayroll('${r.no}','Released')">Mark Released</button>
       <button class="btn btn-sm">Print Payslip</button>
     </div>`;
-  openPanel();
+  openCenterModal();
 }
 
 // ===== PANEL CONTROL =====
@@ -1996,6 +2019,14 @@ function openPanel(){
 function closePanel(){
   document.getElementById('side-panel').classList.remove('open');
   setTimeout(()=>document.getElementById('sp-overlay').classList.remove('open'),200);
+}
+
+// ===== CENTER MODAL =====
+function openCenterModal(id = 'cm-overlay'){
+  document.getElementById(id)?.classList.add('open');
+}
+function closeCenterModal(id = 'cm-overlay'){
+  document.getElementById(id)?.classList.remove('open');
 }
 
 // ===== NAVIGATION =====
@@ -2037,6 +2068,9 @@ function nav(id){
   document.getElementById('tb-title').textContent=m.title;
   document.getElementById('tb-page').textContent=m.page;
   closePanel();
+  closeCenterModal();
+  closeCenterModal('migration-modal-overlay');
+  closeCenterModal('orcr-preview-overlay');
 }
 
 // ===== ERP MENU VIEWS =====
@@ -2202,10 +2236,10 @@ function openOrcrPreview(){
     </div>
     ${orcrPreviewTable(currentOrcrRows)}
   `;
-  document.getElementById('orcr-preview-overlay')?.classList.add('open');
+  openCenterModal('orcr-preview-overlay');
 }
 function closeOrcrPreview(){
-  document.getElementById('orcr-preview-overlay')?.classList.remove('open');
+  closeCenterModal('orcr-preview-overlay');
 }
 function emailOrcrReport(){
   showToast('Demo only: Report email has been prepared successfully.');
@@ -2248,14 +2282,14 @@ function activeModuleId(){
 }
 
 function openActionPanel(title,sections,actions=''){
-  document.getElementById('sp-title').textContent=title;
-  document.getElementById('sp-body').innerHTML=sections.map(section=>`
+  document.getElementById('cm-title').textContent=title;
+  document.getElementById('cm-body').innerHTML=sections.map(section=>`
     <div class="sp-section">
       <div class="sp-section-label">${section.label}</div>
       ${section.rows.map(row=>`<div class="sp-row"><span class="sp-key">${row[0]}</span><span class="sp-val ${row[2]||''}">${row[1]}</span></div>`).join('')}
     </div>
   `).join('')+(actions?`<div class="sp-actions">${actions}</div>`:'');
-  openPanel();
+  openCenterModal();
 }
 
 function refreshCurrentModule(){
@@ -2537,14 +2571,14 @@ function handleDemoAction(action, type, target) {
 }
 
 function openDemoPanel(title, html, actionsHtml) {
-  document.getElementById('sp-title').textContent = title;
-  document.getElementById('sp-body').innerHTML = `
+  document.getElementById('cm-title').textContent = title;
+  document.getElementById('cm-body').innerHTML = `
     <div class="sp-section">
       ${html}
     </div>
     ${actionsHtml ? `<div class="sp-actions">${actionsHtml}</div>` : ''}
   `;
-  openPanel();
+  openCenterModal();
 }
 
 function openNewSalesOrderDemo() {
@@ -2602,7 +2636,7 @@ function submitNewSalesOrder() {
     if (typeof renderDashboard === 'function') renderDashboard();
   }
 
-  closePanel();
+  closeCenterModal();
   showToast('Demo sales order submitted successfully.');
 }
 
@@ -2628,7 +2662,7 @@ function openNewQuoteDemo() {
       <label>Salesperson</label><input type="text" placeholder="Enter salesperson name">
     </div>
   `;
-  const actions = `<button class="btn btn-sm btn-primary" onclick="showToast('Demo quote converted to sales order.'); closePanel();">Convert to Sales Order</button><button class="btn btn-sm" onclick="showToast('Demo quote saved successfully.'); closePanel();">Save Quote</button>`;
+  const actions = `<button class="btn btn-sm btn-primary" onclick="showToast('Demo quote converted to sales order.'); closeCenterModal();">Convert to Sales Order</button><button class="btn btn-sm" onclick="showToast('Demo quote saved successfully.'); closeCenterModal();">Save Quote</button>`;
   openDemoPanel('New Quote', html, actions);
 }
 
@@ -2654,7 +2688,7 @@ function openNewPaymentDemo() {
       <label>Payment Date</label><input type="date" value="${new Date().toISOString().slice(0,10)}">
     </div>
   `;
-  const actions = `<button class="btn btn-sm btn-primary" onclick="showToast('Demo payment recorded successfully.'); closePanel();">Save Payment</button><button class="btn btn-sm" onclick="window.print()">Print Receipt</button>`;
+  const actions = `<button class="btn btn-sm btn-primary" onclick="showToast('Demo payment recorded successfully.'); closeCenterModal();">Save Payment</button><button class="btn btn-sm" onclick="window.print()">Print Receipt</button>`;
   openDemoPanel('New Payment', html, actions);
 }
 
@@ -2680,7 +2714,7 @@ function openNewCustomerDemo() {
       <label>Customer Type</label><select><option>Retail</option><option>Corporate</option><option>Fleet</option></select>
     </div>
   `;
-  const actions = `<button class="btn btn-sm btn-primary" onclick="showToast('Demo customer saved successfully.'); closePanel();">Save Customer</button>`;
+  const actions = `<button class="btn btn-sm btn-primary" onclick="showToast('Demo customer saved successfully.'); closeCenterModal();">Save Customer</button>`;
   openDemoPanel('New Customer', html, actions);
 }
 
@@ -2793,7 +2827,7 @@ function openCreateTransferOrderDemo() {
       <label>Transfer Reason</label><textarea rows="2" style="width:100%; border:1px solid var(--border-strong); padding:5px; font-family:inherit;"></textarea>
     </div>
   `;
-  const actions = `<button class="btn btn-sm btn-primary" onclick="showToast('Demo transfer order created successfully.'); closePanel();">Create Transfer Order</button>`;
+  const actions = `<button class="btn btn-sm btn-primary" onclick="showToast('Demo transfer order created successfully.'); closeCenterModal();">Create Transfer Order</button>`;
   openDemoPanel('Create Transfer Order', html, actions);
 }
 
@@ -2809,7 +2843,7 @@ function openPrintEmailOrdersDemo() {
       <label>Message</label><textarea rows="4" style="width:100%; border:1px solid var(--border-strong); padding:5px; font-family:inherit;">Attached is your requested sales order document.</textarea>
     </div>
   `;
-  const actions = `<button class="btn btn-sm btn-primary" onclick="showToast('Demo only: order email prepared successfully.'); closePanel();">Send Demo Email</button><button class="btn btn-sm" onclick="window.print()">Print Preview</button>`;
+  const actions = `<button class="btn btn-sm btn-primary" onclick="showToast('Demo only: order email prepared successfully.'); closeCenterModal();">Send Demo Email</button><button class="btn btn-sm" onclick="window.print()">Print Preview</button>`;
   openDemoPanel('Print/Email Orders', html, actions);
 }
 
@@ -2913,7 +2947,7 @@ function openGenericDemo(action, type) {
     `${type.charAt(0).toUpperCase() + type.slice(1)}: ${action}`,
     `<div class="sp-section-label">Demo Preview</div>
      <p style="font-size:12.5px; color:var(--text-secondary); line-height:1.5;">This screen is available in the full implementation. Demo preview only for <strong>${esc(action)}</strong>.</p>`,
-    `<button class="btn btn-sm btn-primary" onclick="closePanel()">Close</button>`
+    `<button class="btn btn-sm btn-primary" onclick="closeCenterModal()">Close</button>`
   );
 }
 
