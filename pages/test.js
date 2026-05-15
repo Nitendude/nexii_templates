@@ -1025,7 +1025,7 @@ function exportCustomerProfileCsv(customerId) {
   csv += 'Payment No,Date,Method,Ref,Amount,Applied To,Status\\n';
   p.payments.forEach(pay => { csv += `${pay.no},${pay.date},${pay.method},${pay.ref},${pay.amount},${pay.appliedTo},${pay.status}\\n`; });
 
-  downloadFile(\`customer-\${p.customerId}.csv\`, csv, 'text/csv;charset=utf-8');
+  downloadFile('customer-' + p.customerId + '.csv', csv, 'text/csv;charset=utf-8');
   showToast('Customer profile exported successfully.');
 }
 
