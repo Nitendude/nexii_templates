@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160">
-  <rect width="160" height="160" rx="20" fill="#e8eef7"/>
-  <circle cx="80" cy="60" r="28" fill="#c8d6ef"/>
-  <rect x="35" y="96" width="90" height="44" rx="22" fill="#c8d6ef"/>
-  <text x="80" y="100" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" fill="#4a5f8a">EH</text>
-</svg>

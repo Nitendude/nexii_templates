@@ -1243,7 +1243,7 @@ const erpMenuModules={
   'equipment-menu':{title:'Equipment',shortcuts:['New Service Contract','New Equipment'],sections:{Profiles:['Service Contracts','Equipment','Manufacturers','Manufacturer Models'],Processes:['Run Service Contract Billing','Generate from Service Contracts','Process Service Contracts'],Inquiries:['Service Contract Billing Batches','Contract Summary','Contract Schedule Summary','Contract Schedule Detail Summary','Model Equipment and Components'],Reports:['Service Order Details by Contract','Appointment Details by Contract','Service Time Activity by Contract','Appointment Details by Target Equipment'],Preferences:['Equipment Management Preferences']}},
   'inventory-menu':{title:'Inventory',dataView:'inventory',shortcuts:['New Adjustment','New Transfer','New Kit Assembly','New Stock Item'],sections:{Transactions:['Receipts','Issues','Adjustments','Transfers','Kit Assembly'],Profiles:['Stock Items','Item Warehouse Details','Non-Stock Items','Warehouses','Warehouse Buildings'],'Physical Inventory':['Prepare Physical Count','Physical Inventory Count'],Processes:['Release IN Documents','Close Financial Periods'],Inquiries:['Inventory Summary','Storage Summary','Inventory Allocation Details','Inventory Transactions by Account','Inventory Lot/Serial History','Inventory by Item Class','Dead Stock','Intercompany Goods in Transit','Intercompany Returned Goods in Transit'],Reports:['Inventory Balance','Inventory Valuation','Inventory Register','Goods in Transit','Lot/Serial Numbers']}},
   'purchases-menu':{title:'Purchases',dataView:'purchases',shortcuts:['New Purchase Order','New Purchase Receipt','New Purchase Request','New Vendor'],sections:{Transactions:['Requests','Requisitions','Purchase Orders','Purchase Receipts','Landed Costs'],Profiles:['Vendors','Vendor Prices','Vendor Inventory'],Processes:['Create Purchase Orders','Print/Email Purchase Orders','Generate Intercompany Purchase Orders'],'Printed Forms':['Item Request','Purchase Order','Purchase Receipt'],Reports:['Purchase Order Summary','Purchase Order Details by Vendor','Purchase Order Details by Inventory','Blanket Purchase Order Summary','Purchase Order Receipt and Billing','Purchase Receipt Details by Vendor','Purchase Accrual Details','Purchase Receipt Billing Details']}},
-  'sales-menu':{title:'Sales Orders',dataView:'sales',shortcuts:['New Sales Order','New Quote','New Payment','New Customer'],sections:{Transactions:['Sales Orders','Invoices','Shipments'],Profiles:['Customers','Sales Prices'],Processes:['Process Orders','Generate Intercompany Sales Orders','Process Shipments','Process Invoices and Memos','Create Transfer Orders','Print/Email Orders'],Reports:['Sales Order Summary','Sales Order Details by Customer','Sales Order Details by Inventory','Shipment Summary','Daily Sales Profitability','Sales Profitability by Salesperson','Sales Profitability by Item Class']}},
+  'sales-menu':{title:'Sales Orders',dataView:'sales',shortcuts:['New Sales Order','New Quote','New Payment','New Customer'],sections:{Transactions:[{label:'Sales Orders',nav:'sales'},'Invoices','Shipments'],Profiles:[{label:'Customers',nav:'customers'},'Sales Prices'],Processes:['Process Orders','Generate Intercompany Sales Orders','Process Shipments','Process Invoices and Memos','Create Transfer Orders','Print/Email Orders'],Reports:['Sales Order Summary','Sales Order Details by Customer','Sales Order Details by Inventory','Shipment Summary','Daily Sales Profitability','Sales Profitability by Salesperson','Sales Profitability by Item Class']}},
   'receivables-menu':{title:'Receivables',dataView:'receivables',shortcuts:['New Invoice','New Payment','Customer Details','New Customer'],sections:{Transactions:['Invoices and Memos','Payments and Applications'],Profiles:['Customers','Credit Terms','Sales Prices'],Processes:['Release AR Documents','Print Invoices and Memos','Write Off Balances and Credits','Prepare Statements','Print Statements','Close Financial Periods'],Inquiries:['Customer Details','Customer Summary','Statement History Summary'],'Printed Forms':['Invoice/Memo'],Reports:['AR Balance by GL Account','AR Balance by Customer','AR Aged Past Due','AR Aged Period Sensitive'],'Profitability Analysis':['Sales Profitability Analysis','Daily Sales Profitability','Sales Profitability by Customer and Item','Sales Profitability by Item Class']}}
 };
 const expenseData = Array.from({length:60},(_,i)=>{const categories=['Transportation','Representation','Fuel','Office Supplies','Branch Repairs','Courier','Meals'];const descriptions=['client visit','bank deposit run','branch delivery vehicle','printer ink and forms','showroom minor repair','document dispatch','field collection route'];return {no:`EXP-202605${pad(12-(i%12),2)}-${pad(i+1)}`,employee:personName(520+i),branch:branchData[(i*4)%branchData.length].name,category:categories[i%categories.length],desc:descriptions[i%descriptions.length],amount:150+((i*431)%8500),date:dateShort(i),status:i%7===0?'Pending':i%5===0?'Reimbursed':'Approved'}});
@@ -2040,10 +2040,25 @@ function nav(id){
 }
 
 // ===== ERP MENU VIEWS =====
-function renderErpMenuLink(item){
+function renderErpMenuLink(item, heading){
   const link=typeof item==='string'?{label:item}:item;
   const click=link.nav?` onclick="nav('${link.nav}')"`:'';
-  return `<button class="erp-menu-link"${click} type="button">${esc(link.label)}</button>`;
+  
+  let type = 'generic';
+  if(heading) {
+    const headingLower = heading.toLowerCase();
+    if (headingLower.includes('report')) type = 'report';
+    else if (headingLower.includes('process')) type = 'process';
+    else if (headingLower.includes('print')) type = 'printed-form';
+    else if (headingLower.includes('profile')) type = 'profile';
+    else if (headingLower.includes('preference')) type = 'preference';
+    else if (headingLower.includes('transaction')) type = 'transaction';
+    else if (headingLower.includes('inquir')) type = 'inquiry';
+    else if (headingLower.includes('service')) type = 'service';
+    else if (headingLower.includes('integration')) type = 'integration';
+  }
+
+  return `<button class="erp-menu-link"${click} data-action="${esc(link.label)}" data-type="${type}" ${link.nav ? `data-target="${link.nav}"` : ''} type="button">${esc(link.label)}</button>`;
 }
 function renderErpMenuPage(id,config){
   const host=document.getElementById(`mod-${id}`);
@@ -2051,7 +2066,7 @@ function renderErpMenuPage(id,config){
   const shortcutHtml=(config.shortcuts||[]).length?`
     <div class="erp-shortcuts">
       ${config.shortcuts.map((label,index)=>`
-        <button class="erp-shortcut-card" type="button">
+        <button class="erp-shortcut-card" type="button" data-action="${esc(label)}" data-type="shortcut">
           <span class="erp-shortcut-icon">${index+1}</span>
           <strong>${esc(label)}</strong>
         </button>
@@ -2064,14 +2079,14 @@ function renderErpMenuPage(id,config){
           <h2>${esc(config.title)}</h2>
           <p>ERP menu view for transactions, profiles, processes, inquiries, reports, and setup links.</p>
         </div>
-        ${config.dataView?`<button class="btn btn-sm" type="button" onclick="nav('${config.dataView}')">Data View</button>`:''}
+        ${config.dataView?`<button class="btn btn-sm" type="button" data-view-target="${config.dataView}">Data View</button>`:`<button class="btn btn-sm" type="button" onclick="showToast('Demo only: Data view will be available in full implementation.')">Data View</button>`}
       </div>
       ${shortcutHtml}
       <div class="erp-menu-grid">
         ${Object.entries(config.sections).map(([heading,links])=>`
           <section class="erp-menu-section">
             <h3 class="erp-menu-heading">${esc(heading)}</h3>
-            <div class="erp-link-list">${links.map(renderErpMenuLink).join('')}</div>
+            <div class="erp-link-list">${links.map(l => renderErpMenuLink(l, heading)).join('')}</div>
           </section>
         `).join('')}
       </div>
@@ -2248,6 +2263,65 @@ function refreshCurrentModule(){
   showToast('Current module refreshed');
 }
 
+function openNewSalesOrderForm() {
+  const branches = typeof branchData !== 'undefined'
+    ? branchData.map(b => `<option value="${esc(b.name)}">${esc(b.name)}</option>`).join('')
+    : `<option>Manila Main</option><option>Quezon City North</option><option>Cebu Branch</option><option>Davao Branch</option><option>Taguig Branch</option>`;
+
+  document.getElementById('sp-title').textContent = 'New Sales Order';
+  document.getElementById('sp-body').innerHTML = `
+    <div class="sp-section">
+      <div class="sp-section-label">Order Details</div>
+      <div class="orcr-field" style="margin-bottom:12px">
+        <label>Customer Name</label>
+        <input type="text" id="nso-customer" placeholder="Enter customer name">
+      </div>
+      <div class="orcr-field" style="margin-bottom:12px">
+        <label>Unit Model</label>
+        <select id="nso-model">
+          <option>Honda ADV 160</option>
+          <option>Honda Click 125i</option>
+          <option>Yamaha NMAX</option>
+          <option>Yamaha Mio Gear</option>
+          <option>Kawasaki Ninja 400</option>
+          <option>Suzuki Raider R150</option>
+        </select>
+      </div>
+      <div class="orcr-field" style="margin-bottom:12px">
+        <label>Branch</label>
+        <select id="nso-branch">
+          ${branches}
+        </select>
+      </div>
+      <div class="orcr-field" style="margin-bottom:12px">
+        <label>Payment Mode</label>
+        <select id="nso-mode">
+          <option>Cash</option>
+          <option>Installment</option>
+          <option>Bank Financing</option>
+        </select>
+      </div>
+      <div class="orcr-field" style="margin-bottom:12px">
+        <label>Salesperson</label>
+        <input type="text" id="nso-salesperson" placeholder="Enter salesperson name">
+      </div>
+      <div class="orcr-field" style="margin-bottom:12px">
+        <label>Estimated Total</label>
+        <input type="number" id="nso-total" value="166900">
+      </div>
+      <div class="orcr-field" style="margin-bottom:12px">
+        <label>Down Payment</label>
+        <input type="number" id="nso-dp" value="0">
+      </div>
+    </div>
+    <div class="sp-actions">
+      <button class="btn btn-sm btn-primary" onclick="submitNewSalesOrder()">Submit Order</button>
+      <button class="btn btn-sm" onclick="showToast('Demo only: sales order draft saved.')">Save Draft</button>
+    </div>
+  `;
+  openPanel();
+}
+
 function addDemoUnit(){
   const r={id:`UNIT-DEMO-${pad(invData.length+1,4)}`,brand:'Honda',model:'Demo ADV 160',color:'Pearl White',engine:`ENG-DEMO-${pad(9000+invData.length,5)}`,chassis:`CHS-DEMO-${pad(9500+invData.length,5)}`,branch:branchData[0].name,status:'Available',price:166900,date:'May 14, 2026'};
   invData.unshift(r);refreshBranchInventory();clearImportFilters('inventory');filterInv();renderDashboard();renderBranches();
@@ -2255,8 +2329,7 @@ function addDemoUnit(){
 }
 
 function addDemoOrder(){
-  const r={no:`SO-DEMO-${pad(soData.length+1,4)}`,date:'May 14, 2026',customer:'Demo Client - Sofia Reyes',model:'Honda ADV 160 (Pearl White)',srp:166900,dp:50000,mode:'Installment',branch:branchData[0].name,status:'Pending'};
-  soData.unshift(r);clearImportFilters('sales');filterSO();renderDashboard();openSOPanel(r);showToast('Demo sales order created');
+  openNewSalesOrderForm();
 }
 
 function recordDemoPayment(){
@@ -2393,6 +2466,37 @@ function updateOnePayroll(no,status){
 function exportPayroll(){
   exportCsv('payroll');
 }
+
+function submitNewSalesOrder() {
+  const customerName = document.getElementById('nso-customer').value || 'Demo Customer';
+  const unitModel = document.getElementById('nso-model').value;
+  const branch = document.getElementById('nso-branch').value;
+  const paymentMode = document.getElementById('nso-mode').value;
+  const estimatedTotal = document.getElementById('nso-total').value || 0;
+  const downPayment = document.getElementById('nso-dp').value || 0;
+
+  if (typeof soData !== 'undefined') {
+    const r = {
+      no: `SO-DEMO-${pad(soData.length + 1, 4)}`,
+      date: new Date().toLocaleDateString('en-PH', { month: 'short', day: '2-digit', year: 'numeric' }),
+      customer: customerName,
+      model: unitModel,
+      srp: Number(estimatedTotal),
+      dp: Number(downPayment),
+      mode: paymentMode,
+      branch: branch,
+      status: 'Pending'
+    };
+    soData.unshift(r);
+    if (typeof clearImportFilters === 'function') clearImportFilters('sales');
+    if (typeof filterSO === 'function') filterSO();
+    if (typeof renderDashboard === 'function') renderDashboard();
+  }
+
+  closePanel();
+  showToast('Demo sales order submitted successfully.');
+}
+
 function liveAction(btn){
   const label=(btn.textContent||'Action').trim().replace(/\s+/g,' ');
   const clean=label.replace(/^[+]\s*/,'');
@@ -2476,11 +2580,267 @@ if(document.addEventListener){
     if(btn.getAttribute('onclick'))return;
     liveAction(btn);
   });
-  document.addEventListener('click',e=>{
-    const link=e.target.closest?.('.erp-menu-link,.erp-shortcut-card');
-    if(!link||link.getAttribute('onclick'))return;
-    showToast(`${link.textContent.trim()} opened in demo mode`);
+  document.addEventListener('click', function(e) {
+    const shortcut = e.target.closest('.erp-shortcut-card');
+    if (shortcut) {
+      e.preventDefault();
+      handleErpAction(shortcut.dataset.action, shortcut.dataset.type, shortcut.dataset.target);
+      return;
+    }
+  
+    const link = e.target.closest('.erp-menu-link');
+    if (link && !link.getAttribute('onclick')) {
+      e.preventDefault();
+      handleErpAction(link.dataset.action, link.dataset.type, link.dataset.target);
+      return;
+    }
+  
+    const dataBtn = e.target.closest('[data-view-target]');
+    if (dataBtn) {
+      e.preventDefault();
+      const target = dataBtn.dataset.viewTarget;
+      if (target && typeof nav === 'function') {
+        nav(target);
+      }
+      return;
+    }
   });
+}
+
+function handleErpAction(action, type, target) {
+  if (target) {
+    nav(target);
+    return;
+  }
+  if (action === 'OTHER FINANCING OR/CR TRANSMITTAL') {
+    nav('orcr');
+    return;
+  }
+  if (action === 'CSB OR/CR TRANSMITTAL' || action === 'SUMISHO OR/CR TRANSMITTAL') {
+    openDemoReport(action);
+    return;
+  }
+  if (type === 'transaction' || type === 'data-view') {
+    openDemoGeneric(action, type);
+  } else if (type === 'report') {
+    openDemoReport(action);
+  } else if (type === 'process') {
+    openDemoProcess(action);
+  } else if (type === 'printed-form') {
+    openDemoPrintedForm(action);
+  } else if (type === 'profile') {
+    openDemoProfile(action);
+  } else if (type === 'preference') {
+    openDemoPreference(action);
+  } else if (type === 'shortcut') {
+    openDemoShortcut(action);
+  } else {
+    openDemoGeneric(action, type);
+  }
+}
+
+function openDemoShortcut(action) {
+  if (action === 'New Sales Order') {
+    openNewSalesOrderForm();
+    return;
+  }
+  if (action === 'New Quote') {
+    openActionPanel(`New Quote`, [
+      {
+        label: 'Quote Details',
+        rows: [
+          ['Customer', 'Select Customer...'],
+          ['Valid Until', new Date(Date.now() + 14 * 86400000).toLocaleDateString('en-PH')],
+          ['Estimated Total', '₱0.00', 'mono']
+        ]
+      }
+    ], `<button class="btn btn-sm btn-primary" onclick="showToast('Demo only: Quote saved successfully.')">Save Quote</button><button class="btn btn-sm" onclick="showToast('Demo only: Quote converted to Sales Order.')">Convert to Sales Order</button>`);
+    return;
+  }
+  if (action === 'New Payment') {
+    openActionPanel(`New Payment`, [
+      {
+        label: 'Payment Details',
+        rows: [
+          ['Customer', 'Select Customer...'],
+          ['Amount', '₱0.00', 'mono'],
+          ['Payment Method', 'Cash / Transfer'],
+          ['Reference', 'Auto-generated']
+        ]
+      }
+    ], `<button class="btn btn-sm btn-primary" onclick="showToast('Demo only: Payment saved successfully.')">Save Payment</button><button class="btn btn-sm" onclick="showToast('Demo only: Receipt prepared for printing.')">Print Receipt</button>`);
+    return;
+  }
+  if (action === 'New Customer') {
+    openActionPanel(`New Customer`, [
+      {
+        label: 'Customer Profile',
+        rows: [
+          ['Full Name', 'Enter name...'],
+          ['Contact No.', 'Enter phone...'],
+          ['Address', 'Enter address...'],
+          ['Branch', 'Select branch...']
+        ]
+      }
+    ], `<button class="btn btn-sm btn-primary" onclick="showToast('Demo only: Customer saved successfully.')">Save Customer</button>`);
+    return;
+  }
+  openActionPanel(`Shortcut: ${action}`, [
+    {
+      label: 'New Record Details',
+      rows: [
+        ['Status', badge('Draft')],
+        ['Created By', 'Demo User'],
+        ['Date', new Date().toLocaleDateString('en-PH')],
+      ]
+    },
+    {
+      label: 'Sample Fields',
+      rows: [
+        ['Reference', `REF-${Math.floor(Math.random()*10000)}`, 'mono'],
+        ['Amount', `₱${fmt(Math.floor(Math.random()*50000)+1000)}`, 'mono'],
+        ['Notes', 'Sample data entry for demo purposes.']
+      ]
+    }
+  ], `<button class="btn btn-sm btn-primary" onclick="showToast('Demo only: ${action.replace(/'/g, "\\'")} saved successfully.')">Save</button><button class="btn btn-sm" onclick="showToast('Demo only: ${action.replace(/'/g, "\\'")} submitted successfully.')">Submit</button>`);
+}
+
+function openDemoReport(action) {
+  openActionPanel(`Report: ${action}`, [
+    {
+      label: 'Report Parameters',
+      rows: [
+        ['Date Range', 'May 1, 2026 - May 31, 2026'],
+        ['Branch', 'All Branches'],
+        ['Status', 'All Statuses']
+      ]
+    },
+    {
+      label: 'Generated Data',
+      rows: [
+        ['Total Records', '42'],
+        ['Last Run', 'Not run yet', 'dim']
+      ]
+    }
+  ], '<button class="btn btn-sm btn-primary" onclick="simulateReportRun(this)">Run Report</button><button class="btn btn-sm" onclick="exportCsv(\'sales\')">Export CSV</button><button class="btn btn-sm" onclick="window.print()">Print Preview</button><button class="btn btn-sm" onclick="showToast(\'Demo only: report email prepared successfully.\')">Email Report</button>');
+}
+
+function simulateReportRun(btn) {
+  flashButton(btn, 'Running...');
+  setTimeout(() => {
+    showToast('Report generated successfully.');
+  }, 1000);
+}
+
+function openDemoProcess(action) {
+  openActionPanel(`Process: ${action}`, [
+    {
+      label: 'Process Checklist',
+      rows: [
+        ['Status', badge('Ready')],
+        ['Pending Records', Math.floor(Math.random()*50) + 5],
+        ['Validation', 'Passed'],
+      ]
+    },
+    {
+      label: 'Affected Modules',
+      rows: [
+        ['General Ledger', 'Pending Updates'],
+        ['Inventory', 'Pending Updates']
+      ]
+    }
+  ], '<button class="btn btn-sm btn-primary" onclick="simulateProcessStart(this)">Start Process</button><button class="btn btn-sm" onclick="simulateProcessComplete(this)">Simulate Completion</button><button class="btn btn-sm" onclick="showToast(\'Demo only: Print log downloaded.\')">Print Log</button>');
+}
+
+function simulateProcessStart(btn) {
+  flashButton(btn, 'Processing...');
+  showToast(`Process started. Status changed to Processing.`);
+}
+
+function simulateProcessComplete(btn) {
+  flashButton(btn, 'Completing...');
+  showToast(`Process completed successfully.`);
+}
+
+function openDemoPrintedForm(action) {
+  openActionPanel(`Printed Form: ${action}`, [
+    {
+      label: 'Document Preview',
+      rows: [
+        ['Document Type', action],
+        ['Template', 'Standard Corporate Layout'],
+        ['Pages', '1']
+      ]
+    }
+  ], '<button class="btn btn-sm btn-primary" onclick="window.print()">Print</button><button class="btn btn-sm" onclick="showToast(\'Demo only: Form downloaded as PDF.\')">Download PDF</button>');
+}
+
+function openDemoProfile(action) {
+  if (action === 'Sales Prices') {
+    openActionPanel(`Price List`, [
+      {
+        label: 'Current Pricing',
+        rows: [
+          ['Base Price', badge('Active')],
+          ['Promo Price', 'Scheduled for next month'],
+          ['Last Updated', new Date().toLocaleDateString('en-PH')]
+        ]
+      }
+    ], `<button class="btn btn-sm btn-primary" onclick="showToast('Demo only: Price list updated.')">Update Prices</button><button class="btn btn-sm" onclick="exportCsv('sales')">Export List</button>`);
+    return;
+  }
+  openActionPanel(`Profile Setup: ${action}`, [
+    {
+      label: 'Entity Details',
+      rows: [
+        ['Total Records', Math.floor(Math.random()*200) + 10],
+        ['Active', badge('Active')],
+        ['Last Synced', new Date().toLocaleDateString('en-PH')]
+      ]
+    }
+  ], '<button class="btn btn-sm btn-primary" onclick="showToast(\'Demo only: New record form opened.\')">Add New Record</button><button class="btn btn-sm" onclick="exportCsv(\'sales\')">Export List</button>');
+}
+
+function openDemoPreference(action) {
+  openActionPanel(`Preferences: ${action}`, [
+    {
+      label: 'Configuration Settings',
+      rows: [
+        ['Module', action.split(' ')[0]],
+        ['Auto-Approval', 'Enabled'],
+        ['Default Currency', 'PHP'],
+        ['Sync Frequency', 'Real-time']
+      ]
+    }
+  ], '<button class="btn btn-sm btn-primary" onclick="showToast(\'Demo only: Preferences saved.\')">Save Settings</button><button class="btn btn-sm" onclick="showToast(\'Demo only: Settings reset.\')">Reset to Default</button>');
+}
+
+function openDemoGeneric(action, type) {
+  if (action === 'Invoices') {
+    openDemoReport('Invoices List');
+    return;
+  }
+  if (action === 'Shipments') {
+    openActionPanel(`Shipment Tracking`, [
+      {
+        label: 'Recent Shipments',
+        rows: [
+          ['SHP-2026-001', badge('In Transit')],
+          ['SHP-2026-002', badge('Delivered')],
+          ['SHP-2026-003', badge('Pending')]
+        ]
+      }
+    ], `<button class="btn btn-sm btn-primary" onclick="showToast('Demo only: Tracking updated.')">Refresh Status</button><button class="btn btn-sm" onclick="closePanel()">Close</button>`);
+    return;
+  }
+  openActionPanel(`${type.charAt(0).toUpperCase() + type.slice(1)}: ${action}`, [
+    {
+      label: 'Demo Preview',
+      rows: [
+        ['Description', 'This screen is available in the full implementation. Demo preview only.']
+      ]
+    }
+  ], '<button class="btn btn-sm btn-primary" onclick="closePanel()">Close</button>');
 }
 
 // ===== CLOCK =====
