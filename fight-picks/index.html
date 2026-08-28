@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#101114" />
+  <title>Fight Night Picks</title>
+  <style>
+    :root{--bg:#0c0d10;--panel:#15171c;--panel2:#1c1f26;--text:#f7f7f8;--muted:#a4a8b3;--line:#2a2e37;--red:#ff4d4d;--blue:#4d8dff;--gold:#ffd166;--green:#57d88a}
+    *{box-sizing:border-box} body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at top,#1b1d24 0,#0c0d10 44%);color:var(--text);min-height:100vh}
+    .wrap{width:min(920px,calc(100% - 28px));margin:0 auto;padding:28px 0 50px}
+    .top{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-bottom:20px}
+    .brand h1{font-size:clamp(28px,5vw,48px);margin:0;letter-spacing:-1.5px}.brand p{margin:6px 0 0;color:var(--muted)}
+    .pill{font-size:12px;color:#111;background:var(--gold);padding:8px 11px;border-radius:999px;font-weight:800;white-space:nowrap}
+    .notice{background:#171a20;border:1px solid var(--line);padding:12px 14px;border-radius:14px;color:var(--muted);font-size:13px;margin-bottom:18px}
+    .fight{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:stretch;margin-bottom:18px}
+    .fighter{position:relative;border:1px solid var(--line);background:linear-gradient(180deg,#191b21,#121419);border-radius:20px;padding:22px;cursor:pointer;transition:.18s ease;overflow:hidden}
+    .fighter:hover{transform:translateY(-2px);border-color:#454b58}.fighter.selected{outline:2px solid #fff;outline-offset:2px}
+    .fighter.red:before,.fighter.blue:before{content:"";position:absolute;inset:0;opacity:.12;pointer-events:none}.fighter.red:before{background:linear-gradient(135deg,var(--red),transparent 60%)}.fighter.blue:before{background:linear-gradient(225deg,var(--blue),transparent 60%)}
+    .corner{font-size:12px;text-transform:uppercase;letter-spacing:1.4px;color:var(--muted)} .name{font-size:26px;font-weight:900;margin-top:8px}.record{font-size:13px;color:var(--muted);margin-top:6px}
+    .vs{display:grid;place-items:center;color:#707583;font-weight:900}
+    .card{background:rgba(21,23,28,.93);border:1px solid var(--line);border-radius:20px;padding:20px;margin-bottom:18px;box-shadow:0 18px 60px rgba(0,0,0,.18)}
+    .card h2{font-size:17px;margin:0 0 14px}.grid{display:grid;grid-template-columns:1fr 180px;gap:12px}
+    label{display:block;font-size:12px;color:var(--muted);margin:0 0 7px}input,select{width:100%;border:1px solid #343945;background:#101217;color:var(--text);padding:12px 13px;border-radius:12px;font:inherit;outline:none}input:focus,select:focus{border-color:#697286}
+    .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}button{border:0;border-radius:12px;padding:12px 15px;font:inherit;font-weight:800;cursor:pointer}button.primary{background:#f5f5f5;color:#111}button.secondary{background:#262a33;color:#f5f5f5}button.danger{background:#32191c;color:#ffb7b7}button:disabled{opacity:.45;cursor:not-allowed}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}.stat{background:#121419;border:1px solid var(--line);border-radius:16px;padding:15px}.stat b{font-size:24px;display:block}.stat span{color:var(--muted);font-size:12px}
+    .list{display:grid;gap:10px}.pick{display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;border:1px solid var(--line);background:#111318;border-radius:14px;padding:13px 14px}.pick .who{font-weight:800}.pick .meta{font-size:12px;color:var(--muted);margin-top:3px}.tag{padding:7px 10px;border-radius:999px;font-size:12px;font-weight:900}.tag.red{background:#3b1c20;color:#ff9f9f}.tag.blue{background:#1a2942;color:#9fc0ff}.result{font-size:12px;font-weight:900}.win{color:var(--green)}.lose{color:#ff8989}
+    .empty{color:var(--muted);text-align:center;padding:26px 12px;border:1px dashed var(--line);border-radius:14px}
+    .footer{color:#727783;text-align:center;font-size:12px;margin-top:24px}
+    @media(max-width:650px){.top{align-items:flex-start}.fight{grid-template-columns:1fr 1fr}.vs{display:none}.fighter{padding:17px}.name{font-size:21px}.grid{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr 1fr}.pick{grid-template-columns:1fr auto}.result{grid-column:1/-1}.pill{display:none}}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="brand"><h1>Fight Night Picks</h1><p>Pick a winner. Risk points. Claim bragging rights.</p></div>
+    <div class="pill">FRIENDS • PLAY POINTS ONLY</div>
+  </div>
+
+  <div class="notice">No cash handling, deposits, withdrawals, or real-money payouts. This page uses fictional points for a friendly prediction pool.</div>
+
+  <div class="fight">
+    <div class="fighter red" id="fighterA" onclick="choose('A')">
+      <div class="corner">Red Corner</div><div class="name" id="nameA">Fighter A</div><div class="record">Tap to pick</div>
+    </div>
+    <div class="vs">VS</div>
+    <div class="fighter blue" id="fighterB" onclick="choose('B')">
+      <div class="corner">Blue Corner</div><div class="name" id="nameB">Fighter B</div><div class="record">Tap to pick</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Place your pick</h2>
+    <div class="grid">
+      <div><label>Nickname</label><input id="nickname" maxlength="24" placeholder="e.g. JP" /></div>
+      <div><label>Points to risk</label><input id="points" type="number" min="1" max="10000" value="100" /></div>
+    </div>
+    <div class="actions">
+      <button class="primary" onclick="submitPick()">Submit Pick</button>
+      <button class="secondary" onclick="editFight()">Edit Fighter Names</button>
+      <button class="secondary" onclick="sharePool()">Share Pool Snapshot</button>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><b id="totalPicks">0</b><span>Total picks</span></div>
+    <div class="stat"><b id="aPicks">0</b><span id="aLabel">Fighter A picks</span></div>
+    <div class="stat"><b id="bPicks">0</b><span id="bLabel">Fighter B picks</span></div>
+  </div>
+
+  <div class="card">
+    <h2>Friends' picks</h2>
+    <div id="pickList" class="list"></div>
+  </div>
+
+  <div class="card">
+    <h2>Settle the fight</h2>
+    <label>Official winner</label>
+    <select id="winner">
+      <option value="">Not decided yet</option>
+      <option value="A">Fighter A</option>
+      <option value="B">Fighter B</option>
+    </select>
+    <div class="actions">
+      <button class="primary" onclick="settle()">Reveal Results</button>
+      <button class="danger" onclick="resetAll()">Reset Game</button>
+    </div>
+  </div>
+
+  <div class="footer">Saved only in this browser. A shared live room across multiple phones would require a small online database.</div>
+</div>
+
+<script>
+const KEY='fight-night-picks-v1';
+let state={nameA:'Fighter A',nameB:'Fighter B',choice:'',picks:[],winner:''};
+
+function load(){
+  try{
+    const hash=location.hash.startsWith('#pool=') ? decodeURIComponent(location.hash.slice(6)) : '';
+    if(hash){
+      const imported=JSON.parse(atob(hash));
+      if(imported && Array.isArray(imported.picks)) state=imported;
+    }else{
+      const saved=localStorage.getItem(KEY); if(saved) state=JSON.parse(saved);
+    }
+  }catch(e){}
+  render();
+}
+function save(){localStorage.setItem(KEY,JSON.stringify(state))}
+function choose(c){state.choice=c;render()}
+function submitPick(){
+  const nickname=document.getElementById('nickname').value.trim();
+  const points=Math.max(1,Number(document.getElementById('points').value||0));
+  if(!nickname){alert('Enter a nickname first.');return}
+  if(!state.choice){alert('Pick a fighter first.');return}
+  const existing=state.picks.findIndex(p=>p.nickname.toLowerCase()===nickname.toLowerCase());
+  const pick={nickname,points,choice:state.choice,at:Date.now()};
+  if(existing>=0) state.picks[existing]=pick; else state.picks.unshift(pick);
+  save();document.getElementById('nickname').value='';render();
+}
+function editFight(){
+  const a=prompt('Red corner fighter name:',state.nameA); if(a===null)return;
+  const b=prompt('Blue corner fighter name:',state.nameB); if(b===null)return;
+  state.nameA=a.trim()||'Fighter A';state.nameB=b.trim()||'Fighter B';save();render();
+}
+function settle(){state.winner=document.getElementById('winner').value;save();render()}
+function resetAll(){
+  if(!confirm('Reset fighter names, picks, and results on this device?'))return;
+  state={nameA:'Fighter A',nameB:'Fighter B',choice:'',picks:[],winner:''};save();history.replaceState(null,'',location.pathname);render();
+}
+async function sharePool(){
+  const copy={...state,choice:''};
+  const link=location.origin+location.pathname+'#pool='+encodeURIComponent(btoa(JSON.stringify(copy)));
+  try{await navigator.clipboard.writeText(link);alert('Pool snapshot link copied. Send it to your friends.');}
+  catch(e){prompt('Copy this link:',link)}
+}
+function render(){
+  document.getElementById('nameA').textContent=state.nameA;document.getElementById('nameB').textContent=state.nameB;
+  document.getElementById('fighterA').classList.toggle('selected',state.choice==='A');
+  document.getElementById('fighterB').classList.toggle('selected',state.choice==='B');
+  document.getElementById('winner').innerHTML='<option value="">Not decided yet</option><option value="A">'+escapeHtml(state.nameA)+'</option><option value="B">'+escapeHtml(state.nameB)+'</option>';
+  document.getElementById('winner').value=state.winner||'';
+  const ac=state.picks.filter(p=>p.choice==='A').length,bc=state.picks.filter(p=>p.choice==='B').length;
+  document.getElementById('totalPicks').textContent=state.picks.length;document.getElementById('aPicks').textContent=ac;document.getElementById('bPicks').textContent=bc;
+  document.getElementById('aLabel').textContent=state.nameA+' picks';document.getElementById('bLabel').textContent=state.nameB+' picks';
+  const list=document.getElementById('pickList');
+  if(!state.picks.length){list.innerHTML='<div class="empty">No picks yet. Be the first.</div>';return}
+  list.innerHTML=state.picks.map(p=>{
+    const fname=p.choice==='A'?state.nameA:state.nameB;
+    let res='';if(state.winner)res='<div class="result '+(p.choice===state.winner?'win':'lose')+'">'+(p.choice===state.winner?'WIN +'+p.points+' pts':'LOSE -'+p.points+' pts')+'</div>';
+    return '<div class="pick"><div><div class="who">'+escapeHtml(p.nickname)+'</div><div class="meta">'+p.points+' points at risk</div></div><div class="tag '+(p.choice==='A'?'red':'blue')+'">'+escapeHtml(fname)+'</div>'+res+'</div>';
+  }).join('');
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+load();
+</script>
+</body>
+</html>
